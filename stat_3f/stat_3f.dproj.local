@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<BorlandProject>
+	<Transactions>
+    <Transaction>1899.12.30 00:00:00.000.218,=E:\proj\stat\stat_3f\Unit1.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.015,=E:\proj\stat\stat_3f\Unit1.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.250,E:\proj\stat\stat_3f\Unit1.dfm=E:\proj\stat\stat_3f\src\unRename.dfm</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.687,E:\proj\stat\stat_3f\src\unResult.pas=E:\proj\stat\stat_3f\Unit1.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.687,E:\proj\stat\stat_3f\src\unResult.dfm=E:\proj\stat\stat_3f\Unit1.dfm</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.250,E:\proj\stat\stat_3f\Unit1.pas=E:\proj\stat\stat_3f\src\unRename.pas</Transaction>
+  </Transactions>
+</BorlandProject>
