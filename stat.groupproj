@@ -1,0 +1,60 @@
+﻿	<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+		<PropertyGroup>
+			<ProjectGuid>{8BE7F321-25BA-408D-B8D9-C0A3A8176BF6}</ProjectGuid>
+		</PropertyGroup>
+		<ItemGroup>
+			<Projects Include="stat_3f\stat_3f.dproj">
+				<Dependencies/>
+			</Projects>
+			<Projects Include="stat_1f\stat_1f.dproj">
+				<Dependencies/>
+			</Projects>
+			<Projects Include="stat_2f\stat_2f.dproj">
+				<Dependencies/>
+			</Projects>
+		</ItemGroup>
+		<ProjectExtensions>
+			<Borland.Personality>Default.Personality.12</Borland.Personality>
+			<Borland.ProjectType/>
+			<BorlandProject>
+				<Default.Personality/>
+			</BorlandProject>
+		</ProjectExtensions>
+		<Target Name="stat_3f">
+			<MSBuild Projects="stat_3f\stat_3f.dproj"/>
+		</Target>
+		<Target Name="stat_3f:Clean">
+			<MSBuild Projects="stat_3f\stat_3f.dproj" Targets="Clean"/>
+		</Target>
+		<Target Name="stat_3f:Make">
+			<MSBuild Projects="stat_3f\stat_3f.dproj" Targets="Make"/>
+		</Target>
+		<Target Name="stat_1f">
+			<MSBuild Projects="stat_1f\stat_1f.dproj"/>
+		</Target>
+		<Target Name="stat_1f:Clean">
+			<MSBuild Projects="stat_1f\stat_1f.dproj" Targets="Clean"/>
+		</Target>
+		<Target Name="stat_1f:Make">
+			<MSBuild Projects="stat_1f\stat_1f.dproj" Targets="Make"/>
+		</Target>
+		<Target Name="stat_2f">
+			<MSBuild Projects="stat_2f\stat_2f.dproj"/>
+		</Target>
+		<Target Name="stat_2f:Clean">
+			<MSBuild Projects="stat_2f\stat_2f.dproj" Targets="Clean"/>
+		</Target>
+		<Target Name="stat_2f:Make">
+			<MSBuild Projects="stat_2f\stat_2f.dproj" Targets="Make"/>
+		</Target>
+		<Target Name="Build">
+			<CallTarget Targets="stat_3f;stat_1f;stat_2f"/>
+		</Target>
+		<Target Name="Clean">
+			<CallTarget Targets="stat_3f:Clean;stat_1f:Clean;stat_2f:Clean"/>
+		</Target>
+		<Target Name="Make">
+			<CallTarget Targets="stat_3f:Make;stat_1f:Make;stat_2f:Make"/>
+		</Target>
+		<Import Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')" Project="$(BDS)\Bin\CodeGear.Group.Targets"/>
+	</Project>
