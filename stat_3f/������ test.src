@@ -3,11 +3,11 @@ numA=2
 numB=2
 numC=3
 [varnames]
-FullA=Ширина
-FullB=Радиус
+FullA=Радиус
+FullB=Ширина
 FullC=Скорость
-ShortA=H
-ShortB=R
+ShortA=R
+ShortB=H
 ShortC=V
 [ser_1_1_1]
 num=1

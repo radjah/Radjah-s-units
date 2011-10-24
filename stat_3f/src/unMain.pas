@@ -687,12 +687,15 @@ begin
   lB.Caption := FullB + ' (' + ShortB + '):';
   lC.Caption := FullC + ' (' + ShortC + '):';
   for i := 0 to iA - 1 do
+  begin
+    pcData.Pages[i].Caption := ShortA + ' ' + IntToStr(i + 1);
     for j := 0 to jC - 1 do
       for k := 0 to kB - 1 do
       begin
         LabArr[i, j, k, 1].Caption := ShortC + ' ' + IntToStr(j + 1);
         LabArr[i, j, k, 2].Caption := ShortB + ' ' + IntToStr(k + 1);
       end;
+  end;
   AddLog(mLog, 'Выполнено!' + ' (' + floattostr((GetTickCount - time) / 1000)
     + ' сек)');
 end;
