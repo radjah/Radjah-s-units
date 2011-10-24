@@ -5,7 +5,7 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, ComCtrls, StdCtrls, Buttons, GIFImg, ExtCtrls, MyFunctions, IniFiles,
-  math;
+  math, XPMan;
 
 type
   TfmMain = class(TForm)
@@ -41,6 +41,7 @@ type
     btCreate: TButton;
     btRaname: TButton;
     cbSpaces: TCheckBox;
+    XPMan: TXPManifest;
     procedure btCreateClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure btClearClick(Sender: TObject);

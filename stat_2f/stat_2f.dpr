@@ -11,6 +11,7 @@ uses
 begin
   Application.Initialize;
   Application.MainFormOnTaskbar := True;
+  Application.Title := 'Двухфакторный анализ';
   Application.CreateForm(TfmMain, fmMain);
   Application.CreateForm(TfmResult, fmResult);
   Application.CreateForm(TfmRename, fmRename);

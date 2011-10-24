@@ -385,4 +385,8 @@ object fmMain: TfmMain
     Left = 592
     Top = 424
   end
+  object XPMan: TXPManifest
+    Left = 480
+    Top = 424
+  end
 end

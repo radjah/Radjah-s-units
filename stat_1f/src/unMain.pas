@@ -24,6 +24,7 @@ type
     blClear: TButton;
     pbSaveLoad: TProgressBar;
     sbData: TScrollBox;
+    XPMan: TXPManifest;
     procedure btCreateMemoClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure btCalcClick(Sender: TObject);

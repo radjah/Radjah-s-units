@@ -10,6 +10,7 @@ uses
 begin
   Application.Initialize;
   // Application.MainFormOnTaskbar := True;
+  Application.Title := 'Однофакторный анализ';
   Application.CreateForm(TfmMain, fmMain);
   Application.CreateForm(TfmResult, fmResult);
   Application.Run;
