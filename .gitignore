@@ -1,0 +1,12 @@
+*.res
+*.exe
+*.local
+*.rsb
+*.dcu
+*.fbl*
+*.fbp*
+*.identcache
+*.~*~
+__history
+Release
+Debug
