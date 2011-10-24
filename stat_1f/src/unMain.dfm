@@ -6,7 +6,7 @@ object fmMain: TfmMain
   VertScrollBar.Increment = 57
   ActiveControl = eCount
   Caption = #1054#1076#1085#1086#1092#1072#1082#1090#1086#1088#1085#1099#1081' '#1072#1085#1072#1083#1080#1079
-  ClientHeight = 659
+  ClientHeight = 682
   ClientWidth = 512
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -28,7 +28,7 @@ object fmMain: TfmMain
   end
   object Label2: TLabel
     Left = 24
-    Top = 410
+    Top = 433
     Width = 63
     Height = 13
     Caption = #1051#1086#1075' '#1088#1072#1073#1086#1090#1099':'
@@ -70,17 +70,17 @@ object fmMain: TfmMain
     TabOrder = 3
     OnClick = btCalcClick
   end
-  object cbEmptyStr: TCheckBox
+  object cbArrange: TCheckBox
     Left = 376
     Top = 42
     Width = 129
     Height = 17
-    Caption = #1055#1091#1089#1090#1072#1103' '#1089#1090#1088#1086#1082#1072' = 0'
+    Caption = #1042#1099#1088#1072#1074#1085#1080#1090#1100' '#1084#1072#1089#1089#1080#1074#1099
     TabOrder = 4
   end
   object mLog: TMemo
     Left = 24
-    Top = 429
+    Top = 452
     Width = 305
     Height = 222
     Lines.Strings = (
@@ -140,7 +140,7 @@ object fmMain: TfmMain
   end
   object blClear: TButton
     Left = 335
-    Top = 427
+    Top = 450
     Width = 75
     Height = 25
     Caption = #1054#1095#1080#1089#1090#1080#1090#1100
@@ -159,7 +159,7 @@ object fmMain: TfmMain
     Left = 24
     Top = 69
     Width = 468
-    Height = 335
+    Height = 358
     TabOrder = 10
   end
   object sdSave: TSaveDialog
@@ -167,16 +167,12 @@ object fmMain: TfmMain
     Filter = #1044#1072#1085#1085#1099#1077' '#1076#1083#1103' '#1088#1072#1089#1095#1077#1090#1072' (*.src)|*.src'
     Options = [ofOverwritePrompt, ofHideReadOnly, ofEnableSizing]
     Left = 384
-    Top = 461
+    Top = 484
   end
   object odLoad: TOpenDialog
     DefaultExt = 'src'
     Filter = #1044#1072#1085#1085#1099#1077' '#1076#1083#1103' '#1088#1072#1089#1095#1077#1090#1072' (*.src)|*.src'
     Left = 384
-    Top = 509
-  end
-  object XPManifest1: TXPManifest
-    Left = 384
-    Top = 565
+    Top = 532
   end
 end

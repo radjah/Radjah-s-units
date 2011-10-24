@@ -389,7 +389,7 @@ begin
   begin
     ssABC := ssA * ssB * ssC;
     fmResult.sgResult.Cells[2, 7] := floattostr(ssABC);
-    ssRand := iA*kB*jC*(lcount - 1);
+    ssRand := iA * kB * jC * (lcount - 1);
     fmResult.sgResult.Cells[2, 8] := floattostr(ssRand);
     ssSum := ssA + ssB + ssC + ssAB + ssAC + ssBC + ssABC + ssRand;
     fmResult.sgResult.Cells[2, 9] := floattostr(ssSum);
@@ -443,7 +443,7 @@ begin
   time := GetTickCount - time;
   fmResult.lTime.Caption := 'Вычисления заняли ' +
     floattostr(time / 1000) + ' сек';
-  AddLog(mLog, 'Вычисления заняли ' + floattostr(time / 1000) + ' сек)');
+  AddLog(mLog, 'Вычисления заняли ' + floattostr(time / 1000) + ' сек');
   // fmResult.Parent:=fmMain;
   fmResult.ShowModal;
 end;
@@ -601,6 +601,7 @@ begin
               IntToStr(k), 'val' + IntToStr(l), ''));
           pbSaveLoad.StepIt;
         end;
+    src.Free;
     AddLog(mLog, 'Загрузка данных завершена. (' +
       floattostr((GetTickCount - time) / 1000) + ' сек)');
   end;
@@ -660,6 +661,7 @@ begin
               MemoArr[i - 1, j - 1, k - 1].Lines[l]);
           pbSaveLoad.StepIt;
         end;
+    src.Free;
     AddLog(mLog, 'Сохранение данных завершено. (' +
       floattostr((GetTickCount - time) / 1000) + ' сек)');
   end;

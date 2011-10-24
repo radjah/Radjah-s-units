@@ -115,7 +115,8 @@ begin
         end
         else
           MemoMid := MemoMid / MemoArr[i, j].Lines.Count;
-        if (cbSpaces.Checked = false) or (MemoArr[i, j].Lines.Count = 0) then
+        if NOT((cbSpaces.Checked = true) and
+          (MemoArr[i, j].Lines.Count = 0)) then
           for l := MemoArr[i, j].Lines.Count + 1 to lcount do
             MemoArr[i, j].Lines.Add(floattostr(MemoMid));
       end;
@@ -406,6 +407,7 @@ begin
             'val' + IntToStr(k), ''));
         pbSaveLoad.StepIt;
       end;
+    src.Free;
     AddLog(mLog, 'Загрузка данных завершена. (' +
       floattostr((GetTickCount - time) / 1000) + ' сек)');
   end;
@@ -461,6 +463,7 @@ begin
             'val' + IntToStr(k), MemoArr[i - 1, j - 1].Lines[k]);
         pbSaveLoad.StepIt;
       end;
+    src.Free;
     AddLog(mLog, 'Сохранение данных завершено. (' +
       floattostr((GetTickCount - time) / 1000) + ' сек)');
   end;

@@ -14,13 +14,12 @@ type
     udCount: TUpDown;
     btCreateMemo: TButton;
     btCalc: TButton;
-    cbEmptyStr: TCheckBox;
+    cbArrange: TCheckBox;
     mLog: TMemo;
     sdSave: TSaveDialog;
     odLoad: TOpenDialog;
     btLoad: TBitBtn;
     btSave: TBitBtn;
-    XPManifest1: TXPManifest;
     Label2: TLabel;
     blClear: TButton;
     pbSaveLoad: TProgressBar;
@@ -86,8 +85,8 @@ begin
     LabelArr[i].Left := LMargin + i * Interval + i * Width;
     LabelArr[i].Caption := 'Измерение №' + inttostr(i + 1);
     LabelArr[i].Parent := sbData;
-//    if (LMargin + (i + 1) * Interval + (i + 1) * Width) > 500 then
-//      fmMain.Width := LMargin * 2 + (i + 1) * Interval + (i + 1) * Width
+    // if (LMargin + (i + 1) * Interval + (i + 1) * Width) > 500 then
+    // fmMain.Width := LMargin * 2 + (i + 1) * Interval + (i + 1) * Width
 
   end;
   btCalc.Enabled := true;
@@ -109,7 +108,7 @@ begin
     sercount := src.ReadInteger('series', 'num', 0);
     pbSaveLoad.Max := src.ReadInteger('series', 'num', 0);
     pbSaveLoad.Position := 0;
-    udCount.Position:=sercount;
+    udCount.Position := sercount;
     btCreateMemoClick(Self);
     // Заполняем поля
     for i := 0 to sercount - 1 do
@@ -141,7 +140,8 @@ begin
       sdSave.FileName := sdSave.FileName + '.src';
     AddLog(mLog, 'Сохранение данных в ' + sdSave.FileName + '...');
     src := TIniFile.Create(sdSave.FileName);
-    if FileExists(sdSave.FileName) then DeleteFile(sdSave.FileName);
+    if FileExists(sdSave.FileName) then
+      DeleteFile(sdSave.FileName);
     // Сохраняем количество измерений
     src.WriteInteger('series', 'num', Length(MemoArr));
     // Сохраняем все поля
@@ -173,38 +173,70 @@ var
   sum2arr, sumarr: array of real; // суммы значений по измеренеиям
   j, i, k: integer; // счетчики
   time: uint;
-  count: integer; // Общее количество элементов
+  maxnum, count: integer; // Общее количество элементов
   emptynumarr: array of integer; // массив с номерами пустых строк
   stage2, stage3, stage5, stage6, stage7_Q, stage8_Q0, stage9_QA, D_X,
-    stage11_D0_X, stage12_DA_X, stage13_F, FE: real; // промежуточные результаты
+    stage11_D0_X, stage12_DA_X, stage13_F, FE, tmp: real;
+  // промежуточные результаты
 begin
   time := GetTickCount;
   AddLog(mLog, 'Обработка пустых строк...');
 
   { === Обработка пустых строк === }
-  for j := 0 to Length(MemoArr) - 1 do
-  begin
+  { for j := 0 to Length(MemoArr) - 1 do
+    begin
     for i := 0 to MemoArr[j].Lines.count - 1 do
     begin
-      if MemoArr[j].Lines[i] = '' then
-        // Если пустые строки считаются нулями
-        if cbEmptyStr.Checked = true then
-          MemoArr[j].Lines[i] := '0'
-        else
-        // Если пустые строки удаляются
-        // Составляем массив с номерами пустых строк
-        begin
-          setlength(emptynumarr, Length(emptynumarr) + 1);
-          emptynumarr[Length(emptynumarr) - 1] := i;
-        end;
+    if MemoArr[j].Lines[i] = '' then
+    // Если пустые строки считаются нулями
+    if cbEmptyStr.Checked = true then
+    MemoArr[j].Lines[i] := '0'
+    else
+    // Если пустые строки удаляются
+    // Составляем массив с номерами пустых строк
+    begin
+    setlength(emptynumarr, Length(emptynumarr) + 1);
+    emptynumarr[Length(emptynumarr) - 1] := i;
+    end;
     end;
     // Очистка Memo от пустых строк
     for k := Length(emptynumarr) - 1 downto 0 do
-      MemoArr[j].Lines.Delete(emptynumarr[k]);
+    MemoArr[j].Lines.Delete(emptynumarr[k]);
     // Очистка массива
     setlength(emptynumarr, 0);
-  end;
+    end;
+  }
+  if cbArrange.Checked then
+  // дополняем средними
+  begin
+    // Удаление пустых значений
+    // Ищем максимальное количество измеренеий
+    for i := 0 to Length(MemoArr) - 1 do
+      for j := MemoArr[i].Lines.count - 1 downto 0 do
+        if trim(MemoArr[i].Lines[j]) = '' then
+          MemoArr[i].Lines.Delete(j);
 
+    maxnum := 0;
+    for i := 0 to Length(MemoArr) - 1 do
+      if MemoArr[i].Lines.count > maxnum then
+        maxnum := MemoArr[i].Lines.count;
+    // Замена отсуствующих значений средним
+    for i := 0 to Length(MemoArr) - 1 do
+    begin
+      tmp := 0;
+      for j := 0 to MemoArr[i].Lines.count - 1 do
+        tmp := tmp + StrToFloat(MemoArr[i].Lines[j]);
+      tmp := tmp / MemoArr[i].Lines.count; // среднее для мемо
+      for j := 1 to maxnum - MemoArr[i].Lines.count do
+        MemoArr[i].Lines.Add(FloatToStr(tmp));
+    end;
+  end
+  else
+    // Удаляем пустые
+    for j := 0 to Length(MemoArr) - 1 do
+      for i := MemoArr[j].Lines.count - 1 downto 0 do
+        if trim(MemoArr[j].Lines[i]) = '' then
+          MemoArr[j].Lines.Delete(i);
   { === 0) Общее количество элементов === }
   count := 0;
   for i := 0 to Length(MemoArr) - 1 do
@@ -241,7 +273,7 @@ begin
     sum2arr[i] := Power(sumarr[i], 2);
     stage3 := stage3 + sum2arr[i];
   end;
-  AddLog(mLog, 'Сумма квадратов сумм ' + floattostr(stage3));
+  AddLog(mLog, 'Сумма квадратов сумм ' + FloatToStr(stage3));
 
   { === 5) Сумма квадратов === }
   stage5 := 0;
@@ -254,53 +286,53 @@ begin
         floattostr(stage5)); }
     end;
   end;
-  AddLog(mLog, 'Сумма квадратов составляет ' + floattostr(stage5));
+  AddLog(mLog, 'Сумма квадратов составляет ' + FloatToStr(stage5));
 
   { === 6) Сумма^2 / кол-во элементов === }
   stage6 := 0;
   for i := 0 to Length(MemoArr) - 1 do
     stage6 := stage6 + Power(sumarr[i], 2) / MemoArr[i].Lines.count;
-  AddLog(mLog, 'Сумма^2 * кол-во элементов ' + floattostr(stage6));
+  AddLog(mLog, 'Сумма^2 * кол-во элементов ' + FloatToStr(stage6));
 
   { === 7) Подсчет Q === }
   stage7_Q := stage5 - 1 / count * stage2 * stage2;
-  AddLog(mLog, 'Q = ' + floattostr(stage7_Q));
-  fmResult.eQ.Text := floattostr(stage7_Q);
+  AddLog(mLog, 'Q = ' + FloatToStr(stage7_Q));
+  fmResult.eQ.Text := FloatToStr(stage7_Q);
 
   { === 8) Подсчет Q0=== }
   stage8_Q0 := stage5 - stage6;
-  AddLog(mLog, 'Q0 = ' + floattostr(stage8_Q0));
-  fmResult.eQ0.Text := floattostr(stage8_Q0);
+  AddLog(mLog, 'Q0 = ' + FloatToStr(stage8_Q0));
+  fmResult.eQ0.Text := FloatToStr(stage8_Q0);
 
   { === 9) Подсчет QA=== }
   stage9_QA := stage6 - 1 / count * Power(stage2, 2);
-  AddLog(mLog, 'QA = ' + floattostr(stage9_QA));
-  fmResult.eQA.Text := floattostr(stage9_QA);
+  AddLog(mLog, 'QA = ' + FloatToStr(stage9_QA));
+  fmResult.eQA.Text := FloatToStr(stage9_QA);
 
   { === 10) Подсчет D[X] === }
   D_X := stage7_Q / (count - 1);
-  AddLog(mLog, 'D[X] = ' + floattostr(D_X));
-  fmResult.eDX.Text := floattostr(D_X);
+  AddLog(mLog, 'D[X] = ' + FloatToStr(D_X));
+  fmResult.eDX.Text := FloatToStr(D_X);
 
   { === 11) Подсчет D0[X] === }
   stage11_D0_X := stage8_Q0 / (count - 1);
-  AddLog(mLog, 'D0[X] = ' + floattostr(stage11_D0_X));
-  fmResult.eD0X.Text := floattostr(stage11_D0_X);
+  AddLog(mLog, 'D0[X] = ' + FloatToStr(stage11_D0_X));
+  fmResult.eD0X.Text := FloatToStr(stage11_D0_X);
 
   { === 12) Подсчет DA[X] === }
   stage12_DA_X := stage9_QA / (count - 1);
-  AddLog(mLog, 'DA[X] = ' + floattostr(stage12_DA_X));
-  fmResult.eDAX.Text := floattostr(stage12_DA_X);
+  AddLog(mLog, 'DA[X] = ' + FloatToStr(stage12_DA_X));
+  fmResult.eDAX.Text := FloatToStr(stage12_DA_X);
 
   { === 13) Подсчет F === }
   stage13_F := count / Length(MemoArr);
-  AddLog(mLog, 'F = ' + floattostr(stage13_F));
-  fmResult.eF.Text := floattostr(stage13_F);
+  AddLog(mLog, 'F = ' + FloatToStr(stage13_F));
+  fmResult.eF.Text := FloatToStr(stage13_F);
 
   { === 14) Подсчет FE === }
   FE := (stage13_F * stage12_DA_X + stage11_D0_X) / stage11_D0_X;
-  AddLog(mLog, 'FE = ' + floattostr(FE));
-  fmResult.eFE.Text := floattostr(FE);
+  AddLog(mLog, 'FE = ' + FloatToStr(FE));
+  fmResult.eFE.Text := FloatToStr(FE);
 
   fmResult.LTime.Caption := 'Вычисление заняло ' +
     inttostr(GetTickCount - time) + 'мс';
