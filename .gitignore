@@ -1,5 +1,7 @@
 *.res
 *.exe
+*.tds
+*.ddp
 *.local
 *.rsb
 *.dcu
@@ -7,6 +9,7 @@
 *.fbp*
 *.identcache
 *.~*~
+*.~*
 __history
 Release
 Debug
