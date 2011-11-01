@@ -1,4 +1,4 @@
-object Form1: TForm1
+object MainForm: TMainForm
   Left = 192
   Top = 114
   BorderStyle = bsDialog
@@ -241,8 +241,7 @@ object Form1: TForm1
     Height = 25
     Caption = #1057#1086#1079#1076#1072#1090#1100' '#1090#1072#1073#1083#1080#1094#1091
     Default = True
-    TabOrder = 2
-    OnClick = bMakeTableClick
+    DoubleBuffered = True
     Glyph.Data = {
       76010000424D7601000000000000760000002800000020000000100000000100
       04000000000000010000130B0000130B00001000000000000000000000000000
@@ -257,6 +256,9 @@ object Form1: TForm1
       B3333337FFFF77377FF333B000000333BB33337777777F3377FF3BB3333BB333
       3BB33773333773333773B333333B3333333B7333333733333337}
     NumGlyphs = 2
+    ParentDoubleBuffered = False
+    TabOrder = 2
+    OnClick = bMakeTableClick
   end
   object bNew: TBitBtn
     Left = 156
@@ -264,8 +266,7 @@ object Form1: TForm1
     Width = 129
     Height = 25
     Caption = #1053#1086#1074#1072#1103
-    TabOrder = 3
-    OnClick = bNewClick
+    DoubleBuffered = True
     Glyph.Data = {
       76010000424D7601000000000000760000002800000020000000100000000100
       04000000000000010000130B0000130B00001000000000000000000000000000
@@ -280,6 +281,9 @@ object Form1: TForm1
       33337F7737F7333333330FFFF003333333337FFFF77333333333000000333333
       3333777777333333333333333333333333333333333333333333}
     NumGlyphs = 2
+    ParentDoubleBuffered = False
+    TabOrder = 3
+    OnClick = bNewClick
   end
   object sdTar: TSaveDialog
     Filter = 'Excel files (*.xls)|*.xls'

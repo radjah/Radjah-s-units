@@ -1,14 +1,16 @@
 program tarprog;
 
+{$R *.dres}
+
 uses
   Forms,
-  uMain in 'uMain.pas' {Form1};
+  uMain in 'src\uMain.pas' {MainForm};
 
 {$R *.res}
 
 begin
   Application.Initialize;
   Application.Title := 'Подготовка таблицы для проведения тарировки';
-  Application.CreateForm(TForm1, Form1);
+  Application.CreateForm(TMainForm, MainForm);
   Application.Run;
 end.

@@ -24,6 +24,9 @@
 			<Base>true</Base>
 		</PropertyGroup>
 		<PropertyGroup Condition="'$(Base)'!=''">
+			<BRCC_ResponseFilename>tarprog.rc</BRCC_ResponseFilename>
+			<DCC_DcuOutput>.\$(Config)\$(Platform)</DCC_DcuOutput>
+			<DCC_ExeOutput>.\$(Config)\$(Platform)</DCC_ExeOutput>
 			<DCC_UnitSearchPath>$(BDS)\Source\DUnit\src;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
 			<DCC_UsePackage>vcl;rtl;vclx;indy;inet;xmlrtl;vclie;inetdbbde;inetdbxpress;dbrtl;dsnap;dsnapcon;vcldb;soaprtl;VclSmp;dbexpress;dbxcds;inetdb;bdertl;vcldbx;webdsnap;websnap;adortl;ibxpress;teeui;teedb;tee;dss;visualclx;visualdbclx;vclactnband;vclshlctrls;IntrawebDB_50_70;Intraweb_50_70;Rave50CLX;Rave50VCL;dclOfficeXP;CodeSiteExpressVcl;dclOffice2k</DCC_UsePackage>
 			<DCC_SymbolReferenceInfo>1</DCC_SymbolReferenceInfo>
@@ -40,8 +43,6 @@
 			<ILINK_FullDebugInfo>true</ILINK_FullDebugInfo>
 			<BCC_SourceDebuggingOn>true</BCC_SourceDebuggingOn>
 			<DCC_AssertionsAtRuntime>false</DCC_AssertionsAtRuntime>
-			<DCC_DebugInfoInExe>true</DCC_DebugInfoInExe>
-			<DCC_DebugInfoInTds>true</DCC_DebugInfoInTds>
 			<DCC_LocalDebugSymbols>false</DCC_LocalDebugSymbols>
 			<DCC_Define>RELEASE;$(DCC_Define)</DCC_Define>
 			<DCC_DebugInformation>false</DCC_DebugInformation>
@@ -60,11 +61,13 @@
 			<DelphiCompile Include="tarprog.dpr">
 				<MainSource>MainSource</MainSource>
 			</DelphiCompile>
-			<DCCReference Include="uMain.pas">
-				<Form>Form1</Form>
+			<DCCReference Include="src\uMain.pas">
+				<Form>MainForm</Form>
 			</DCCReference>
-			<None Include="Profiling\AQtimeModule1.aqt"/>
-			<None Include="ModelSupport_tarprog\default.txaPackage"/>
+			<RcItem Include="mainicon.ico">
+				<ResourceType>ICON</ResourceType>
+				<ResourceId>Icon_1</ResourceId>
+			</RcItem>
 			<BuildConfiguration Include="Debug">
 				<Key>Cfg_2</Key>
 				<CfgParent>Base</CfgParent>
@@ -115,6 +118,7 @@
 						<VersionInfoKeys Name="Comments"/>
 					</VersionInfoKeys>
 					<Excluded_Packages>
+						<Excluded_Packages Name="$(BDSBIN)\dcloffice2k150.bpl">Microsoft Office 2000 Sample Automation Server Wrapper Components</Excluded_Packages>
 						<Excluded_Packages Name="$(BDSBIN)\dclofficexp150.bpl">Microsoft Office XP Sample Automation Server Wrapper Components</Excluded_Packages>
 					</Excluded_Packages>
 					<Parameters>
@@ -125,9 +129,6 @@
 					<Platform value="Win32">True</Platform>
 				</Platforms>
 				<ModelSupport>False</ModelSupport>
-				<UnitTesting>
-					<TestProjectName>E:\proj\tarprog\Test\tarprogTests.dproj</TestProjectName>
-				</UnitTesting>
 			</BorlandProject>
 			<ProjectFileVersion>12</ProjectFileVersion>
 		</ProjectExtensions>

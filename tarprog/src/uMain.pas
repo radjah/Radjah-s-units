@@ -8,7 +8,7 @@ uses
   ExcelAddOns, StdCtrls, ComCtrls, XPMan;
 
 type
-  TForm1 = class(TForm)
+  TMainForm = class(TForm)
     gbSensors: TGroupBox;
     gbSummary: TGroupBox;
     Label1: TLabel;
@@ -58,13 +58,13 @@ type
   end;
 
 var
-  Form1: TForm1;
+  MainForm: TMainForm;
 
 implementation
                      
 {$R *.dfm}
 
-procedure TForm1.eComp1Change(Sender: TObject);
+procedure TMainForm.eComp1Change(Sender: TObject);
 begin
   try
     eComp2.Text:=IntToStr(Strtoint(eComp1.Text)+1);
@@ -78,7 +78,7 @@ begin
   end;
 end;
 
-procedure TForm1.udComp1Changing(Sender: TObject;
+procedure TMainForm.udComp1Changing(Sender: TObject;
   var AllowChange: Boolean);
 begin
   // Автоизменение номера
@@ -92,7 +92,7 @@ begin
   lTemp2.Caption:=eComp2.Text+'-3';
 end;
 
-procedure TForm1.bPresFilClick(Sender: TObject);
+procedure TMainForm.bPresFilClick(Sender: TObject);
 begin
   try
     ePres2.Text:=inttostr(StrToInt64(ePres1.Text)+1);
@@ -107,7 +107,7 @@ begin
   end;
 end;
 
-procedure TForm1.bNewClick(Sender: TObject);
+procedure TMainForm.bNewClick(Sender: TObject);
 begin
   try
     // 4 новых датчика уровня
@@ -129,7 +129,7 @@ begin
   end;
 end;
 
-procedure TForm1.bTempFilClick(Sender: TObject);
+procedure TMainForm.bTempFilClick(Sender: TObject);
 begin
   try
     eTemp2.Text:=inttostr(StrToInt64(eTemp1.Text)+1);
@@ -142,7 +142,7 @@ begin
   end;
 end;
 
-procedure TForm1.bMakeTableClick(Sender: TObject);
+procedure TMainForm.bMakeTableClick(Sender: TObject);
 var
   Excel,Book,Sheet:variant;
 begin
@@ -198,7 +198,7 @@ begin
 end;
 
 {=== Чтение настроек ===}
-procedure TForm1.FormShow(Sender: TObject);
+procedure TMainForm.FormShow(Sender: TObject);
 var
   inifile:TIniFile;
 begin
@@ -217,7 +217,7 @@ begin
 end;
 
 {=== Запись настроек ===}
-procedure TForm1.FormClose(Sender: TObject; var Action: TCloseAction);
+procedure TMainForm.FormClose(Sender: TObject; var Action: TCloseAction);
 var
   inifile:TIniFile;
 begin
@@ -235,12 +235,12 @@ begin
   inifile.Free;
 end;
 
-procedure TForm1.cbROClick(Sender: TObject);
+procedure TMainForm.cbROClick(Sender: TObject);
 begin
   eComp2.ReadOnly:=cbRO.Checked;
 end;
 
-procedure TForm1.eComp2Change(Sender: TObject);
+procedure TMainForm.eComp2Change(Sender: TObject);
 begin
   try
     lPres3.Caption:=eComp2.Text+'-1';
