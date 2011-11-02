@@ -8,7 +8,7 @@
 *.fbl*
 *.fbp*
 *.identcache
-*.~*~
+*.tvsconfig
 *.~*
 __history
 Release

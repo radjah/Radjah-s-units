@@ -1,5 +1,7 @@
 program stat_3f;
 
+{$R *.dres}
+
 uses
   Forms,
   unMain in 'src\unMain.pas' {fmMain},
