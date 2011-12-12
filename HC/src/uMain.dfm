@@ -3,7 +3,7 @@ object Main: TMain
   Top = 0
   Caption = 'Main'
   ClientHeight = 728
-  ClientWidth = 718
+  ClientWidth = 789
   Color = clBlack
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -91,17 +91,31 @@ object Main: TMain
     Font.Style = []
     ParentFont = False
   end
+  object Label2: TLabel
+    Left = 512
+    Top = 296
+    Width = 65
+    Height = 45
+    Caption = #1089#1077#1082'.'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWhite
+    Font.Height = -37
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    ParentFont = False
+  end
   object pbTime: TProgressBar
-    Left = 58
+    Left = 63
     Top = 392
-    Width = 601
+    Width = 663
     Height = 49
+    Step = 1
     TabOrder = 0
   end
   object Chart: TChart
     Left = 16
     Top = 488
-    Width = 694
+    Width = 753
     Height = 146
     Legend.Title.Visible = False
     Legend.Visible = False
@@ -119,6 +133,7 @@ object Main: TMain
       37)
     ColorPaletteIndex = 10
     object Series1: TBarSeries
+      BarPen.Color = clAqua
       Marks.Arrow.Visible = True
       Marks.Callout.Brush.Color = clBlack
       Marks.Callout.Arrow.Visible = True
@@ -131,11 +146,12 @@ object Main: TMain
     end
   end
   object btGo: TButton
-    Left = 194
+    Left = 229
     Top = 656
     Width = 331
     Height = 64
     Caption = #1055#1086#1077#1093#1072#1083#1080'!'
+    Enabled = False
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = -32
@@ -145,26 +161,24 @@ object Main: TMain
     TabOrder = 2
     OnClick = btGoClick
   end
-  object btEditor: TButton
-    Left = 624
-    Top = 656
-    Width = 75
-    Height = 25
-    Caption = #1056#1077#1076#1072#1082#1090#1086#1088
-    TabOrder = 3
-  end
   object btLoad: TButton
     Left = 624
     Top = 695
     Width = 75
     Height = 25
     Caption = #1047#1072#1075#1088#1091#1079#1080#1090#1100
-    TabOrder = 4
+    TabOrder = 3
+    OnClick = btLoadClick
   end
   object StageTimer: TTimer
     Enabled = False
     OnTimer = StageTimerTimer
     Left = 672
     Top = 16
+  end
+  object odOpen: TOpenDialog
+    Filter = #1063#1072#1089#1086#1074#1099#1077' '#1094#1080#1082#1083#1099' (*.hcf)|*.hcf'
+    Left = 672
+    Top = 64
   end
 end
