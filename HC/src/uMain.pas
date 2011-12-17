@@ -38,7 +38,7 @@ var
   HMarr: array of array [1 .. 2] of integer; // Массив этапов
   totaltime: integer; // общее время цикла
   curstage: integer; // Текущей этак цикла
-  CurTime: integer = 0; // Настройки этапа цикла
+  CurTime: integer = 1; // Настройки этапа цикла
   sttime: integer; // время
   scnt: integer; // количество этапов в цикле
 
@@ -48,6 +48,7 @@ implementation
 
 procedure TMain.btGoClick(Sender: TObject);
 begin
+  btGo.Enabled := false;
   sttime := HMarr[0][2]; // Получаем время первого этапа
   curstage := 0; // Обозначаем номер первого этапа (счет с нуля)
   // Текущая позиция
@@ -56,7 +57,7 @@ begin
   if (curstage + 1) > scnt then
     lNextPosition.Caption := 'конец цикла'
   else
-    lNextPosition.Caption := IntToStr(HMarr[curstage][1]);
+    lNextPosition.Caption := IntToStr(HMarr[curstage + 1][1]);
   StageTimer.Enabled := true; // Запускаем таймер
   // StageTimer.Enabled := true
   // else
@@ -110,7 +111,7 @@ end;
 // Таймер
 procedure TMain.StageTimerTimer(Sender: TObject);
 begin
-  CurTime := CurTime + 1;
+  pbTime.Position := pbTime.Position + 1;
   // Проверка на конец этапа
   if CurTime >= sttime then
   // Если время отработки этапа прошло
@@ -120,7 +121,20 @@ begin
     if (curstage + 1) >= scnt then
     begin
       StageTimer.Enabled := false;
+      lTime.Caption := '0';
       ShowMessage('Цикл испытаний закончен!');
+      btGo.Enabled := true;
+      // Возвращаем значения для начала цикла
+      lPosition.Caption := '0';
+      curstage := 0;
+      pbTime.Max := HMarr[0][2];
+      pbTime.Position := 0;
+      if (curstage + 1) > scnt then
+        lNextPosition.Caption := 'конец цикла'
+      else
+        lNextPosition.Caption := IntToStr(HMarr[curstage][1]);
+      lTime.Caption := IntToStr(HMarr[curstage][2]);
+      CurTime := CurTime + 1;
     end
     else
     // Если закончился только один из этапов
@@ -132,7 +146,7 @@ begin
       // Время нового цикла
       pbTime.Max := HMarr[curstage][2];
       // Сброс счетчика времени
-      CurTime := 0;
+      CurTime := 1;
       // Количество сотавшихся секунд
       sttime := HMarr[curstage][2];
       lTime.Caption := IntToStr(HMarr[curstage][2]);
@@ -148,9 +162,10 @@ begin
   else // Ничего не закончилось
   begin
     // Увеличим програссбар
-    pbTime.Position := pbTime.Position + 1;
+    // pbTime.Position := pbTime.Position + 1;
     // Уменьшим оставшееся время
     lTime.Caption := IntToStr(HMarr[curstage][2] - CurTime);
+    CurTime := CurTime + 1;
   end;
 
   // CurTime := CurTime + 1;

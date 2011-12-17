@@ -1,9 +1,10 @@
 object Main: TMain
   Left = 0
   Top = 0
+  BorderStyle = bsDialog
   Caption = 'Main'
-  ClientHeight = 728
-  ClientWidth = 789
+  ClientHeight = 730
+  ClientWidth = 791
   Color = clBlack
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -11,6 +12,7 @@ object Main: TMain
   Font.Name = 'Tahoma'
   Font.Style = []
   OldCreateOrder = False
+  Position = poDesktopCenter
   PixelsPerInch = 96
   TextHeight = 13
   object Label1: TLabel
@@ -107,15 +109,15 @@ object Main: TMain
   object pbTime: TProgressBar
     Left = 63
     Top = 392
-    Width = 663
+    Width = 650
     Height = 49
     Step = 1
     TabOrder = 0
   end
   object Chart: TChart
-    Left = 16
+    Left = 8
     Top = 488
-    Width = 753
+    Width = 729
     Height = 146
     Legend.Title.Visible = False
     Legend.Visible = False

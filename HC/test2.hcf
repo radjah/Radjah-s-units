@@ -1,0 +1,13 @@
+[settings]
+count=4
+[stages]
+
+;01 - 1
+stage1=0
+time1=47
+stage2=1
+time2=5
+stage3=2
+time3=18
+stage4=3
+time4=18
