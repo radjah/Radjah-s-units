@@ -13,6 +13,7 @@ object Main: TMain
   Font.Style = []
   OldCreateOrder = False
   Position = poDesktopCenter
+  OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 13
   object Label1: TLabel
@@ -174,6 +175,7 @@ object Main: TMain
   end
   object StageTimer: TTimer
     Enabled = False
+    Interval = 100
     OnTimer = StageTimerTimer
     Left = 672
     Top = 16

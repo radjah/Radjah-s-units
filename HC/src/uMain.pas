@@ -26,25 +26,106 @@ type
     procedure StageTimerTimer(Sender: TObject);
     procedure btGoClick(Sender: TObject);
     procedure btLoadClick(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
   private
     { Private declarations }
   public
     { Public declarations }
   end;
 
+  TTickThread = class(TThread)
+    procedure Execute; override;
+  public
+    constructor Create;
+  end;
+
 var
   Main: TMain;
+  TickThread: TTickThread;
 
-  HMarr: array of array [1 .. 2] of integer; // Массив этапов
-  totaltime: integer; // общее время цикла
-  curstage: integer; // Текущей этак цикла
-  CurTime: integer = 1; // Настройки этапа цикла
-  sttime: integer; // время
-  scnt: integer; // количество этапов в цикле
+  HMarr: array of array [1 .. 2] of Integer; // Массив этапов
+  totaltime: Integer; // общее время цикла
+  curstage: Integer; // Текущей этак цикла
+  CurTime: Integer = 1; // Настройки этапа цикла
+  sttime: Integer; // время
+  scnt: Integer; // количество этапов в цикле
+  tickcount: longint;
 
 implementation
 
 {$R *.dfm}
+
+constructor TTickThread.Create;
+begin
+  inherited Create(True);
+end;
+
+procedure TTickThread.Execute;
+begin
+  Main.pbTime.Position := Main.pbTime.Position + 1;
+  // Проверка на конец этапа
+  if CurTime >= sttime then
+  // Если время отработки этапа прошло
+  begin
+    Beep;
+    // Если номер пройденного цикла равен количеству циклов
+    if (curstage + 1) >= scnt then
+    begin
+      Main.StageTimer.Enabled := false;
+      Main.lTime.Caption := '0';
+      tickcount := GetTickCount - tickcount;
+      ShowMessage('Цикл испытаний закончен!' + #10#13 + 'Затрачено времени ' +
+        floattostr(tickcount / 1000) + ' сек.');
+      Main.btGo.Enabled := true;
+      // Возвращаем значения для начала цикла
+      Main.lPosition.Caption := '0';
+      curstage := 0;
+      Main.pbTime.Max := HMarr[0][2];
+      Main.pbTime.Position := 0;
+      if (curstage + 1) > scnt then
+        Main.lNextPosition.Caption := 'конец цикла'
+      else
+        Main.lNextPosition.Caption := IntToStr(HMarr[curstage][1]);
+      Main.lTime.Caption := IntToStr(HMarr[curstage][2]);
+      CurTime := CurTime + 1;
+    end
+    else
+    // Если закончился только один из этапов
+    begin
+      curstage := curstage + 1;
+      // Загружаем настройки следующего этапа
+      // Сброс програссбара
+      Main.pbTime.Position := 0;
+      // Время нового цикла
+      Main.pbTime.Max := HMarr[curstage][2];
+      // Сброс счетчика времени
+      CurTime := 1;
+      // Количество сотавшихся секунд
+      sttime := HMarr[curstage][2];
+      Main.lTime.Caption := IntToStr(HMarr[curstage][2]);
+      // Новый цикл
+      Main.lPosition.Caption := IntToStr(HMarr[curstage][1]);
+      // Следующий цикл
+      if (curstage + 1) >= scnt then
+        Main.lNextPosition.Caption := 'конец цикла'
+      else
+        Main.lNextPosition.Caption := IntToStr(HMarr[curstage + 1][1]);
+    end;
+  end
+  else // Ничего не закончилось
+  begin
+    // Увеличим програссбар
+    // pbTime.Position := pbTime.Position + 1;
+    // Уменьшим оставшееся время
+    Main.lTime.Caption := IntToStr(HMarr[curstage][2] - CurTime);
+    CurTime := CurTime + 1;
+  end;
+
+  // CurTime := CurTime + 1;
+  // lPosition.Caption := inttostr(CurTime);
+  // lNextPosition.Caption := inttostr(CurTime + 1);
+  // lTime.Caption := inttostr(CurTime);
+end;
 
 procedure TMain.btGoClick(Sender: TObject);
 begin
@@ -59,6 +140,7 @@ begin
   else
     lNextPosition.Caption := IntToStr(HMarr[curstage + 1][1]);
   StageTimer.Enabled := true; // Запускаем таймер
+  tickcount := GetTickCount;
   // StageTimer.Enabled := true
   // else
   // StageTimer.Enabled := False;
@@ -67,7 +149,7 @@ end;
 procedure TMain.btLoadClick(Sender: TObject);
 var
   hmfile: TIniFile; // файл с режимом
-  i: integer; // счетчик для циклов
+  i: Integer; // счетчик для циклов
 begin
   // открываем файл и подготавлием всё для запуска цикла
   if odOpen.Execute then
@@ -108,70 +190,15 @@ begin
   end;
 end;
 
+procedure TMain.FormCreate(Sender: TObject);
+begin
+  TickThread:=TTickThread.Create;
+end;
+
 // Таймер
 procedure TMain.StageTimerTimer(Sender: TObject);
 begin
-  pbTime.Position := pbTime.Position + 1;
-  // Проверка на конец этапа
-  if CurTime >= sttime then
-  // Если время отработки этапа прошло
-  begin
-    Beep;
-    // Если номер пройденного цикла равен количеству циклов
-    if (curstage + 1) >= scnt then
-    begin
-      StageTimer.Enabled := false;
-      lTime.Caption := '0';
-      ShowMessage('Цикл испытаний закончен!');
-      btGo.Enabled := true;
-      // Возвращаем значения для начала цикла
-      lPosition.Caption := '0';
-      curstage := 0;
-      pbTime.Max := HMarr[0][2];
-      pbTime.Position := 0;
-      if (curstage + 1) > scnt then
-        lNextPosition.Caption := 'конец цикла'
-      else
-        lNextPosition.Caption := IntToStr(HMarr[curstage][1]);
-      lTime.Caption := IntToStr(HMarr[curstage][2]);
-      CurTime := CurTime + 1;
-    end
-    else
-    // Если закончился только один из этапов
-    begin
-      curstage := curstage + 1;
-      // Загружаем настройки следующего этапа
-      // Сброс програссбара
-      pbTime.Position := 0;
-      // Время нового цикла
-      pbTime.Max := HMarr[curstage][2];
-      // Сброс счетчика времени
-      CurTime := 1;
-      // Количество сотавшихся секунд
-      sttime := HMarr[curstage][2];
-      lTime.Caption := IntToStr(HMarr[curstage][2]);
-      // Новый цикл
-      lPosition.Caption := IntToStr(HMarr[curstage][1]);
-      // Следующий цикл
-      if (curstage + 1) >= scnt then
-        lNextPosition.Caption := 'конец цикла'
-      else
-        lNextPosition.Caption := IntToStr(HMarr[curstage + 1][1]);
-    end;
-  end
-  else // Ничего не закончилось
-  begin
-    // Увеличим програссбар
-    // pbTime.Position := pbTime.Position + 1;
-    // Уменьшим оставшееся время
-    lTime.Caption := IntToStr(HMarr[curstage][2] - CurTime);
-    CurTime := CurTime + 1;
-  end;
-
-  // CurTime := CurTime + 1;
-  // lPosition.Caption := inttostr(CurTime);
-  // lNextPosition.Caption := inttostr(CurTime + 1);
-  // lTime.Caption := inttostr(CurTime);
+  TickThread.Execute;
 end;
 
 end.
