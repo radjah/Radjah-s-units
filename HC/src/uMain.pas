@@ -76,7 +76,8 @@ begin
       tickcount := GetTickCount - tickcount;
       ShowMessage('Цикл испытаний закончен!' + #10#13 + 'Затрачено времени ' +
         floattostr(tickcount / 1000) + ' сек.');
-      Main.btGo.Enabled := true;
+      Application.ProcessMessages;
+      Main.btGo.Enabled := True;
       // Возвращаем значения для начала цикла
       Main.lPosition.Caption := '0';
       curstage := 0;
@@ -130,6 +131,7 @@ end;
 procedure TMain.btGoClick(Sender: TObject);
 begin
   btGo.Enabled := false;
+  Application.ProcessMessages;
   sttime := HMarr[0][2]; // Получаем время первого этапа
   curstage := 0; // Обозначаем номер первого этапа (счет с нуля)
   // Текущая позиция
@@ -139,7 +141,7 @@ begin
     lNextPosition.Caption := 'конец цикла'
   else
     lNextPosition.Caption := IntToStr(HMarr[curstage + 1][1]);
-  StageTimer.Enabled := true; // Запускаем таймер
+  StageTimer.Enabled := True; // Запускаем таймер
   tickcount := GetTickCount;
   // StageTimer.Enabled := true
   // else
@@ -154,7 +156,7 @@ begin
   // открываем файл и подготавлием всё для запуска цикла
   if odOpen.Execute then
   begin
-    btGo.Enabled := true;
+    btGo.Enabled := True;
     totaltime := 0;
     // Открытие файла
     hmfile := TIniFile.Create(odOpen.FileName);
@@ -192,7 +194,7 @@ end;
 
 procedure TMain.FormCreate(Sender: TObject);
 begin
-  TickThread:=TTickThread.Create;
+  TickThread := TTickThread.Create;
 end;
 
 // Таймер

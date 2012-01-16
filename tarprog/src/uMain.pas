@@ -152,7 +152,7 @@ begin
     // Молчать в тряпочку
     Excel.DisplayAlerts:=False;
     // Создаем книгупо шаблону
-    Excel.WorkBooks.Add(GetPath(Application.ExeName)+'tpl.xls');
+    Excel.WorkBooks.Add(ExtractFilepath(Application.ExeName)+'tpl.xls');
     Book:=Excel.WorkBooks.Item[1];
     Sheet:=Excel.WorkBooks.Item[1].Worksheets.Item[1];
     {=== Заполнение ===}
@@ -202,7 +202,7 @@ procedure TMainForm.FormShow(Sender: TObject);
 var
   inifile:TIniFile;
 begin
-  inifile:=TIniFile.Create(GetPath(Application.ExeName)+'tarprog.ini');
+  inifile:=TIniFile.Create(ExtractFilepath(Application.ExeName)+'tarprog.ini');
   eTarFor.Text:=inifile.ReadString('Settings','steamtrain','');
   udPartNum.Position:=inifile.ReadInteger('Settings','stnum',1);
   eComp1.Text:=inifile.ReadString('Settings','comp1','1');
@@ -221,7 +221,7 @@ procedure TMainForm.FormClose(Sender: TObject; var Action: TCloseAction);
 var
   inifile:TIniFile;
 begin
-  inifile:=TIniFile.Create(GetPath(Application.ExeName)+'tarprog.ini');
+  inifile:=TIniFile.Create(ExtractFilepath(Application.ExeName)+'tarprog.ini');
   inifile.WriteString('Settings','steamtrain',eTarFor.Text);
   inifile.WriteInteger('Settings','stnum',udPartNum.Position);
   inifile.WriteString('Settings','comp1',eComp1.Text);
