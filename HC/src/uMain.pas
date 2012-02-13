@@ -5,7 +5,7 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, TeEngine, Series, ExtCtrls, TeeProcs, Chart, ComCtrls, StdCtrls,
-  inifiles;
+  inifiles, mmsystem;
 
 type
   TMain = class(TForm)
@@ -26,22 +26,24 @@ type
     procedure StageTimerTimer(Sender: TObject);
     procedure btGoClick(Sender: TObject);
     procedure btLoadClick(Sender: TObject);
-    procedure FormCreate(Sender: TObject);
+//    procedure FormCreate(Sender: TObject);
   private
     { Private declarations }
   public
     { Public declarations }
+    MMTimer1 : integer; // Код мультимедийного таймера
   end;
 
-  TTickThread = class(TThread)
+{  TTickThread = class(TThread)
     procedure Execute; override;
   public
     constructor Create;
-  end;
+  end;}
+procedure MyTimerCallBackProg(uTimerID, uMessage: UINT; dwUser, dw1, dw2: DWORD); stdcall;
 
 var
   Main: TMain;
-  TickThread: TTickThread;
+//  TickThread: TTickThread;
 
   HMarr: array of array [1 .. 2] of Integer; // Массив этапов
   totaltime: Integer; // общее время цикла
@@ -55,12 +57,13 @@ implementation
 
 {$R *.dfm}
 
-constructor TTickThread.Create;
-begin
-  inherited Create(True);
-end;
+//constructor TTickThread.Create;
+//begin
+//  inherited Create(True);
+//end;
 
-procedure TTickThread.Execute;
+//procedure TTickThread.Execute;
+procedure MyTimerCallBackProg(uTimerID, uMessage: UINT; dwUser, dw1, dw2: DWORD); stdcall;
 begin
   Main.pbTime.Position := Main.pbTime.Position + 1;
   // Проверка на конец этапа
@@ -71,7 +74,9 @@ begin
     // Если номер пройденного цикла равен количеству циклов
     if (curstage + 1) >= scnt then
     begin
-      Main.StageTimer.Enabled := false;
+      //Main.StageTimer.Enabled := false;
+      //Остановка таймера
+      timeKillEvent(Main.MMTimer1);
       Main.lTime.Caption := '0';
       tickcount := GetTickCount - tickcount;
       ShowMessage('Цикл испытаний закончен!' + #10#13 + 'Затрачено времени ' +
@@ -141,8 +146,11 @@ begin
     lNextPosition.Caption := 'конец цикла'
   else
     lNextPosition.Caption := IntToStr(HMarr[curstage + 1][1]);
-  StageTimer.Enabled := True; // Запускаем таймер
+//  StageTimer.Enabled := True; // Запускаем таймер
+
   tickcount := GetTickCount;
+  // Запуск мультимедийного таймера
+  MMTimer1 := timeSetEvent(100,10,@MyTimerCallBackProg,100,TIME_PERIODIC);
   // StageTimer.Enabled := true
   // else
   // StageTimer.Enabled := False;
@@ -192,15 +200,15 @@ begin
   end;
 end;
 
-procedure TMain.FormCreate(Sender: TObject);
-begin
-  TickThread := TTickThread.Create;
-end;
+//procedure TMain.FormCreate(Sender: TObject);
+//begin
+//  TickThread := TTickThread.Create;
+//end;
 
 // Таймер
 procedure TMain.StageTimerTimer(Sender: TObject);
 begin
-  TickThread.Execute;
+//  TickThread.Execute;
 end;
 
 end.
