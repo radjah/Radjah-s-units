@@ -13,3 +13,5 @@
 __history
 Release
 Debug
+*.db
+*.sqlite

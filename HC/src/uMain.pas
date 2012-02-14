@@ -150,7 +150,7 @@ begin
 
   tickcount := GetTickCount;
   // Запуск мультимедийного таймера
-  MMTimer1 := timeSetEvent(100,10,@MyTimerCallBackProg,100,TIME_PERIODIC);
+  MMTimer1 := timeSetEvent(1000,10,@MyTimerCallBackProg,100,TIME_PERIODIC);
   // StageTimer.Enabled := true
   // else
   // StageTimer.Enabled := False;
