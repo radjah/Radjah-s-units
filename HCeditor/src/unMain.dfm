@@ -28,7 +28,8 @@ object fmMain: TfmMain
     Columns = <
       item
         Expanded = False
-        FieldName = #1062#1080#1082#1083
+        FieldName = 'cname'
+        Title.Caption = #1062#1080#1082#1083
         Width = 300
         Visible = True
       end>
@@ -59,10 +60,19 @@ object fmMain: TfmMain
     TabOrder = 3
     OnClick = btStageEditorClick
   end
+  object btDelete: TButton
+    Left = 357
+    Top = 70
+    Width = 217
+    Height = 25
+    Caption = #1059#1076#1072#1083#1080#1090#1100' '#1094#1080#1082#1083
+    TabOrder = 4
+    OnClick = btDeleteClick
+  end
   object ZConnect: TZConnection
     Connected = True
     Protocol = 'sqlite-3'
-    Database = 'stages.sqlite'
+    Database = 'E:\proj\stat\HCeditor\stages.sqlite'
     Left = 64
     Top = 432
   end
@@ -78,42 +88,15 @@ object fmMain: TfmMain
     Left = 168
     Top = 432
   end
-  object zuCycle: TZUpdateSQL
-    DeleteSQL.Strings = (
-      'DELETE FROM cycle'
-      'WHERE'
-      '(cycle.cid = :OLD_cid))')
-    InsertSQL.Strings = (
-      'INSERT INTO cycle'
-      '  (cname)'
-      'VALUES'
-      '  (cname)')
-    ModifySQL.Strings = (
-      'UPDATE cycle SET'
-      '  cname = :cname'
-      'WHERE'
-      
-        '  ((cycle.cid IS NULL AND :OLD_cid IS NULL) OR (cycle.cid = :OLD' +
-        '_cid))')
-    UseSequenceFieldForRefreshSQL = False
-    Left = 280
-    Top = 432
-    ParamData = <
-      item
-        DataType = ftUnknown
-        Name = 'cname'
-        ParamType = ptUnknown
-      end
-      item
-        DataType = ftUnknown
-        Name = 'OLD_cid'
-        ParamType = ptUnknown
-      end>
-  end
-  object zqAddCycle: TZQuery
+  object zqCommon: TZQuery
     Connection = ZConnect
     Params = <>
     Left = 344
+    Top = 432
+  end
+  object zuCycle: TZUpdateSQL
+    UseSequenceFieldForRefreshSQL = False
+    Left = 256
     Top = 432
   end
 end
