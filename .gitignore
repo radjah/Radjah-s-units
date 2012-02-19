@@ -4,6 +4,7 @@
 *.ddp
 *.local
 *.rsb
+*.dof
 *.dcu
 *.fbl*
 *.fbp*
