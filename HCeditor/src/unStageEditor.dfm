@@ -13,6 +13,8 @@ object fmStageEditor: TfmStageEditor
   Font.Style = []
   OldCreateOrder = False
   Position = poMainFormCenter
+  OnClose = FormClose
+  OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
   object Label1: TLabel
@@ -137,14 +139,12 @@ object fmStageEditor: TfmStageEditor
   end
   object ztStage: TZTable
     Connection = fmMain.ZConnect
-    Active = True
     TableName = 'stages'
     Left = 472
     Top = 384
   end
   object ztSStruct: TZTable
     Connection = fmMain.ZConnect
-    Active = True
     TableName = 'sstruct'
     MasterFields = 'sid'
     MasterSource = dsStage

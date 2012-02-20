@@ -20,9 +20,11 @@ type
     zqCommon: TZQuery;
     btDelete: TButton;
     zuCycle: TZUpdateSQL;
+    zqCreateDB: TZQuery;
     procedure btStageEditorClick(Sender: TObject);
     procedure btCreatClick(Sender: TObject);
     procedure btDeleteClick(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
   private
     { Private declarations }
   public
@@ -61,7 +63,7 @@ begin
     zqCommon.SQL.Clear;
     zqCommon.SQL.Add('Delete from cycle where cid=' + ztCycle.FieldByName('cid')
       .AsString);
-      zqCommon.ExecSQL;
+    zqCommon.ExecSQL;
     ReopenDS([ztCycle]);
   end;
 end;
@@ -80,6 +82,28 @@ end;
 procedure TfmMain.btStageEditorClick(Sender: TObject);
 begin
   fmStageEditor.ShowModal;
+end;
+
+procedure TfmMain.FormCreate(Sender: TObject);
+var
+  dbfile: TFileName;
+begin
+  dbfile:=ExtractFilePath(Application.ExeName)+'stages.sqlite';
+{  if NOT (FileExists(dbfile)) then
+  begin
+    ZConnect.Database:=dbfile;
+    zqCreateDB.ExecSQL;
+    ZConnect.Connect;
+//    zqCreateDB.ExecSQL;
+    ztCycle.Open;
+  end else
+  begin
+    ZConnect.Connect;
+    ztCycle.Open;
+  end;}
+  ZConnect.Database:=dbfile;
+  ZConnect.Connect;
+  ztCycle.Open;
 end;
 
 end.

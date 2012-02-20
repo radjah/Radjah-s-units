@@ -26,9 +26,18 @@ object fmNewStage: TfmNewStage
     Left = 8
     Top = 112
     Width = 281
-    Height = 445
+    Height = 297
     VertScrollBar.Smooth = True
     TabOrder = 0
+    object udTpl: TUpDown
+      Left = 248
+      Top = 3
+      Width = 17
+      Height = 25
+      TabOrder = 0
+      Visible = False
+      OnChanging = udTplChanging
+    end
   end
   object eMaxPos: TEdit
     Left = 8
@@ -65,7 +74,7 @@ object fmNewStage: TfmNewStage
     Caption = #1057#1086#1079#1076#1072#1090#1100
     TabOrder = 4
   end
-  object LabeledEdit1: TLabeledEdit
+  object leStageName: TLabeledEdit
     Left = 8
     Top = 31
     Width = 281
@@ -74,5 +83,39 @@ object fmNewStage: TfmNewStage
     EditLabel.Height = 13
     EditLabel.Caption = #1053#1072#1079#1074#1072#1085#1080#1077
     TabOrder = 5
+  end
+  object chStagePreview: TChart
+    Left = 8
+    Top = 415
+    Width = 282
+    Height = 151
+    Legend.Visible = False
+    Title.Text.Strings = (
+      #1055#1088#1077#1076#1087#1088#1086#1089#1084#1086#1090#1088)
+    View3D = False
+    TabOrder = 6
+    ColorPaletteIndex = 13
+    object Series1: TLineSeries
+      Marks.Arrow.Visible = True
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Arrow.Visible = True
+      Marks.Emboss.Color = 8487297
+      Marks.Shadow.Color = 8487297
+      Marks.Visible = False
+      InvertedStairs = True
+      LinePen.Color = 10708548
+      LinePen.Width = 4
+      Pointer.Brush.Gradient.EndColor = 10708548
+      Pointer.Gradient.EndColor = 10708548
+      Pointer.InflateMargins = True
+      Pointer.Style = psRectangle
+      Pointer.Visible = False
+      Stairs = True
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+      Data = {0000000000}
+    end
   end
 end

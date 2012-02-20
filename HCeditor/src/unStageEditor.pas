@@ -23,6 +23,8 @@ type
     Chart1: TChart;
     Series1: TLineSeries;
     procedure btSCreateClick(Sender: TObject);
+    procedure FormShow(Sender: TObject);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
   private
     { Private declarations }
   public
@@ -35,13 +37,23 @@ var
 implementation
 
 uses
-  unMain, unNewStage;
+  unMain, unNewStage, unCommonFunc;
 
 {$R *.dfm}
 
 procedure TfmStageEditor.btSCreateClick(Sender: TObject);
 begin
   fmNewStage.ShowModal;
+end;
+
+procedure TfmStageEditor.FormClose(Sender: TObject; var Action: TCloseAction);
+begin
+  CloseDS([ztStage,ztSStruct]);
+end;
+
+procedure TfmStageEditor.FormShow(Sender: TObject);
+begin
+  ReopenDS([ztStage,ztSStruct]);
 end;
 
 end.

@@ -4,7 +4,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, ExtCtrls, StdCtrls, ComCtrls;
+  Dialogs, ExtCtrls, StdCtrls, ComCtrls, TeEngine, Series, TeeProcs, Chart;
 
 type
   TfmNewStage = class(TForm)
@@ -14,8 +14,13 @@ type
     Label1: TLabel;
     btMaxPosSet: TButton;
     btCreate: TButton;
-    LabeledEdit1: TLabeledEdit;
+    leStageName: TLabeledEdit;
+    chStagePreview: TChart;
+    Series1: TLineSeries;
+    udTpl: TUpDown;
     procedure btMaxPosSetClick(Sender: TObject);
+    procedure udTplChanging(Sender: TObject; var AllowChange: Boolean);
+    procedure ChartReplot;
   private
     { Private declarations }
   public
@@ -39,7 +44,7 @@ var
 begin
   // Удаление старых
   if length(LabelArr) > 0 then
-    for i := length(LabelArr)-1 downto 0 do
+    for i := length(LabelArr) - 1 downto 0 do
     begin
       UDArr[i].Free;
       EditArr[i].Free;
@@ -71,6 +76,7 @@ begin
     EditArr[i].Left := 60;
     EditArr[i].Top := 15 + 30 * i;
     EditArr[i].Width := 50;
+    EditArr[i].ReadOnly:=True;
     EditArr[i].Parent := sbPos;
     // Создаем счетчик
     UDArr[i] := TUpDown.Create(sbPos);
@@ -78,9 +84,31 @@ begin
     UDArr[i].Max := 1000;
     UDArr[i].Position := 1;
     UDArr[i].Parent := sbPos;
+    UDArr[i].OnChanging:=udTpl.OnChanging;
     UDArr[i].Associate := EditArr[i];
   end;
+  ChartReplot;
+  leStageName.Text:='ПК 0 -> '+IntToStr(udMaxPos.Position);
+end;
 
+procedure TfmNewStage.udTplChanging(Sender: TObject; var AllowChange: Boolean);
+begin
+  ChartReplot;
+end;
+
+procedure TfmNewStage.ChartReplot;
+var
+  i: integer;
+  totaltime:integer;
+begin
+  Series1.Clear;
+  totaltime:=0;
+  Series1.AddXY(0, 0);
+  for i := 0 to length(LabelArr) - 1 do
+  begin
+    totaltime:=totaltime+UDArr[i].Position;
+    Series1.AddXY(totaltime, i);
+  end;
 end;
 
 end.

@@ -11,6 +11,7 @@ object fmMain: TfmMain
   Font.Name = 'Tahoma'
   Font.Style = []
   OldCreateOrder = False
+  OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 13
   object dbgCycle: TDBGrid
@@ -70,7 +71,7 @@ object fmMain: TfmMain
     OnClick = btDeleteClick
   end
   object ZConnect: TZConnection
-    Connected = True
+    SQLHourGlass = True
     Protocol = 'sqlite-3'
     Database = 'E:\proj\stat\HCeditor\stages.sqlite'
     Left = 64
@@ -78,7 +79,6 @@ object fmMain: TfmMain
   end
   object ztCycle: TZTable
     Connection = ZConnect
-    Active = True
     TableName = 'cycle'
     Left = 120
     Top = 432
@@ -97,6 +97,31 @@ object fmMain: TfmMain
   object zuCycle: TZUpdateSQL
     UseSequenceFieldForRefreshSQL = False
     Left = 256
+    Top = 432
+  end
+  object zqCreateDB: TZQuery
+    Connection = ZConnect
+    SQL.Strings = (
+      
+        'CREATE TABLE cstruct (id integer NOT NULL PRIMARY KEY AUTOINCREM' +
+        'ENT UNIQUE,cid integer NOT NULL,corder integer NOT NULL,sid inte' +
+        'ger NOT NULL);'
+      'CREATE TABLE cycle ('
+      '  cid    integer PRIMARY KEY AUTOINCREMENT NOT NULL UNIQUE,'
+      '  cname  varchar(128) NOT NULL'
+      ');'
+      
+        'CREATE TABLE sstruct (pid integer NOT NULL PRIMARY KEY AUTOINCRE' +
+        'MENT UNIQUE,sid integer NOT NULL,clevel integer NOT NULL,ptime i' +
+        'nteger NOT NULL);'
+      'CREATE TABLE stages ('
+      '  sid    integer PRIMARY KEY AUTOINCREMENT NOT NULL UNIQUE,'
+      '  sname  varchar(128) NOT NULL'
+      ');'
+      'CREATE INDEX cindex ON sstruct(sid);'
+      'CREATE INDEX sindex ON cstruct(sid);')
+    Params = <>
+    Left = 424
     Top = 432
   end
 end
