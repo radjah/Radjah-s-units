@@ -43,6 +43,8 @@ object fmStageEditor: TfmStageEditor
     TitleFont.Height = -11
     TitleFont.Name = 'Tahoma'
     TitleFont.Style = []
+    OnKeyUp = dbgStageKeyUp
+    OnMouseWheel = dbgStageMouseWheel
     Columns = <
       item
         Expanded = False
@@ -95,6 +97,7 @@ object fmStageEditor: TfmStageEditor
     Height = 25
     Caption = #1059#1076#1072#1083#1080#1090#1100
     TabOrder = 3
+    OnClick = btSDeleteClick
   end
   object btPosDel: TButton
     Left = 334
@@ -104,7 +107,7 @@ object fmStageEditor: TfmStageEditor
     Caption = #1059#1076#1072#1083#1080#1090#1100' '#1087#1086#1079#1080#1094#1080#1102
     TabOrder = 4
   end
-  object Chart1: TChart
+  object chPreview: TChart
     Left = 8
     Top = 416
     Width = 650
@@ -123,6 +126,7 @@ object fmStageEditor: TfmStageEditor
       Marks.Callout.Arrow.Visible = True
       Marks.Visible = False
       Title = 'Preview'
+      InvertedStairs = True
       LinePen.Color = 10708548
       LinePen.Width = 3
       LinePen.EndStyle = esSquare
@@ -145,10 +149,12 @@ object fmStageEditor: TfmStageEditor
   end
   object ztSStruct: TZTable
     Connection = fmMain.ZConnect
+    SortedFields = 'clevel'
     TableName = 'sstruct'
     MasterFields = 'sid'
     MasterSource = dsStage
     LinkedFields = 'sid'
+    IndexFieldNames = 'clevel Asc'
     Left = 520
     Top = 384
   end
@@ -160,6 +166,12 @@ object fmStageEditor: TfmStageEditor
   object dsSStruct: TDataSource
     DataSet = ztSStruct
     Left = 624
+    Top = 384
+  end
+  object zqCommon: TZQuery
+    Connection = fmMain.ZConnect
+    Params = <>
+    Left = 368
     Top = 384
   end
 end

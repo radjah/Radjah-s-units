@@ -72,7 +72,9 @@ object fmNewStage: TfmNewStage
     Width = 145
     Height = 25
     Caption = #1057#1086#1079#1076#1072#1090#1100
+    Enabled = False
     TabOrder = 4
+    OnClick = btCreateClick
   end
   object leStageName: TLabeledEdit
     Left = 8
