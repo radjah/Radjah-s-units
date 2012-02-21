@@ -13,6 +13,8 @@ object fmNewStage: TfmNewStage
   Font.Style = []
   OldCreateOrder = False
   Position = poOwnerFormCenter
+  OnClose = FormClose
+  OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
   object Label1: TLabel
@@ -144,5 +146,50 @@ object fmNewStage: TfmNewStage
     Caption = '-1'
     TabOrder = 8
     OnClick = btDelPosClick
+  end
+  object zqGetStruct: TZQuery
+    Connection = fmMain.ZConnect
+    SQL.Strings = (
+      'select pid, clevel, ptime from sstruct where'
+      'sid=1'
+      'order by clevel')
+    Params = <>
+    Left = 24
+    Top = 424
+  end
+  object zqClearSctruct: TZQuery
+    Connection = fmMain.ZConnect
+    SQL.Strings = (
+      'delete from sstruct where'
+      'sid=1')
+    Params = <>
+    Left = 24
+    Top = 472
+  end
+  object zqGetSCount: TZQuery
+    Connection = fmMain.ZConnect
+    SQL.Strings = (
+      'select count(pid) as pcount from sstruct where'
+      'sid=1')
+    Params = <>
+    Left = 24
+    Top = 520
+    object zqGetSCountpcount: TWideStringField
+      FieldName = 'pcount'
+      ReadOnly = True
+      Size = 255
+    end
+  end
+  object zqUpdateName: TZQuery
+    Connection = fmMain.ZConnect
+    SQL.Strings = (
+      'update stages'
+      'set'
+      'sname='#39#1082#1090#1086' '#1079#1072#1073#1099#1083' '#1079#1072#1084#1077#1085#1080#1090#1100' '#1080#1084#1103#39
+      'where'
+      'sid=1')
+    Params = <>
+    Left = 104
+    Top = 424
   end
 end

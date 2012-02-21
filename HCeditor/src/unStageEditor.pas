@@ -31,6 +31,7 @@ type
     procedure dbgStageKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure dbgStageMouseWheel(Sender: TObject; Shift: TShiftState;
       WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
+    procedure btEditClick(Sender: TObject);
   private
     { Private declarations }
   public
@@ -50,7 +51,7 @@ uses
 // Построить график этапа
 procedure TfmStageEditor.Replot;
 var
-  totaltime, i: Integer;
+  totaltime: Integer;
 begin
   zqCommon.Close;
   zqCommon.SQL.Clear;
@@ -70,10 +71,19 @@ begin
   zqCommon.Close;
 end;
 
-procedure TfmStageEditor.btSCreateClick(Sender: TObject);
-var
-  stagename: string;
+// Редактирование этапа
+procedure TfmStageEditor.btEditClick(Sender: TObject);
 begin
+  fmNewStage.IsEdit := true;
+  fmNewStage.StageID:=ztStage.FieldByName('sid').AsInteger;
+  fmNewStage.ShowModal;
+end;
+
+procedure TfmStageEditor.btSCreateClick(Sender: TObject);
+{ var
+  stagename: string; }
+begin
+  fmNewStage.IsEdit:=False;
   fmNewStage.ShowModal;
   { stagename:=InputBox('Запрос', 'Введите наименоване этапа:','');
     if stagename<>'' then

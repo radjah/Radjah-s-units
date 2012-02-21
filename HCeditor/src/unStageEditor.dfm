@@ -140,6 +140,7 @@ object fmStageEditor: TfmStageEditor
     Height = 25
     Caption = #1048#1079#1084#1077#1085#1080#1090#1100
     TabOrder = 5
+    OnClick = btEditClick
   end
   object ztStage: TZTable
     Connection = fmMain.ZConnect

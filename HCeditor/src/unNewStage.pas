@@ -4,7 +4,8 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, ExtCtrls, StdCtrls, ComCtrls, TeEngine, Series, TeeProcs, Chart;
+  Dialogs, ExtCtrls, StdCtrls, ComCtrls, TeEngine, Series, TeeProcs, Chart, DB,
+  ZAbstractRODataset, ZAbstractDataset, ZDataset;
 
 type
   TfmNewStage = class(TForm)
@@ -21,6 +22,11 @@ type
     Label2: TLabel;
     btAddPos: TButton;
     btDelPos: TButton;
+    zqGetStruct: TZQuery;
+    zqClearSctruct: TZQuery;
+    zqGetSCount: TZQuery;
+    zqUpdateName: TZQuery;
+    zqGetSCountpcount: TWideStringField;
     procedure btMaxPosSetClick(Sender: TObject);
     procedure udTplChanging(Sender: TObject; var AllowChange: boolean);
     procedure ChartReplot;
@@ -28,6 +34,8 @@ type
     procedure ResetDialog;
     procedure btAddPosClick(Sender: TObject);
     procedure btDelPosClick(Sender: TObject);
+    procedure FormShow(Sender: TObject);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
   private
     { Private declarations }
   public
@@ -35,7 +43,8 @@ type
     EditArr: array of TEdit;
     LabelArr: array of TLabel;
     UDArr: array of TUpDown;
-    isedit: boolean;
+    IsEdit: boolean;
+    StageID: integer;
   end;
 
 var
@@ -44,7 +53,7 @@ var
 implementation
 
 uses
-  unStageEditor, unCommonFunc;
+  unStageEditor, unCommonFunc, unMain;
 
 {$R *.dfm}
 
@@ -89,12 +98,30 @@ procedure TfmNewStage.btCreateClick(Sender: TObject);
 var
   i: integer;
 begin
+  // Заполняем имя
   SwitchRW(false, [fmStageEditor.ztStage, fmStageEditor.ztSStruct]);
-  fmStageEditor.ztStage.AppendRecord([NULL, leStageName.Text]);
+  if NOT IsEdit then
+    fmStageEditor.ztStage.AppendRecord([NULL, leStageName.Text])
+  else
+  // Обновляем имя и очищаем структуру
+  begin
+    zqUpdateName.Close;
+    zqUpdateName.SQL[2] := 'sname=''' + leStageName.Text + '''';
+    zqUpdateName.SQL[4] := 'sid=' + IntToStr(StageID);
+    zqUpdateName.ExecSQL;
+    zqClearSctruct.ExecSQL;
+  end;
+  // Заносим структуру
   for i := 0 to Length(UDArr) - 1 do
-    fmStageEditor.ztSStruct.AppendRecord
-      ([NULL, fmStageEditor.ztStage.FieldByName('sid').AsInteger, i,
-      UDArr[i].Position]);
+  begin
+    if NOT IsEdit then
+      fmStageEditor.ztSStruct.AppendRecord
+        ([NULL, fmStageEditor.ztStage.FieldByName('sid').AsInteger, i,
+        UDArr[i].Position])
+    else
+      fmStageEditor.ztSStruct.AppendRecord
+        ([NULL, StageID, i, UDArr[i].Position])
+  end;
   SwitchRW(true, [fmStageEditor.ztStage, fmStageEditor.ztSStruct]);
   // Очистка и закрытие диалога
   ResetDialog;
@@ -141,6 +168,7 @@ begin
   SetLength(LabelArr, 0);
   SetLength(UDArr, 0);
   leStageName.Text := '';
+  btCreate.Enabled := false;
 end;
 
 // Создание счетчиков в скроллбоксе
@@ -205,6 +233,55 @@ begin
   begin
     totaltime := totaltime + UDArr[i].Position;
     Series1.AddXY(totaltime, i);
+  end;
+end;
+
+procedure TfmNewStage.FormClose(Sender: TObject; var Action: TCloseAction);
+begin
+  ResetDialog;
+  IsEdit := false;
+  btCreate.Caption := 'Создать';
+end;
+
+// Подготовка диалога к редактированию цикла
+procedure TfmNewStage.FormShow(Sender: TObject);
+var
+  pcnt, i: integer; // счетчик
+begin
+  if IsEdit then
+  begin
+    // Очищаем диалог
+    ResetDialog;
+    // Получаем структуру этапа
+    zqGetStruct.Close;
+    zqGetStruct.SQL[1] := 'sid=' + IntToStr(StageID);
+    zqGetStruct.Open;
+    // Получаем количество переключений в этапе
+    zqGetSCount.Close;
+    // ShowMessage(zqGetSCount.SQL[1]);
+    zqGetSCount.SQL[1] := 'sid=' + IntToStr(StageID);
+    zqGetSCount.Open;
+    // ShowMessage(zqGetSCount.SQL[1]);
+    pcnt := zqGetSCount.FieldByName('pcount').AsInteger;
+    // ShowMessage(inttostr(zqGetSCount.FieldByName('pcount').AsInteger));
+    // Подготавлием очистку
+    zqClearSctruct.Close;
+    zqClearSctruct.SQL[1] := 'sid=' + IntToStr(StageID);
+    // ShowMessage(zqClearSctruct.SQL[0] + #10#13 + zqClearSctruct.SQL[1]);
+    // Не открываем и не запускаем SQL
+    // Создаем поля для редактирования
+    udMaxPos.Position := pcnt - 1;
+    btMaxPosSetClick(Self);
+    // Заполняем поля
+    for i := 0 to udMaxPos.Position do
+    begin
+      UDArr[i].Position := zqGetStruct.FieldByName('ptime').AsInteger;
+      zqGetStruct.Next;
+    end;
+    // Обновляем превью
+    ChartReplot;
+    // Изменяем кнопку
+    btCreate.Caption := 'Изменить';
   end;
 end;
 
