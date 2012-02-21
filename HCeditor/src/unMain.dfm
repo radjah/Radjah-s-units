@@ -71,6 +71,7 @@ object fmMain: TfmMain
     OnClick = btDeleteClick
   end
   object ZConnect: TZConnection
+    Connected = True
     SQLHourGlass = True
     Protocol = 'sqlite-3'
     Database = 'E:\proj\stat\HCeditor\stages.sqlite'
@@ -79,6 +80,7 @@ object fmMain: TfmMain
   end
   object ztCycle: TZTable
     Connection = ZConnect
+    Active = True
     TableName = 'cycle'
     Left = 120
     Top = 432
