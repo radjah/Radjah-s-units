@@ -19,10 +19,10 @@ type
     Label2: TLabel;
     btSCreate: TButton;
     btSDelete: TButton;
-    btPosDel: TButton;
     chPreview: TChart;
     Series1: TLineSeries;
     zqCommon: TZQuery;
+    btEdit: TButton;
     procedure btSCreateClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);

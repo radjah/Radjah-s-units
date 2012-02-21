@@ -99,14 +99,6 @@ object fmStageEditor: TfmStageEditor
     TabOrder = 3
     OnClick = btSDeleteClick
   end
-  object btPosDel: TButton
-    Left = 334
-    Top = 351
-    Width = 155
-    Height = 25
-    Caption = #1059#1076#1072#1083#1080#1090#1100' '#1087#1086#1079#1080#1094#1080#1102
-    TabOrder = 4
-  end
   object chPreview: TChart
     Left = 8
     Top = 416
@@ -118,7 +110,7 @@ object fmStageEditor: TfmStageEditor
     BottomAxis.Title.Caption = #1042#1088#1077#1084#1103
     LeftAxis.Title.Caption = #1055#1086#1079#1080#1094#1080#1103
     View3D = False
-    TabOrder = 5
+    TabOrder = 4
     ColorPaletteIndex = 13
     object Series1: TLineSeries
       Marks.Arrow.Visible = True
@@ -141,8 +133,17 @@ object fmStageEditor: TfmStageEditor
       Data = {0000000000}
     end
   end
+  object btEdit: TButton
+    Left = 170
+    Top = 351
+    Width = 75
+    Height = 25
+    Caption = #1048#1079#1084#1077#1085#1080#1090#1100
+    TabOrder = 5
+  end
   object ztStage: TZTable
     Connection = fmMain.ZConnect
+    ReadOnly = True
     TableName = 'stages'
     Left = 472
     Top = 384
@@ -150,6 +151,7 @@ object fmStageEditor: TfmStageEditor
   object ztSStruct: TZTable
     Connection = fmMain.ZConnect
     SortedFields = 'clevel'
+    ReadOnly = True
     TableName = 'sstruct'
     MasterFields = 'sid'
     MasterSource = dsStage

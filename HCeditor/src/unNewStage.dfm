@@ -22,16 +22,23 @@ object fmNewStage: TfmNewStage
     Height = 13
     Caption = #1052#1072#1082#1089#1080#1084#1072#1083#1100#1085#1072#1103' '#1087#1086#1079#1080#1094#1080#1103':'
   end
+  object Label2: TLabel
+    Left = 8
+    Top = 109
+    Width = 231
+    Height = 13
+    Caption = #1055#1086#1079#1080#1094#1080#1080' '#1080' '#1080#1093' '#1087#1088#1086#1076#1086#1083#1078#1080#1090#1077#1083#1100#1085#1086#1089#1090#1100' '#1074' '#1089#1082#1091#1085#1076#1072#1093':'
+  end
   object sbPos: TScrollBox
     Left = 8
-    Top = 112
+    Top = 128
     Width = 281
-    Height = 297
+    Height = 281
     VertScrollBar.Smooth = True
     TabOrder = 0
     object udTpl: TUpDown
       Left = 248
-      Top = 3
+      Top = 51
       Width = 17
       Height = 25
       TabOrder = 0
@@ -58,9 +65,9 @@ object fmNewStage: TfmNewStage
     TabOrder = 2
   end
   object btMaxPosSet: TButton
-    Left = 160
-    Top = 72
-    Width = 129
+    Left = 120
+    Top = 75
+    Width = 101
     Height = 26
     Caption = #1047#1072#1076#1072#1090#1100
     TabOrder = 3
@@ -119,5 +126,23 @@ object fmNewStage: TfmNewStage
       YValues.Order = loNone
       Data = {0000000000}
     end
+  end
+  object btAddPos: TButton
+    Left = 227
+    Top = 75
+    Width = 30
+    Height = 25
+    Caption = '+1'
+    TabOrder = 7
+    OnClick = btAddPosClick
+  end
+  object btDelPos: TButton
+    Left = 260
+    Top = 75
+    Width = 30
+    Height = 25
+    Caption = '-1'
+    TabOrder = 8
+    OnClick = btDelPosClick
   end
 end
