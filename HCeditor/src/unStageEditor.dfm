@@ -177,4 +177,12 @@ object fmStageEditor: TfmStageEditor
     Left = 368
     Top = 384
   end
+  object zqCheckStages: TZQuery
+    Connection = fmMain.ZConnect
+    SQL.Strings = (
+      'select count(sid) as scount from stages')
+    Params = <>
+    Left = 280
+    Top = 384
+  end
 end

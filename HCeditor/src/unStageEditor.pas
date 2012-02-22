@@ -23,6 +23,7 @@ type
     Series1: TLineSeries;
     zqCommon: TZQuery;
     btEdit: TButton;
+    zqCheckStages: TZQuery;
     procedure btSCreateClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
@@ -32,6 +33,7 @@ type
     procedure dbgStageMouseWheel(Sender: TObject; Shift: TShiftState;
       WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
     procedure btEditClick(Sender: TObject);
+    procedure CheckStagesCount;
   private
     { Private declarations }
   public
@@ -47,6 +49,24 @@ uses
   unMain, unNewStage, unCommonFunc;
 
 {$R *.dfm}
+
+// Проверка наличия этапов и вкл/выкл кнопок
+procedure TfmStageEditor.CheckStagesCount;
+begin
+  zqCheckStages.Open;
+  if zqCheckStages.FieldByName('scount').AsInteger = 0 then
+  begin
+    btSCreateClick(Self);
+  end
+  else
+  begin
+    ReopenDS([ztStage, ztSStruct]);
+    btEdit.Enabled := true;
+    btSDelete.Enabled := true;
+    ztStage.First;
+    Replot;
+  end;
+end;
 
 // Построить график этапа
 procedure TfmStageEditor.Replot;
@@ -75,21 +95,23 @@ end;
 procedure TfmStageEditor.btEditClick(Sender: TObject);
 begin
   fmNewStage.IsEdit := true;
-  fmNewStage.StageID:=ztStage.FieldByName('sid').AsInteger;
+  fmNewStage.StageID := ztStage.FieldByName('sid').AsInteger;
   fmNewStage.ShowModal;
 end;
 
+// Создание нового этапа
 procedure TfmStageEditor.btSCreateClick(Sender: TObject);
 { var
   stagename: string; }
 begin
-  fmNewStage.IsEdit:=False;
+  fmNewStage.IsEdit := False;
   fmNewStage.ShowModal;
   { stagename:=InputBox('Запрос', 'Введите наименоване этапа:','');
     if stagename<>'' then
     ztStage.AppendRecord([NULL, stagename]); }
 end;
 
+// Удаление этапа и его структуры
 procedure TfmStageEditor.btSDeleteClick(Sender: TObject);
 var
   str: string;
@@ -97,7 +119,7 @@ begin
   // Запрос
   str := 'Удалить цикл "' + ztStage.FieldByName('sname').AsWideString +
     '" и все его этапы?';
-  if MessageBox(self.Handle, Pchar(str), 'Запрос', MB_YESNO OR MB_ICONQUESTION)
+  if MessageBox(Self.Handle, Pchar(str), 'Запрос', MB_YESNO OR MB_ICONQUESTION)
     = IDYES then
   begin
     // Просмотреть таблицу циклов на предмет присуствия этапа в них
@@ -124,34 +146,36 @@ begin
       ReopenDS([ztStage, ztSStruct]);
     end
     else
-      MessageBox(self.Handle, 'Такой этап участвует в созданных циклах.' +
+      MessageBox(Self.Handle, 'Такой этап участвует в созданных циклах.' +
         #10#13 + 'Удаление не возможно', 'Ошибка удалени',
         MB_OK OR MB_ICONEXCLAMATION);
   end;
 end;
 
+// Динамическое обновление графика
 procedure TfmStageEditor.dbgStageKeyUp(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
   Replot;
 end;
 
+// Динамическое обновление графика
 procedure TfmStageEditor.dbgStageMouseWheel(Sender: TObject; Shift: TShiftState;
   WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
 begin
   Replot;
 end;
 
+// Всё закрываем
 procedure TfmStageEditor.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
-  CloseDS([ztStage, ztSStruct]);
+  CloseDS([ztStage, ztSStruct, zqCommon, zqCheckStages]);
 end;
 
+// Проверка при запуске
 procedure TfmStageEditor.FormShow(Sender: TObject);
 begin
-  ReopenDS([ztStage, ztSStruct]);
-  ztStage.First;
-  Replot;
+  CheckStagesCount;
 end;
 
 end.

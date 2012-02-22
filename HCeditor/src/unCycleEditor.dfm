@@ -12,6 +12,9 @@ object fmCycleEditor: TfmCycleEditor
   Font.Name = 'Tahoma'
   Font.Style = []
   OldCreateOrder = False
+  Position = poMainFormCenter
+  OnClose = FormClose
+  OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
   object Label1: TLabel
@@ -70,7 +73,7 @@ object fmCycleEditor: TfmCycleEditor
         Visible = True
       end>
   end
-  object Button1: TButton
+  object btAdd: TButton
     Left = 319
     Top = 120
     Width = 43
@@ -83,9 +86,9 @@ object fmCycleEditor: TfmCycleEditor
     Font.Style = [fsBold]
     ParentFont = False
     TabOrder = 2
-    OnClick = Button1Click
+    OnClick = btAddClick
   end
-  object Button2: TButton
+  object btDel: TButton
     Left = 319
     Top = 151
     Width = 43
@@ -98,17 +101,36 @@ object fmCycleEditor: TfmCycleEditor
     Font.Style = [fsBold]
     ParentFont = False
     TabOrder = 3
+    OnClick = btDelClick
+  end
+  object btUp: TButton
+    Left = 8
+    Top = 375
+    Width = 75
+    Height = 25
+    Caption = #1042#1099#1096#1077
+    TabOrder = 4
+    Visible = False
+    OnClick = btUpClick
+  end
+  object btDown: TButton
+    Left = 89
+    Top = 375
+    Width = 75
+    Height = 25
+    Caption = #1053#1080#1078#1077
+    TabOrder = 5
+    Visible = False
   end
   object ztCStruct: TZTable
     Connection = fmMain.ZConnect
-    Active = True
     ReadOnly = True
     TableName = 'cstruct'
     MasterFields = 'cid'
     MasterSource = fmMain.dsCycle
     LinkedFields = 'cid'
-    Left = 16
-    Top = 384
+    Left = 328
+    Top = 408
     object ztCStructid: TIntegerField
       FieldName = 'id'
     end
@@ -137,20 +159,48 @@ object fmCycleEditor: TfmCycleEditor
   end
   object dsCStruct: TDataSource
     DataSet = ztCStruct
-    Left = 72
-    Top = 384
+    Left = 384
+    Top = 408
   end
   object ztStages: TZTable
     Connection = fmMain.ZConnect
-    Active = True
     ReadOnly = True
     TableName = 'stages'
-    Left = 144
-    Top = 384
+    Left = 456
+    Top = 408
   end
   object dsStages: TDataSource
     DataSet = ztStages
-    Left = 200
-    Top = 384
+    Left = 512
+    Top = 408
+  end
+  object zqGetOrder: TZQuery
+    Connection = fmMain.ZConnect
+    SQL.Strings = (
+      'SELECT  MAX(cstruct.corder) AS maxord FROM  cstruct WHERE'
+      'cid = 1')
+    Params = <>
+    Left = 624
+    Top = 408
+    object zqGetOrdermaxord: TWideStringField
+      FieldName = 'maxord'
+      ReadOnly = True
+      Size = 255
+    end
+  end
+  object zqCheckEmpty: TZQuery
+    Connection = fmMain.ZConnect
+    SQL.Strings = (
+      'select count(sid) as scount from cstruct where'
+      'cid=1')
+    Params = <>
+    Left = 248
+    Top = 408
+  end
+  object zqCommon: TZQuery
+    Connection = fmMain.ZConnect
+    Params = <>
+    Left = 176
+    Top = 408
   end
 end

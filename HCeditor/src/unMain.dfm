@@ -11,7 +11,9 @@ object fmMain: TfmMain
   Font.Name = 'Tahoma'
   Font.Style = []
   OldCreateOrder = False
+  Position = poDesktopCenter
   OnCreate = FormCreate
+  OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
   object dbgCycle: TDBGrid
@@ -51,10 +53,11 @@ object fmMain: TfmMain
     Height = 25
     Caption = #1048#1079#1084#1077#1085#1080#1090#1100' '#1094#1080#1082#1083
     TabOrder = 2
+    OnClick = btEditClick
   end
   object btStageEditor: TButton
     Left = 357
-    Top = 136
+    Top = 176
     Width = 217
     Height = 25
     Caption = #1056#1077#1076#1072#1082#1090#1086#1088' '#1101#1090#1072#1087#1086#1074
@@ -70,17 +73,24 @@ object fmMain: TfmMain
     TabOrder = 4
     OnClick = btDeleteClick
   end
+  object btExport: TButton
+    Left = 357
+    Top = 101
+    Width = 217
+    Height = 25
+    Caption = #1069#1082#1089#1087#1086#1088#1090
+    TabOrder = 5
+    OnClick = btExportClick
+  end
   object ZConnect: TZConnection
-    Connected = True
     SQLHourGlass = True
     Protocol = 'sqlite-3'
-    Database = 'E:\proj\stat\HCeditor\stages.sqlite'
     Left = 64
     Top = 432
   end
   object ztCycle: TZTable
     Connection = ZConnect
-    Active = True
+    ReadOnly = True
     TableName = 'cycle'
     Left = 120
     Top = 432
@@ -93,12 +103,7 @@ object fmMain: TfmMain
   object zqCommon: TZQuery
     Connection = ZConnect
     Params = <>
-    Left = 344
-    Top = 432
-  end
-  object zuCycle: TZUpdateSQL
-    UseSequenceFieldForRefreshSQL = False
-    Left = 256
+    Left = 248
     Top = 432
   end
   object zqCreateDB: TZQuery
@@ -123,7 +128,29 @@ object fmMain: TfmMain
       'CREATE INDEX cindex ON sstruct(sid);'
       'CREATE INDEX sindex ON cstruct(sid);')
     Params = <>
-    Left = 424
+    Left = 328
+    Top = 432
+  end
+  object sdExport: TSaveDialog
+    DefaultExt = 'hcf'
+    Filter = #1060#1072#1081#1083' '#1094#1080#1082#1083#1072' (*.hcf)|*.hcf'
+    Options = [ofEnableSizing]
+    Left = 392
+    Top = 432
+  end
+  object zqExport: TZQuery
+    Connection = ZConnect
+    SQL.Strings = (
+      
+        'SELECT   cstruct.corder AS corder, sstruct.clevel AS clevel, sst' +
+        'ruct.ptime AS ptime'
+      'FROM  cstruct, sstruct'
+      'WHERE'
+      'cstruct.cid = 10'
+      'AND  cstruct.sid = sstruct.sid'
+      'ORDER BY  cstruct.corder, sstruct.clevel')
+    Params = <>
+    Left = 456
     Top = 432
   end
 end

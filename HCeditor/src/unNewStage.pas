@@ -216,11 +216,13 @@ begin
   btCreate.Enabled := true;
 end;
 
+// Динамическое обновление графика
 procedure TfmNewStage.udTplChanging(Sender: TObject; var AllowChange: boolean);
 begin
   ChartReplot;
 end;
 
+// Обновление графика
 procedure TfmNewStage.ChartReplot;
 var
   i: integer;
@@ -236,8 +238,10 @@ begin
   end;
 end;
 
+// Всё закрываем и сбрасываем.
 procedure TfmNewStage.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
+  CloseDS([zqGetStruct, zqClearSctruct, zqGetSCount, zqUpdateName]);
   ResetDialog;
   IsEdit := false;
   btCreate.Caption := 'Создать';
