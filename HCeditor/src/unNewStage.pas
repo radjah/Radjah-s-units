@@ -10,8 +10,8 @@ uses
 type
   TfmNewStage = class(TForm)
     sbPos: TScrollBox;
-    eMaxPos: TEdit;
-    udMaxPos: TUpDown;
+    eSwitchCount: TEdit;
+    udSwitchCount: TUpDown;
     Label1: TLabel;
     btMaxPosSet: TButton;
     btCreate: TButton;
@@ -27,6 +27,7 @@ type
     zqGetSCount: TZQuery;
     zqUpdateName: TZQuery;
     zqGetSCountpcount: TWideStringField;
+    udPosTpl: TUpDown;
     procedure btMaxPosSetClick(Sender: TObject);
     procedure udTplChanging(Sender: TObject; var AllowChange: boolean);
     procedure ChartReplot;
@@ -36,13 +37,17 @@ type
     procedure btDelPosClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure udPosTplChanging(Sender: TObject; var AllowChange: boolean);
   private
     { Private declarations }
   public
     { Public declarations }
     EditArr: array of TEdit;
     LabelArr: array of TLabel;
+    LabelSecArr: array of TLabel;
     UDArr: array of TUpDown;
+    UDPosArr: array of TUpDown;
+    EditPosArr: array of TEdit;
     IsEdit: boolean;
     StageID: integer;
   end;
@@ -62,24 +67,50 @@ procedure TfmNewStage.btAddPosClick(Sender: TObject);
 var
   i: integer; // максимум
 begin
+  btDelPos.Enabled := True;
   i := Length(EditArr);
   SetLength(EditArr, Length(EditArr) + 1);
   SetLength(LabelArr, Length(LabelArr) + 1);
+  SetLength(LabelSecArr, Length(LabelSecArr) + 1);
   SetLength(UDArr, Length(UDArr) + 1);
+  SetLength(UDPosArr, Length(UDPosArr) + 1);
+  SetLength(EditPosArr, Length(EditPosArr) + 1);
   LabelArr[i] := TLabel.Create(sbPos);
-  LabelArr[i].Caption := 'ПК=' + IntToStr(i);
-  LabelArr[i].Left := 20;
+  LabelArr[i].Caption := 'ПК=';
+  LabelArr[i].Left := 30;
   LabelArr[i].Top := 20 + 30 * i;
   LabelArr[i].Name := 'Label' + IntToStr(i);
   LabelArr[i].Parent := sbPos;
-  // СОздаем Edit
+  // Создаем Edit
   EditArr[i] := TEdit.Create(sbPos);
   EditArr[i].Text := '1';
-  EditArr[i].Left := 60;
+  EditArr[i].Left := 150;
   EditArr[i].Top := 15 + 30 * i;
   EditArr[i].Width := 50;
-  EditArr[i].ReadOnly := true;
+  EditArr[i].ReadOnly := True;
   EditArr[i].Parent := sbPos;
+  // Создаем Edit под позиции
+  EditPosArr[i] := TEdit.Create(sbPos);
+  EditPosArr[i].Text := '1';
+  EditPosArr[i].Left := 60;
+  EditPosArr[i].Top := 15 + 30 * i;
+  EditPosArr[i].Width := 50;
+  EditPosArr[i].ReadOnly := True;
+  EditPosArr[i].Parent := sbPos;
+    // Создаем метку под 'сек.'
+  LabelSecArr[i] := TLabel.Create(sbPos);
+  LabelSecArr[i].Caption := 'сек.';
+  LabelSecArr[i].Left := 220;
+  LabelSecArr[i].Top := 20 + 30 * i;
+  LabelSecArr[i].Parent := sbPos;
+  // Создаем счетчик под позиции
+  UDPosArr[i] := TUpDown.Create(sbPos);
+  UDPosArr[i].Min := 0;
+  UDPosArr[i].Max := 100;
+  UDPosArr[i].Position := 0;
+  UDPosArr[i].Parent := sbPos;
+  UDPosArr[i].OnChanging := udPosTpl.OnChanging;
+  UDPosArr[i].Associate := EditPosArr[i];
   // Создаем счетчик
   UDArr[i] := TUpDown.Create(sbPos);
   UDArr[i].Min := 1;
@@ -88,8 +119,10 @@ begin
   UDArr[i].Parent := sbPos;
   UDArr[i].OnChanging := udTpl.OnChanging;
   UDArr[i].Associate := EditArr[i];
-  udMaxPos.Position := udMaxPos.Position + 1;
-  leStageName.Text := 'ПК 0 -> ' + IntToStr(udMaxPos.Position);
+  udSwitchCount.Position := udSwitchCount.Position + 1;
+  leStageName.Text := 'ПК ' + IntToStr(udSwitchCount.Position) + ' перекл.';
+  if Length(LabelArr) = 1 then
+    btDelPos.Enabled := false;
   ChartReplot;
 end;
 
@@ -116,13 +149,13 @@ begin
   begin
     if NOT IsEdit then
       fmStageEditor.ztSStruct.AppendRecord
-        ([NULL, fmStageEditor.ztStage.FieldByName('sid').AsInteger, i,
-        UDArr[i].Position])
+        ([NULL, fmStageEditor.ztStage.FieldByName('sid').AsInteger,
+        UDPosArr[i].Position, UDArr[i].Position, i])
     else
-      fmStageEditor.ztSStruct.AppendRecord
-        ([NULL, StageID, i, UDArr[i].Position])
+      fmStageEditor.ztSStruct.AppendRecord([NULL, StageID, UDPosArr[i].Position,
+        UDArr[i].Position, i])
   end;
-  SwitchRW(true, [fmStageEditor.ztStage, fmStageEditor.ztSStruct]);
+  SwitchRW(True, [fmStageEditor.ztStage, fmStageEditor.ztSStruct]);
   // Очистка и закрытие диалога
   ResetDialog;
   Close;
@@ -136,19 +169,24 @@ begin
   i := Length(EditArr) - 1;
   if Length(LabelArr) > 1 then
   begin
-    udMaxPos.Position := udMaxPos.Position - 1;
+    udSwitchCount.Position := udSwitchCount.Position - 1;
     UDArr[i].Free;
     EditArr[i].Free;
     LabelArr[i].Free;
+    UDPosArr[i].Free;
+    EditPosArr[i].Free;
+    LabelSecArr[i].Free;
     SetLength(EditArr, Length(EditArr) - 1);
     SetLength(LabelArr, Length(LabelArr) - 1);
+    SetLength(LabelArr, Length(LabelSecArr) - 1);
     SetLength(UDArr, Length(UDArr) - 1);
-    leStageName.Text := 'ПК 0 -> ' + IntToStr(udMaxPos.Position);
+    SetLength(EditPosArr, Length(EditPosArr) - 1);
+    SetLength(UDPosArr, Length(UDPosArr) - 1);
+    leStageName.Text := 'ПК ' + IntToStr(udSwitchCount.Position) + ' перекл.';
     ChartReplot;
-  end
-  else
-    MessageBox(Self.Handle, 'В этапе должна быть хотя бы одна позиция!',
-      'Ошибка!', MB_OK OR MB_ICONERROR);
+  end;
+  if Length(LabelArr) = 1 then
+    btDelPos.Enabled := false;
 end;
 
 // Обнуление параметров диалога
@@ -163,57 +201,60 @@ begin
       UDArr[i].Free;
       EditArr[i].Free;
       LabelArr[i].Free;
+      UDPosArr[i].Free;
+      EditPosArr[i].Free;
+      LabelSecArr[i].Free;
     end;
   SetLength(EditArr, 0);
   SetLength(LabelArr, 0);
+  SetLength(LabelSecArr, 0);
   SetLength(UDArr, 0);
+  SetLength(UDPosArr, 0);
+  SetLength(EditPosArr, 0);
   leStageName.Text := '';
   btCreate.Enabled := false;
+  btDelPos.Enabled := false;
 end;
 
 // Создание счетчиков в скроллбоксе
 procedure TfmNewStage.btMaxPosSetClick(Sender: TObject);
 var
   i: integer; // Счетчик
+  switchcount: integer; // Количество переключений
 begin
+  switchcount := udSwitchCount.Position;
   ResetDialog;
-  // Указываем длины массивов
-  SetLength(EditArr, udMaxPos.Position + 1);
-  ZeroMemory(EditArr, sizeof(EditArr));
-  SetLength(LabelArr, udMaxPos.Position + 1);
-  ZeroMemory(LabelArr, sizeof(LabelArr));
-  SetLength(UDArr, udMaxPos.Position + 1);
-  ZeroMemory(UDArr, sizeof(UDArr));
-  // Создаем контроллы и размещаем на форме
-  for i := 0 to udMaxPos.Position do
+  for i := 0 to switchcount - 1 do
   begin
-    // Создаем метку
-    LabelArr[i] := TLabel.Create(sbPos);
-    LabelArr[i].Caption := 'ПК=' + IntToStr(i);
-    LabelArr[i].Left := 20;
-    LabelArr[i].Top := 20 + 30 * i;
-    LabelArr[i].Name := 'Label' + IntToStr(i);
-    LabelArr[i].Parent := sbPos;
-    // СОздаем Edit
-    EditArr[i] := TEdit.Create(sbPos);
-    EditArr[i].Text := '1';
-    EditArr[i].Left := 60;
-    EditArr[i].Top := 15 + 30 * i;
-    EditArr[i].Width := 50;
-    EditArr[i].ReadOnly := true;
-    EditArr[i].Parent := sbPos;
-    // Создаем счетчик
-    UDArr[i] := TUpDown.Create(sbPos);
-    UDArr[i].Min := 1;
-    UDArr[i].Max := 1000;
-    UDArr[i].Position := 1;
-    UDArr[i].Parent := sbPos;
-    UDArr[i].OnChanging := udTpl.OnChanging;
-    UDArr[i].Associate := EditArr[i];
+    btAddPosClick(Self);
   end;
+  udSwitchCount.Position := switchcount;
   ChartReplot;
-  leStageName.Text := 'ПК 0 -> ' + IntToStr(udMaxPos.Position);
-  btCreate.Enabled := true;
+  leStageName.Text := 'ПК ' + IntToStr(udSwitchCount.Position) + ' перекл.';
+  btCreate.Enabled := True;
+end;
+
+// Шаблон счетчика для позиций
+procedure TfmNewStage.udPosTplChanging(Sender: TObject;
+  var AllowChange: boolean);
+// var
+// i: integer; // счетчик
+begin
+  // for i := 1 to Length(UDPosArr) - 1 do
+  // begin
+  // UDPosArr[i].Max := UDPosArr[i - 1].Position + 1;
+  // if UDPosArr[i - 1].Position = 0 then
+  // begin
+  // UDPosArr[i].Min := 0;
+  // UDPosArr[i].Increment := 1;
+  // end
+  // else
+  // begin
+  // UDPosArr[i].Min := UDPosArr[i - 1].Position - 1;
+  // UDPosArr[i].Increment := 2;
+  // end;
+  // end;
+  ChartReplot;
 end;
 
 // Динамическое обновление графика
@@ -234,7 +275,7 @@ begin
   for i := 0 to Length(LabelArr) - 1 do
   begin
     totaltime := totaltime + UDArr[i].Position;
-    Series1.AddXY(totaltime, i);
+    Series1.AddXY(totaltime, UDPosArr[i].Position);
   end;
 end;
 
@@ -274,12 +315,13 @@ begin
     // ShowMessage(zqClearSctruct.SQL[0] + #10#13 + zqClearSctruct.SQL[1]);
     // Не открываем и не запускаем SQL
     // Создаем поля для редактирования
-    udMaxPos.Position := pcnt - 1;
+    udSwitchCount.Position := pcnt;
     btMaxPosSetClick(Self);
     // Заполняем поля
-    for i := 0 to udMaxPos.Position do
+    for i := 0 to udSwitchCount.Position-1 do
     begin
       UDArr[i].Position := zqGetStruct.FieldByName('ptime').AsInteger;
+      UDPosArr[i].Position := zqGetStruct.FieldByName('clevel').AsInteger;
       zqGetStruct.Next;
     end;
     // Обновляем превью
@@ -290,3 +332,4 @@ begin
 end;
 
 end.
+

@@ -78,7 +78,8 @@ object fmMain: TfmMain
     Top = 101
     Width = 217
     Height = 25
-    Caption = #1069#1082#1089#1087#1086#1088#1090
+    Caption = #1055#1088#1086#1089#1084#1086#1090#1088' '#1080' '#1101#1082#1089#1087#1086#1088#1090
+    Enabled = False
     TabOrder = 5
     OnClick = btExportClick
   end

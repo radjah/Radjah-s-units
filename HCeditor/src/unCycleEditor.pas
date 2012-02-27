@@ -5,7 +5,7 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, DB, ZAbstractRODataset, ZAbstractDataset, ZAbstractTable, ZDataset,
-  StdCtrls, Grids, DBGrids;
+  StdCtrls, Grids, DBGrids, TeEngine, Series, ExtCtrls, TeeProcs, Chart;
 
 type
   TfmCycleEditor = class(TForm)
@@ -29,6 +29,9 @@ type
     btDown: TButton;
     zqCheckEmpty: TZQuery;
     zqCommon: TZQuery;
+    Button2: TButton;
+    chStagePreview: TChart;
+    Series1: TLineSeries;
     procedure btAddClick(Sender: TObject);
     procedure GetMaxOrderNumber;
     procedure FormShow(Sender: TObject);
@@ -36,6 +39,9 @@ type
     procedure btDelClick(Sender: TObject);
     procedure CheckEmpty;
     procedure btUpClick(Sender: TObject);
+    procedure Replot;
+    procedure DBGrid2CellClick(Column: TColumn);
+    procedure DBGrid2KeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
   private
     { Private declarations }
   public
@@ -54,6 +60,31 @@ uses
 
 {$R *.dfm}
 
+procedure TfmCycleEditor.Replot;
+var
+  totaltime: integer;
+begin
+  if ztStages.Active = true then
+  begin
+    zqCommon.Close;
+    zqCommon.SQL.Clear;
+    zqCommon.SQL.Add('select sid, clevel, ptime from sstruct');
+    zqCommon.SQL.Add('where sid=' + ztStages.FieldByName('sid').AsString);
+    zqCommon.Open;
+    zqCommon.First;
+    Series1.Clear;
+    Series1.AddXY(0, 0);
+    totaltime := 0;
+    while not zqCommon.Eof do
+    begin
+      totaltime := totaltime + zqCommon.FieldByName('ptime').AsInteger;
+      Series1.AddXY(totaltime, zqCommon.FieldByName('clevel').AsInteger);
+      zqCommon.Next;
+    end;
+    zqCommon.Close;
+  end;
+end;
+
 // Проверка присуствия этапов в цикле
 procedure TfmCycleEditor.CheckEmpty;
 begin
@@ -67,10 +98,21 @@ begin
   end
   else
   begin
-    btDel.Enabled := True;
-    btUp.Enabled := True;
-    btDown.Enabled := True;
+    btDel.Enabled := true;
+    btUp.Enabled := true;
+    btDown.Enabled := true;
   end;
+end;
+
+procedure TfmCycleEditor.DBGrid2CellClick(Column: TColumn);
+begin
+  Replot;
+end;
+
+procedure TfmCycleEditor.DBGrid2KeyUp(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  Replot;
 end;
 
 // Добавление этапа в конец цикла
@@ -81,7 +123,7 @@ begin
   CurOrd := CurOrd + 1;
   ztCStruct.AppendRecord([NULL, fmMain.ztCycle.FieldByName('cid').AsInteger,
     CurOrd, ztStages.FieldByName('sid').AsInteger]);
-  SwitchRW(True, [ztCStruct]);
+  SwitchRW(true, [ztCStruct]);
   CheckEmpty;
 end;
 
@@ -91,7 +133,7 @@ begin
   zqCommon.Close;
   zqCommon.SQL.Clear;
   zqCommon.SQL.Add('delete from cstruct');
-  zqCommon.SQL.Add('where id='+ztCStruct.FieldByName('id').AsString);
+  zqCommon.SQL.Add('where id=' + ztCStruct.FieldByName('id').AsString);
   zqCommon.ExecSQL;
   ReopenDS([ztCStruct]);
   CheckEmpty;
@@ -100,7 +142,7 @@ end;
 // Перемещение этапа вышу
 procedure TfmCycleEditor.btUpClick(Sender: TObject);
 begin
-//
+  //
 end;
 
 // Закрываем всё за собой
@@ -118,6 +160,7 @@ begin
   zqGetOrder.SQL[1] := 'cid=' + inttostr(CycleID);
   GetMaxOrderNumber;
   CheckEmpty;
+  Replot;
 end;
 
 // Получаем крайний порядковый номер этапа

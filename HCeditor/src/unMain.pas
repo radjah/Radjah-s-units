@@ -30,6 +30,7 @@ type
     procedure btEditClick(Sender: TObject);
     procedure CheckCyclesTable;
     procedure FormShow(Sender: TObject);
+    procedure ExportToHCF;
     procedure btExportClick(Sender: TObject);
   private
     { Private declarations }
@@ -42,7 +43,7 @@ var
 
 implementation
 
-uses unStageEditor, unCommonFunc, unCycleEditor;
+uses unStageEditor, unCommonFunc, unCycleEditor, unPreview;
 {$R *.dfm}
 
 // Проверка наличия циклов в таблице и вкл/выкл кнопок
@@ -118,8 +119,37 @@ begin
   fmCycleEditor.ShowModal;
 end;
 
-// Экспорт цикла в файл
 procedure TfmMain.btExportClick(Sender: TObject);
+var
+  totaltime: integer; // Время
+  switchcnt: integer; // Количество переключений
+begin
+  // Получаем всю структуру цикла
+  zqExport.Close;
+  zqExport.SQL[3] := 'cstruct.cid = ' + ztCycle.FieldByName('cid').AsString;
+  zqExport.Open;
+  zqExport.First;
+  // Счетчики
+  totaltime := 0;
+  switchcnt := 0;
+  fmPreview.Series1.Clear;
+  fmPreview.Series1.AddXY(0, 0);
+  while not zqExport.Eof do
+  begin
+    totaltime := totaltime + zqExport.FieldByName('ptime').AsInteger;
+    switchcnt := switchcnt + 1;
+    fmPreview.Series1.AddXY(totaltime, zqExport.FieldByName('clevel')
+      .AsInteger);
+    zqExport.Next;
+  end;
+  fmPreview.lbTotalTime.Caption := 'Продолжительность цикла: ' +
+    IntToStr(totaltime) + ' сек.';
+  fmPreview.lbSwitchCount.Caption:='Количество переключений: ' + IntToStr(switchcnt);
+  fmPreview.ShowModal;
+end;
+
+// Экспорт цикла в файл
+procedure TfmMain.ExportToHCF;
 var
   steps: integer; // Тут храним количество переключений
   hcfile: TIniFile; // Файл цикла
@@ -127,18 +157,15 @@ begin
   if sdExport.Execute then
   begin
     hcfile := TIniFile.Create(sdExport.FileName);
-    // Получаем всю структуру цикла
-    zqExport.Close;
-    zqExport.SQL[3] := 'cstruct.cid = ' + ztCycle.FieldByName('cid').AsString;
-    zqExport.Open;
+    zqExport.First;
     steps := 0;
     // Читаем всю структуру и пишем в файл
     while not zqExport.Eof do
     begin
       steps := steps + 1;
-      hcfile.WriteInteger('stages', 'stage' + inttostr(steps),
+      hcfile.WriteInteger('stages', 'stage' + IntToStr(steps),
         zqExport.FieldByName('clevel').AsInteger);
-      hcfile.WriteInteger('stages', 'time' + inttostr(steps),
+      hcfile.WriteInteger('stages', 'time' + IntToStr(steps),
         zqExport.FieldByName('ptime').AsInteger);
       zqExport.Next;
     end;

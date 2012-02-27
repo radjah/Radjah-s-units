@@ -20,9 +20,9 @@ object fmNewStage: TfmNewStage
   object Label1: TLabel
     Left = 8
     Top = 58
-    Width = 121
+    Width = 142
     Height = 13
-    Caption = #1052#1072#1082#1089#1080#1084#1072#1083#1100#1085#1072#1103' '#1087#1086#1079#1080#1094#1080#1103':'
+    Caption = #1050#1086#1083#1080#1095#1077#1089#1090#1074#1086' '#1087#1077#1088#1077#1082#1083#1102#1095#1077#1085#1080#1081':'
   end
   object Label2: TLabel
     Left = 8
@@ -47,8 +47,17 @@ object fmNewStage: TfmNewStage
       Visible = False
       OnChanging = udTplChanging
     end
+    object udPosTpl: TUpDown
+      Left = 88
+      Top = 51
+      Width = 17
+      Height = 25
+      TabOrder = 1
+      Visible = False
+      OnChanging = udPosTplChanging
+    end
   end
-  object eMaxPos: TEdit
+  object eSwitchCount: TEdit
     Left = 8
     Top = 77
     Width = 81
@@ -56,13 +65,14 @@ object fmNewStage: TfmNewStage
     TabOrder = 1
     Text = '1'
   end
-  object udMaxPos: TUpDown
+  object udSwitchCount: TUpDown
     Left = 89
     Top = 77
     Width = 16
     Height = 21
-    Associate = eMaxPos
+    Associate = eSwitchCount
     Min = 1
+    Max = 10000
     Position = 1
     TabOrder = 2
   end
@@ -144,15 +154,16 @@ object fmNewStage: TfmNewStage
     Width = 30
     Height = 25
     Caption = '-1'
+    Enabled = False
     TabOrder = 8
     OnClick = btDelPosClick
   end
   object zqGetStruct: TZQuery
     Connection = fmMain.ZConnect
     SQL.Strings = (
-      'select pid, clevel, ptime from sstruct where'
+      'select porder, pid, clevel, ptime from sstruct where'
       'sid=1'
-      'order by clevel')
+      'order by porder')
     Params = <>
     Left = 24
     Top = 424
