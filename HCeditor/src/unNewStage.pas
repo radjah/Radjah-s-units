@@ -97,7 +97,7 @@ begin
   EditPosArr[i].Width := 50;
   EditPosArr[i].ReadOnly := True;
   EditPosArr[i].Parent := sbPos;
-    // Создаем метку под 'сек.'
+  // Создаем метку под 'сек.'
   LabelSecArr[i] := TLabel.Create(sbPos);
   LabelSecArr[i].Caption := 'сек.';
   LabelSecArr[i].Left := 220;
@@ -166,27 +166,36 @@ procedure TfmNewStage.btDelPosClick(Sender: TObject);
 var
   i: integer; // Номер последнего элемента
 begin
-  i := Length(EditArr) - 1;
+  btDelPos.Enabled := false;
+  i := Length(EditArr) - 1; // Последний элемент
+  // Если переключений больше 1
   if Length(LabelArr) > 1 then
   begin
-    udSwitchCount.Position := udSwitchCount.Position - 1;
+    udSwitchCount.Position := udSwitchCount.Position - 1; // Уменьшить счетчик
+    // Удалить контролы последнего переключения
     UDArr[i].Free;
     EditArr[i].Free;
     LabelArr[i].Free;
     UDPosArr[i].Free;
     EditPosArr[i].Free;
     LabelSecArr[i].Free;
+    // Уменьшить массив
     SetLength(EditArr, Length(EditArr) - 1);
     SetLength(LabelArr, Length(LabelArr) - 1);
     SetLength(LabelArr, Length(LabelSecArr) - 1);
     SetLength(UDArr, Length(UDArr) - 1);
     SetLength(EditPosArr, Length(EditPosArr) - 1);
     SetLength(UDPosArr, Length(UDPosArr) - 1);
+    // Изменить название этапа
     leStageName.Text := 'ПК ' + IntToStr(udSwitchCount.Position) + ' перекл.';
+    // Перестроить превью
     ChartReplot;
   end;
-  if Length(LabelArr) = 1 then
-    btDelPos.Enabled := false;
+  // Управление кнопкой
+  if Length(LabelArr) <= 1 then
+    btDelPos.Enabled := false
+  else
+    btDelPos.Enabled := True;
 end;
 
 // Обнуление параметров диалога
@@ -318,7 +327,7 @@ begin
     udSwitchCount.Position := pcnt;
     btMaxPosSetClick(Self);
     // Заполняем поля
-    for i := 0 to udSwitchCount.Position-1 do
+    for i := 0 to udSwitchCount.Position - 1 do
     begin
       UDArr[i].Position := zqGetStruct.FieldByName('ptime').AsInteger;
       UDPosArr[i].Position := zqGetStruct.FieldByName('clevel').AsInteger;
@@ -332,4 +341,3 @@ begin
 end;
 
 end.
-
