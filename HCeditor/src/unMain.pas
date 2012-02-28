@@ -6,7 +6,7 @@ uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, Grids, DBGrids, DB, ZAbstractRODataset, ZAbstractDataset,
   ZAbstractTable, ZDataset, ZAbstractConnection, ZConnection, StdCtrls,
-  ZSqlUpdate, IniFiles;
+  IniFiles;
 
 type
   TfmMain = class(TForm)

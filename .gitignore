@@ -1,5 +1,7 @@
 *.*res
 *.exe*
+*.dll*
+!sqlite3.dll
 *.tds
 *.ddp
 *.local

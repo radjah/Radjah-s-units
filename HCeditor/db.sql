@@ -18,22 +18,17 @@ CREATE INDEX cname_idx
   ON cycle
   (cname);
 
-CREATE TABLE sqlite_stat1 (
-  tbl   ,
-  idx   ,
-  stat  
-);
-
 CREATE TABLE sstruct (
   pid     integer PRIMARY KEY AUTOINCREMENT NOT NULL UNIQUE,
   sid     integer NOT NULL,
   clevel  integer NOT NULL,
-  ptime   integer NOT NULL
+  ptime   integer NOT NULL,
+  porder  integer NOT NULL
 );
 
 CREATE INDEX cindex
   ON sstruct
-  (sid, clevel);
+  (sid, porder);
 
 CREATE TABLE stages (
   sid    integer PRIMARY KEY AUTOINCREMENT NOT NULL UNIQUE,
