@@ -3,7 +3,7 @@ object fmCycleEditor: TfmCycleEditor
   Top = 0
   BorderStyle = bsDialog
   Caption = #1056#1077#1076#1072#1082#1090#1086#1088' '#1094#1080#1082#1083#1072
-  ClientHeight = 567
+  ClientHeight = 554
   ClientWidth = 687
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -24,11 +24,11 @@ object fmCycleEditor: TfmCycleEditor
     Height = 13
     Caption = #1057#1086#1089#1090#1072#1074' '#1094#1080#1082#1083#1072':'
   end
-  object DBGrid1: TDBGrid
+  object dbgCStruct: TDBGrid
     Left = 8
     Top = 24
     Width = 305
-    Height = 345
+    Height = 329
     DataSource = dsCStruct
     TabOrder = 0
     TitleFont.Charset = DEFAULT_CHARSET
@@ -54,9 +54,9 @@ object fmCycleEditor: TfmCycleEditor
   end
   object DBGrid2: TDBGrid
     Left = 368
-    Top = 26
+    Top = 24
     Width = 305
-    Height = 345
+    Height = 331
     DataSource = dsStages
     TabOrder = 1
     TitleFont.Charset = DEFAULT_CHARSET
@@ -77,7 +77,7 @@ object fmCycleEditor: TfmCycleEditor
   end
   object btAdd: TButton
     Left = 319
-    Top = 120
+    Top = 104
     Width = 43
     Height = 25
     Caption = '<'
@@ -92,7 +92,7 @@ object fmCycleEditor: TfmCycleEditor
   end
   object btDel: TButton
     Left = 319
-    Top = 151
+    Top = 135
     Width = 43
     Height = 25
     Caption = '>'
@@ -107,7 +107,7 @@ object fmCycleEditor: TfmCycleEditor
   end
   object btUp: TButton
     Left = 8
-    Top = 375
+    Top = 359
     Width = 75
     Height = 25
     Caption = #1042#1099#1096#1077
@@ -117,24 +117,25 @@ object fmCycleEditor: TfmCycleEditor
   end
   object btDown: TButton
     Left = 89
-    Top = 375
+    Top = 359
     Width = 75
     Height = 25
     Caption = #1053#1080#1078#1077
     TabOrder = 5
     Visible = False
   end
-  object Button2: TButton
-    Left = 306
-    Top = 534
-    Width = 75
+  object btClose: TButton
+    Left = 265
+    Top = 518
+    Width = 157
     Height = 25
     Caption = #1047#1072#1082#1088#1099#1090#1100
     TabOrder = 6
+    OnClick = btCloseClick
   end
   object chStagePreview: TChart
     Left = 368
-    Top = 377
+    Top = 361
     Width = 305
     Height = 151
     Legend.Visible = False
@@ -168,13 +169,15 @@ object fmCycleEditor: TfmCycleEditor
   end
   object ztCStruct: TZTable
     Connection = fmMain.ZConnect
+    SortedFields = 'corder'
     ReadOnly = True
     TableName = 'cstruct'
     MasterFields = 'cid'
     MasterSource = fmMain.dsCycle
     LinkedFields = 'cid'
+    IndexFieldNames = 'corder Asc'
     Left = 16
-    Top = 480
+    Top = 464
     object ztCStructid: TIntegerField
       FieldName = 'id'
     end
@@ -204,19 +207,19 @@ object fmCycleEditor: TfmCycleEditor
   object dsCStruct: TDataSource
     DataSet = ztCStruct
     Left = 88
-    Top = 480
+    Top = 464
   end
   object ztStages: TZTable
     Connection = fmMain.ZConnect
     ReadOnly = True
     TableName = 'stages'
     Left = 168
-    Top = 416
+    Top = 400
   end
   object dsStages: TDataSource
     DataSet = ztStages
     Left = 224
-    Top = 416
+    Top = 400
   end
   object zqGetOrder: TZQuery
     Connection = fmMain.ZConnect
@@ -225,7 +228,7 @@ object fmCycleEditor: TfmCycleEditor
       'cid = 1')
     Params = <>
     Left = 168
-    Top = 480
+    Top = 464
     object zqGetOrdermaxord: TWideStringField
       FieldName = 'maxord'
       ReadOnly = True
@@ -239,12 +242,12 @@ object fmCycleEditor: TfmCycleEditor
       'cid=1')
     Params = <>
     Left = 88
-    Top = 416
+    Top = 400
   end
   object zqCommon: TZQuery
     Connection = fmMain.ZConnect
     Params = <>
     Left = 16
-    Top = 416
+    Top = 400
   end
 end

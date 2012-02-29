@@ -57,7 +57,7 @@ object fmMain: TfmMain
   end
   object btStageEditor: TButton
     Left = 357
-    Top = 176
+    Top = 192
     Width = 217
     Height = 25
     Caption = #1056#1077#1076#1072#1082#1090#1086#1088' '#1101#1090#1072#1087#1086#1074
@@ -66,7 +66,7 @@ object fmMain: TfmMain
   end
   object btDelete: TButton
     Left = 357
-    Top = 70
+    Top = 101
     Width = 217
     Height = 25
     Caption = #1059#1076#1072#1083#1080#1090#1100' '#1094#1080#1082#1083
@@ -75,7 +75,7 @@ object fmMain: TfmMain
   end
   object btExport: TButton
     Left = 357
-    Top = 101
+    Top = 132
     Width = 217
     Height = 25
     Caption = #1055#1088#1086#1089#1084#1086#1090#1088' '#1080' '#1101#1082#1089#1087#1086#1088#1090
@@ -83,9 +83,22 @@ object fmMain: TfmMain
     TabOrder = 5
     OnClick = btExportClick
   end
+  object btRename: TButton
+    Left = 357
+    Top = 70
+    Width = 217
+    Height = 25
+    Caption = #1055#1077#1088#1077#1080#1084#1077#1085#1086#1074#1072#1090#1100
+    TabOrder = 6
+    OnClick = btRenameClick
+  end
   object ZConnect: TZConnection
+    AutoCommit = False
+    Connected = True
+    DesignConnection = True
     SQLHourGlass = True
     Protocol = 'sqlite-3'
+    Database = 'E:\proj\stat\HCeditor\stages.sqlite'
     Left = 64
     Top = 432
   end
@@ -149,7 +162,7 @@ object fmMain: TfmMain
       'WHERE'
       'cstruct.cid = 10'
       'AND  cstruct.sid = sstruct.sid'
-      'ORDER BY  cstruct.corder, sstruct.clevel')
+      'ORDER BY  cstruct.corder, sstruct.porder')
     Params = <>
     Left = 456
     Top = 432

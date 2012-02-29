@@ -76,19 +76,11 @@ begin
   SetLength(UDPosArr, Length(UDPosArr) + 1);
   SetLength(EditPosArr, Length(EditPosArr) + 1);
   LabelArr[i] := TLabel.Create(sbPos);
-  LabelArr[i].Caption := 'ПК=';
-  LabelArr[i].Left := 30;
+  LabelArr[i].Caption := inttostr(i + 1) + ') ПК=';
+  LabelArr[i].Left := 10;
   LabelArr[i].Top := 20 + 30 * i;
-  LabelArr[i].Name := 'Label' + IntToStr(i);
+  LabelArr[i].Name := 'Label' + inttostr(i);
   LabelArr[i].Parent := sbPos;
-  // Создаем Edit
-  EditArr[i] := TEdit.Create(sbPos);
-  EditArr[i].Text := '1';
-  EditArr[i].Left := 150;
-  EditArr[i].Top := 15 + 30 * i;
-  EditArr[i].Width := 50;
-  EditArr[i].ReadOnly := True;
-  EditArr[i].Parent := sbPos;
   // Создаем Edit под позиции
   EditPosArr[i] := TEdit.Create(sbPos);
   EditPosArr[i].Text := '1';
@@ -97,6 +89,14 @@ begin
   EditPosArr[i].Width := 50;
   EditPosArr[i].ReadOnly := True;
   EditPosArr[i].Parent := sbPos;
+  // Создаем Edit
+  EditArr[i] := TEdit.Create(sbPos);
+  EditArr[i].Text := '1';
+  EditArr[i].Left := 150;
+  EditArr[i].Top := 15 + 30 * i;
+  EditArr[i].Width := 50;
+  EditArr[i].ReadOnly := True;
+  EditArr[i].Parent := sbPos;
   // Создаем метку под 'сек.'
   LabelSecArr[i] := TLabel.Create(sbPos);
   LabelSecArr[i].Caption := 'сек.';
@@ -120,7 +120,7 @@ begin
   UDArr[i].OnChanging := udTpl.OnChanging;
   UDArr[i].Associate := EditArr[i];
   udSwitchCount.Position := udSwitchCount.Position + 1;
-  leStageName.Text := 'ПК ' + IntToStr(udSwitchCount.Position) + ' перекл.';
+  leStageName.Text := 'ПК ' + inttostr(udSwitchCount.Position) + ' перекл.';
   if Length(LabelArr) = 1 then
     btDelPos.Enabled := false;
   ChartReplot;
@@ -140,7 +140,7 @@ begin
   begin
     zqUpdateName.Close;
     zqUpdateName.SQL[2] := 'sname=''' + leStageName.Text + '''';
-    zqUpdateName.SQL[4] := 'sid=' + IntToStr(StageID);
+    zqUpdateName.SQL[4] := 'sid=' + inttostr(StageID);
     zqUpdateName.ExecSQL;
     zqClearSctruct.ExecSQL;
   end;
@@ -187,7 +187,7 @@ begin
     SetLength(EditPosArr, Length(EditPosArr) - 1);
     SetLength(UDPosArr, Length(UDPosArr) - 1);
     // Изменить название этапа
-    leStageName.Text := 'ПК ' + IntToStr(udSwitchCount.Position) + ' перекл.';
+    leStageName.Text := 'ПК ' + inttostr(udSwitchCount.Position) + ' перекл.';
     // Перестроить превью
     ChartReplot;
   end;
@@ -239,7 +239,7 @@ begin
   end;
   udSwitchCount.Position := switchcount;
   ChartReplot;
-  leStageName.Text := 'ПК ' + IntToStr(udSwitchCount.Position) + ' перекл.';
+  leStageName.Text := 'ПК ' + inttostr(udSwitchCount.Position) + ' перекл.';
   btCreate.Enabled := True;
 end;
 
@@ -249,6 +249,7 @@ procedure TfmNewStage.udPosTplChanging(Sender: TObject;
 // var
 // i: integer; // счетчик
 begin
+  // Задумка для ограничения диапозона изменений (специфика цикла)
   // for i := 1 to Length(UDPosArr) - 1 do
   // begin
   // UDPosArr[i].Max := UDPosArr[i - 1].Position + 1;
@@ -265,6 +266,7 @@ begin
   // end;
   ChartReplot;
 end;
+
 
 // Динамическое обновление графика
 procedure TfmNewStage.udTplChanging(Sender: TObject; var AllowChange: boolean);
@@ -308,19 +310,19 @@ begin
     ResetDialog;
     // Получаем структуру этапа
     zqGetStruct.Close;
-    zqGetStruct.SQL[1] := 'sid=' + IntToStr(StageID);
+    zqGetStruct.SQL[1] := 'sid=' + inttostr(StageID);
     zqGetStruct.Open;
     // Получаем количество переключений в этапе
     zqGetSCount.Close;
     // ShowMessage(zqGetSCount.SQL[1]);
-    zqGetSCount.SQL[1] := 'sid=' + IntToStr(StageID);
+    zqGetSCount.SQL[1] := 'sid=' + inttostr(StageID);
     zqGetSCount.Open;
     // ShowMessage(zqGetSCount.SQL[1]);
     pcnt := zqGetSCount.FieldByName('pcount').AsInteger;
     // ShowMessage(inttostr(zqGetSCount.FieldByName('pcount').AsInteger));
     // Подготавлием очистку
     zqClearSctruct.Close;
-    zqClearSctruct.SQL[1] := 'sid=' + IntToStr(StageID);
+    zqClearSctruct.SQL[1] := 'sid=' + inttostr(StageID);
     // ShowMessage(zqClearSctruct.SQL[0] + #10#13 + zqClearSctruct.SQL[1]);
     // Не открываем и не запускаем SQL
     // Создаем поля для редактирования

@@ -43,6 +43,7 @@ object fmStageEditor: TfmStageEditor
     TitleFont.Height = -11
     TitleFont.Name = 'Tahoma'
     TitleFont.Style = []
+    OnCellClick = dbgStageCellClick
     OnKeyUp = dbgStageKeyUp
     OnMouseWheel = dbgStageMouseWheel
     Columns = <
@@ -151,13 +152,14 @@ object fmStageEditor: TfmStageEditor
   end
   object ztSStruct: TZTable
     Connection = fmMain.ZConnect
-    SortedFields = 'clevel'
+    SortedFields = 'porder'
     ReadOnly = True
     TableName = 'sstruct'
     MasterFields = 'sid'
     MasterSource = dsStage
     LinkedFields = 'sid'
-    IndexFieldNames = 'clevel Asc'
+    IndexFieldNames = 'porder Asc'
+    SequenceField = 'porder'
     Left = 520
     Top = 384
   end

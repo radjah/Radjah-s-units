@@ -34,6 +34,7 @@ type
       WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
     procedure btEditClick(Sender: TObject);
     procedure CheckStagesCount;
+    procedure dbgStageCellClick(Column: TColumn);
   private
     { Private declarations }
   public
@@ -153,6 +154,11 @@ begin
 end;
 
 // Динамическое обновление графика
+procedure TfmStageEditor.dbgStageCellClick(Column: TColumn);
+begin
+  Replot;
+end;
+
 procedure TfmStageEditor.dbgStageKeyUp(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin

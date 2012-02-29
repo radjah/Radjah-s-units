@@ -23,6 +23,7 @@ type
     btExport: TButton;
     sdExport: TSaveDialog;
     zqExport: TZQuery;
+    btRename: TButton;
     procedure btStageEditorClick(Sender: TObject);
     procedure btCreatClick(Sender: TObject);
     procedure btDeleteClick(Sender: TObject);
@@ -32,6 +33,7 @@ type
     procedure FormShow(Sender: TObject);
     procedure ExportToHCF;
     procedure btExportClick(Sender: TObject);
+    procedure btRenameClick(Sender: TObject);
   private
     { Private declarations }
   public
@@ -61,12 +63,14 @@ begin
     btEdit.Enabled := False;
     btDelete.Enabled := False;
     btExport.Enabled := False;
+    btRename.Enabled := False;
   end
   else
   begin
     btEdit.Enabled := True;
     btDelete.Enabled := True;
     btExport.Enabled := True;
+    btRename.Enabled := True;
   end;
   // ShowMessage(zqCommon.FieldByName('ccid').AsString);
 end;
@@ -74,15 +78,17 @@ end;
 // Создание нового цикла
 procedure TfmMain.btCreatClick(Sender: TObject);
 var
-  newname: string[128];
+  newname: string;
 begin
-  newname := InputBox('Создание нового цикла', 'Введите название цикла', '');
-  SwitchRW(False, [ztCycle]);
-  if Length(newname) > 0 then
+  newname := '';
+  if InputQuery('Создание нового цикла', 'Введите название цикла', newname) then
+  begin
+    SwitchRW(False, [ztCycle]);
     ztCycle.AppendRecord([NULL, newname]);
-  btEditClick(Self);
-  SwitchRW(True, [ztCycle]);
-  CheckCyclesTable;
+    btEditClick(Self);
+    SwitchRW(True, [ztCycle]);
+    CheckCyclesTable;
+  end;
 end;
 
 // Удаление выбранного цикла
@@ -144,8 +150,29 @@ begin
   end;
   fmPreview.lbTotalTime.Caption := 'Продолжительность цикла: ' +
     IntToStr(totaltime) + ' сек.';
-  fmPreview.lbSwitchCount.Caption:='Количество переключений: ' + IntToStr(switchcnt);
+  fmPreview.lbSwitchCount.Caption := 'Количество переключений: ' +
+    IntToStr(switchcnt);
   fmPreview.ShowModal;
+  ztCycle.Refresh;
+end;
+
+procedure TfmMain.btRenameClick(Sender: TObject);
+var
+  newname: string;
+  cid:string;
+begin
+  newname := ztCycle.FieldByName('cname').AsString;
+  if InputQuery('Переименование цикла', 'Введите название цикла', newname) then
+  begin
+    cid:=ztCycle.FieldByName('cid').AsString;
+    SwitchRW(False, [ztCycle]);
+    zqCommon.Close;
+    zqCommon.SQL.Clear;
+    zqCommon.SQL.Add('UPDATE cycle SET cname=''' + newname + '''');
+    zqCommon.SQL.Add('WHERE cid=' + cid);
+    zqCommon.ExecSQL;
+    SwitchRW(True, [ztCycle]);
+  end;
 end;
 
 // Экспорт цикла в файл

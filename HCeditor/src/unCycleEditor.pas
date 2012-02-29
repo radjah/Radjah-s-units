@@ -11,7 +11,7 @@ type
   TfmCycleEditor = class(TForm)
     ztCStruct: TZTable;
     dsCStruct: TDataSource;
-    DBGrid1: TDBGrid;
+    dbgCStruct: TDBGrid;
     Label1: TLabel;
     ztStages: TZTable;
     ztCStructid: TIntegerField;
@@ -29,7 +29,7 @@ type
     btDown: TButton;
     zqCheckEmpty: TZQuery;
     zqCommon: TZQuery;
-    Button2: TButton;
+    btClose: TButton;
     chStagePreview: TChart;
     Series1: TLineSeries;
     procedure btAddClick(Sender: TObject);
@@ -42,6 +42,7 @@ type
     procedure Replot;
     procedure DBGrid2CellClick(Column: TColumn);
     procedure DBGrid2KeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure btCloseClick(Sender: TObject);
   private
     { Private declarations }
   public
@@ -145,19 +146,24 @@ begin
   //
 end;
 
+procedure TfmCycleEditor.btCloseClick(Sender: TObject);
+begin
+  Close;
+end;
+
 // Закрываем всё за собой
 procedure TfmCycleEditor.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
-  CloseDS([ztCStruct, ztStages]);
+  CloseDS([ztCStruct, ztStages, zqCommon, zqCheckEmpty, zqGetOrder]);
 end;
 
 procedure TfmCycleEditor.FormShow(Sender: TObject);
 begin
   ReopenDS([ztCStruct, ztStages]);
   zqCheckEmpty.Close;
-  zqCheckEmpty.SQL[1] := 'cid=' + inttostr(CycleID);
+  zqCheckEmpty.SQL[1] := 'cid=' + IntToStr(CycleID);
   zqGetOrder.Close;
-  zqGetOrder.SQL[1] := 'cid=' + inttostr(CycleID);
+  zqGetOrder.SQL[1] := 'cid=' + IntToStr(CycleID);
   GetMaxOrderNumber;
   CheckEmpty;
   Replot;
