@@ -94,11 +94,9 @@ object fmMain: TfmMain
   end
   object ZConnect: TZConnection
     AutoCommit = False
-    Connected = True
     DesignConnection = True
     SQLHourGlass = True
     Protocol = 'sqlite-3'
-    Database = 'E:\proj\stat\HCeditor\stages.sqlite'
     Left = 64
     Top = 432
   end

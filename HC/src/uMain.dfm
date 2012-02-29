@@ -172,13 +172,6 @@ object Main: TMain
     TabOrder = 3
     OnClick = btLoadClick
   end
-  object StageTimer: TTimer
-    Enabled = False
-    Interval = 100
-    OnTimer = StageTimerTimer
-    Left = 672
-    Top = 16
-  end
   object odOpen: TOpenDialog
     Filter = #1063#1072#1089#1086#1074#1099#1077' '#1094#1080#1082#1083#1099' (*.hcf)|*.hcf'
     Left = 672

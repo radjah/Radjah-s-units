@@ -18,7 +18,6 @@ type
     pbTime: TProgressBar;
     Chart: TChart;
     btGo: TButton;
-    StageTimer: TTimer;
     btLoad: TButton;
     odOpen: TOpenDialog;
     Series1: TBarSeries;
@@ -26,44 +25,44 @@ type
     procedure StageTimerTimer(Sender: TObject);
     procedure btGoClick(Sender: TObject);
     procedure btLoadClick(Sender: TObject);
-//    procedure FormCreate(Sender: TObject);
+    // procedure FormCreate(Sender: TObject);
   private
     { Private declarations }
   public
     { Public declarations }
-    MMTimer1 : integer; // Код мультимедийного таймера
+    MMTimer1: integer; // Код мультимедийного таймера
   end;
-
-{  TTickThread = class(TThread)
+   { TTickThread = class(TThread)
     procedure Execute; override;
-  public
+    public
     constructor Create;
-  end;}
-procedure MyTimerCallBackProg(uTimerID, uMessage: UINT; dwUser, dw1, dw2: DWORD); stdcall;
+    end; }
+procedure MyTimerCallBackProg(uTimerID, uMessage: UINT;
+  dwUser, dw1, dw2: DWORD); stdcall;
 
 var
   Main: TMain;
-//  TickThread: TTickThread;
+  // TickThread: TTickThread;
 
-  HMarr: array of array [1 .. 2] of Integer; // Массив этапов
-  totaltime: Integer; // общее время цикла
-  curstage: Integer; // Текущей этак цикла
-  CurTime: Integer = 1; // Настройки этапа цикла
-  sttime: Integer; // время
-  scnt: Integer; // количество этапов в цикле
+  HMarr: array of array [1 .. 2] of integer; // Массив этапов
+  totaltime: integer; // общее время цикла
+  curstage: integer; // Текущей этак цикла
+  CurTime: integer = 1; // Настройки этапа цикла
+  sttime: integer; // время
+  scnt: integer; // количество этапов в цикле
   tickcount: longint;
 
 implementation
 
 {$R *.dfm}
+// constructor TTickThread.Create;
+// begin
+// inherited Create(True);
+// end;
 
-//constructor TTickThread.Create;
-//begin
-//  inherited Create(True);
-//end;
-
-//procedure TTickThread.Execute;
-procedure MyTimerCallBackProg(uTimerID, uMessage: UINT; dwUser, dw1, dw2: DWORD); stdcall;
+// procedure TTickThread.Execute;
+procedure MyTimerCallBackProg(uTimerID, uMessage: UINT;
+  dwUser, dw1, dw2: DWORD); stdcall;
 begin
   Main.pbTime.Position := Main.pbTime.Position + 1;
   // Проверка на конец этапа
@@ -74,14 +73,15 @@ begin
     // Если номер пройденного цикла равен количеству циклов
     if (curstage + 1) >= scnt then
     begin
-      //Main.StageTimer.Enabled := false;
-      //Остановка таймера
+      // Main.StageTimer.Enabled := false;
+      // Остановка таймера
       timeKillEvent(Main.MMTimer1);
+      Main.btLoad.Enabled := True;
       Main.lTime.Caption := '0';
       tickcount := GetTickCount - tickcount;
       ShowMessage('Цикл испытаний закончен!' + #10#13 + 'Затрачено времени ' +
         floattostr(tickcount / 1000) + ' сек.');
-      Application.ProcessMessages;
+      // Application.ProcessMessages;
       Main.btGo.Enabled := True;
       // Возвращаем значения для начала цикла
       Main.lPosition.Caption := '0';
@@ -126,7 +126,6 @@ begin
     Main.lTime.Caption := IntToStr(HMarr[curstage][2] - CurTime);
     CurTime := CurTime + 1;
   end;
-
   // CurTime := CurTime + 1;
   // lPosition.Caption := inttostr(CurTime);
   // lNextPosition.Caption := inttostr(CurTime + 1);
@@ -146,11 +145,11 @@ begin
     lNextPosition.Caption := 'конец цикла'
   else
     lNextPosition.Caption := IntToStr(HMarr[curstage + 1][1]);
-//  StageTimer.Enabled := True; // Запускаем таймер
-
+  // StageTimer.Enabled := True; // Запускаем таймер
+  btLoad.Enabled := false;
   tickcount := GetTickCount;
   // Запуск мультимедийного таймера
-  MMTimer1 := timeSetEvent(1000,10,@MyTimerCallBackProg,100,TIME_PERIODIC);
+  MMTimer1 := timeSetEvent(1000, 10, @MyTimerCallBackProg, 100, TIME_PERIODIC);
   // StageTimer.Enabled := true
   // else
   // StageTimer.Enabled := False;
@@ -159,7 +158,7 @@ end;
 procedure TMain.btLoadClick(Sender: TObject);
 var
   hmfile: TIniFile; // файл с режимом
-  i: Integer; // счетчик для циклов
+  i: integer; // счетчик для циклов
 begin
   // открываем файл и подготавлием всё для запуска цикла
   if odOpen.Execute then
@@ -200,15 +199,15 @@ begin
   end;
 end;
 
-//procedure TMain.FormCreate(Sender: TObject);
-//begin
-//  TickThread := TTickThread.Create;
-//end;
+// procedure TMain.FormCreate(Sender: TObject);
+// begin
+// TickThread := TTickThread.Create;
+// end;
 
 // Таймер
 procedure TMain.StageTimerTimer(Sender: TObject);
 begin
-//  TickThread.Execute;
+  // TickThread.Execute;
 end;
 
 end.
