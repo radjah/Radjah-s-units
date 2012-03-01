@@ -2,7 +2,7 @@ object Main: TMain
   Left = 0
   Top = 0
   BorderStyle = bsDialog
-  Caption = 'Main'
+  Caption = #1062#1080#1082#1083' '#1080#1089#1087#1099#1090#1072#1085#1080#1081' '#1090#1077#1087#1083#1086#1074#1086#1079#1086#1074' '#1080' '#1087#1091#1090#1077#1074#1099#1093' '#1084#1072#1096#1080#1085
   ClientHeight = 730
   ClientWidth = 791
   Color = clBlack
@@ -13,6 +13,7 @@ object Main: TMain
   Font.Style = []
   OldCreateOrder = False
   Position = poDesktopCenter
+  OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
   object Label1: TLabel
@@ -29,10 +30,11 @@ object Main: TMain
     ParentFont = False
   end
   object lPosition: TLabel
-    Left = 376
+    Left = 329
     Top = 8
-    Width = 231
+    Width = 304
     Height = 178
+    AutoSize = False
     Caption = '%n'
     Font.Charset = RUSSIAN_CHARSET
     Font.Color = clYellow
@@ -55,10 +57,11 @@ object Main: TMain
     ParentFont = False
   end
   object lNextPosition: TLabel
-    Left = 376
+    Left = 329
     Top = 205
-    Width = 98
+    Width = 440
     Height = 77
+    AutoSize = False
     Caption = '%p'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clGreen
@@ -81,10 +84,11 @@ object Main: TMain
     ParentFont = False
   end
   object lTime: TLabel
-    Left = 376
+    Left = 329
     Top = 296
-    Width = 48
+    Width = 121
     Height = 45
+    AutoSize = False
     Caption = '%t'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWhite
@@ -94,7 +98,7 @@ object Main: TMain
     ParentFont = False
   end
   object Label2: TLabel
-    Left = 512
+    Left = 456
     Top = 296
     Width = 65
     Height = 45
@@ -102,6 +106,33 @@ object Main: TMain
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWhite
     Font.Height = -37
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    ParentFont = False
+  end
+  object lStages: TLabel
+    Left = 646
+    Top = 99
+    Width = 137
+    Height = 45
+    AutoSize = False
+    Caption = '%s'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clYellow
+    Font.Height = -37
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    ParentFont = False
+  end
+  object Label4: TLabel
+    Left = 646
+    Top = 68
+    Width = 53
+    Height = 25
+    Caption = #1069#1090#1072#1087':'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWhite
+    Font.Height = -21
     Font.Name = 'Tahoma'
     Font.Style = []
     ParentFont = False
@@ -117,7 +148,7 @@ object Main: TMain
   object Chart: TChart
     Left = 8
     Top = 488
-    Width = 729
+    Width = 775
     Height = 146
     Legend.Title.Visible = False
     Legend.Visible = False
@@ -126,7 +157,7 @@ object Main: TMain
     Title.Visible = False
     View3D = False
     BevelOuter = bvNone
-    Color = clBlack
+    Color = clSilver
     TabOrder = 1
     PrintMargins = (
       15
@@ -134,16 +165,23 @@ object Main: TMain
       15
       37)
     ColorPaletteIndex = 10
-    object Series1: TBarSeries
-      BarPen.Color = clAqua
+    object Series1: TLineSeries
       Marks.Arrow.Visible = True
       Marks.Callout.Brush.Color = clBlack
       Marks.Callout.Arrow.Visible = True
+      Marks.Callout.Length = 20
       Marks.Visible = False
-      SeriesColor = clAqua
+      SeriesColor = clYellow
+      InvertedStairs = True
+      LinePen.Color = clYellow
+      LinePen.Width = 3
+      Pointer.InflateMargins = True
+      Pointer.Style = psRectangle
+      Pointer.Visible = False
+      Stairs = True
       XValues.Name = 'X'
       XValues.Order = loAscending
-      YValues.Name = 'Bar'
+      YValues.Name = 'Y'
       YValues.Order = loNone
     end
   end
@@ -174,7 +212,7 @@ object Main: TMain
   end
   object odOpen: TOpenDialog
     Filter = #1063#1072#1089#1086#1074#1099#1077' '#1094#1080#1082#1083#1099' (*.hcf)|*.hcf'
-    Left = 672
-    Top = 64
+    Left = 128
+    Top = 24
   end
 end
