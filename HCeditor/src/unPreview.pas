@@ -27,13 +27,13 @@ var
 implementation
 
 uses
-  unMain;
+  unHCEditorMain;
 
 {$R *.dfm}
 
 procedure TfmPreview.Button1Click(Sender: TObject);
 begin
-  fmMain.ExportToHCF;
+  fmHCEditorMain.ExportToHCF;
 end;
 
 end.

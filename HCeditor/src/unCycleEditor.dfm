@@ -168,12 +168,12 @@ object fmCycleEditor: TfmCycleEditor
     end
   end
   object ztCStruct: TZTable
-    Connection = fmMain.ZConnect
+    Connection = fmHCEditorMain.ZConnect
     SortedFields = 'corder'
     ReadOnly = True
     TableName = 'cstruct'
     MasterFields = 'cid'
-    MasterSource = fmMain.dsCycle
+    MasterSource = fmHCEditorMain.dsCycle
     LinkedFields = 'cid'
     IndexFieldNames = 'corder Asc'
     Left = 16
@@ -210,7 +210,7 @@ object fmCycleEditor: TfmCycleEditor
     Top = 464
   end
   object ztStages: TZTable
-    Connection = fmMain.ZConnect
+    Connection = fmHCEditorMain.ZConnect
     ReadOnly = True
     TableName = 'stages'
     Left = 168
@@ -222,7 +222,7 @@ object fmCycleEditor: TfmCycleEditor
     Top = 400
   end
   object zqGetOrder: TZQuery
-    Connection = fmMain.ZConnect
+    Connection = fmHCEditorMain.ZConnect
     SQL.Strings = (
       'SELECT  MAX(cstruct.corder) AS maxord FROM  cstruct WHERE'
       'cid = 1')
@@ -236,7 +236,7 @@ object fmCycleEditor: TfmCycleEditor
     end
   end
   object zqCheckEmpty: TZQuery
-    Connection = fmMain.ZConnect
+    Connection = fmHCEditorMain.ZConnect
     SQL.Strings = (
       'select count(sid) as scount from cstruct where'
       'cid=1')
@@ -245,7 +245,7 @@ object fmCycleEditor: TfmCycleEditor
     Top = 400
   end
   object zqCommon: TZQuery
-    Connection = fmMain.ZConnect
+    Connection = fmHCEditorMain.ZConnect
     Params = <>
     Left = 16
     Top = 400

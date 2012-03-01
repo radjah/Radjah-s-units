@@ -1,4 +1,4 @@
-object fmMain: TfmMain
+object fmHCEditorMain: TfmHCEditorMain
   Left = 0
   Top = 0
   Caption = #1056#1077#1076#1072#1082#1090#1086#1088' '#1094#1080#1082#1083#1086#1074
@@ -116,31 +116,6 @@ object fmMain: TfmMain
     Connection = ZConnect
     Params = <>
     Left = 248
-    Top = 432
-  end
-  object zqCreateDB: TZQuery
-    Connection = ZConnect
-    SQL.Strings = (
-      
-        'CREATE TABLE cstruct (id integer NOT NULL PRIMARY KEY AUTOINCREM' +
-        'ENT UNIQUE,cid integer NOT NULL,corder integer NOT NULL,sid inte' +
-        'ger NOT NULL);'
-      'CREATE TABLE cycle ('
-      '  cid    integer PRIMARY KEY AUTOINCREMENT NOT NULL UNIQUE,'
-      '  cname  varchar(128) NOT NULL'
-      ');'
-      
-        'CREATE TABLE sstruct (pid integer NOT NULL PRIMARY KEY AUTOINCRE' +
-        'MENT UNIQUE,sid integer NOT NULL,clevel integer NOT NULL,ptime i' +
-        'nteger NOT NULL);'
-      'CREATE TABLE stages ('
-      '  sid    integer PRIMARY KEY AUTOINCREMENT NOT NULL UNIQUE,'
-      '  sname  varchar(128) NOT NULL'
-      ');'
-      'CREATE INDEX cindex ON sstruct(sid);'
-      'CREATE INDEX sindex ON cstruct(sid);')
-    Params = <>
-    Left = 328
     Top = 432
   end
   object sdExport: TSaveDialog

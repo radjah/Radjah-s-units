@@ -1,4 +1,4 @@
-unit uMain;
+unit unHCMain;
 
 interface
 
@@ -8,7 +8,7 @@ uses
   inifiles, mmsystem;
 
 type
-  TMain = class(TForm)
+  THCMain = class(TForm)
     Label1: TLabel;
     lPosition: TLabel;
     Label3: TLabel;
@@ -40,7 +40,7 @@ procedure MyTimerCallBackProg(uTimerID, uMessage: UINT;
   dwUser, dw1, dw2: DWORD); stdcall;
 
 var
-  Main: TMain;
+  HCMain: THCMain;
   HMarr: array of array [1 .. 2] of integer; // Массив этапов
   totaltime: integer; // общее время цикла
   curstage: integer; // Текущей этак цикла
@@ -59,7 +59,7 @@ procedure MyTimerCallBackProg(uTimerID, uMessage: UINT;
 var
   str: string;
 begin
-  Main.pbTime.Position := Main.pbTime.Position + 1;
+  HCMain.pbTime.Position := HCMain.pbTime.Position + 1;
   // Проверка на конец этапа
   if CurTime >= sttime then
   // Если время отработки этапа прошло
@@ -69,51 +69,51 @@ begin
     if (curstage + 1) >= scnt then
     begin
       // Остановка таймера
-      timeKillEvent(Main.MMTimer1);
+      timeKillEvent(HCMain.MMTimer1);
       tickcount := GetTickCount - tickcount;
-      Main.btLoad.Enabled := True;
-      Main.lTime.Caption := '0';
+      HCMain.btLoad.Enabled := True;
+      HCMain.lTime.Caption := '0';
       CurTime := 0;
       str := 'Цикл испытаний закончен!' + #10#13 + 'Затрачено времени ' +
         floattostr(tickcount / 1000) + ' сек.';
-      MessageBox(Main.Handle, pchar(str), 'Конец цикла',
+      MessageBox(HCMain.Handle, pchar(str), 'Конец цикла',
         MB_OK or MB_ICONINFORMATION);
-      Main.btGo.Enabled := True;
+      HCMain.btGo.Enabled := True;
       // Возвращаем значения для начала цикла
-      Main.lPosition.Caption := '0';
+      HCMain.lPosition.Caption := '0';
       curstage := 0;
-      Main.lStages.Caption := '0/' + inttostr(scnt);
-      Main.pbTime.Max := HMarr[0][2];
-      Main.pbTime.Position := 0;
+      HCMain.lStages.Caption := '0/' + inttostr(scnt);
+      HCMain.pbTime.Max := HMarr[0][2];
+      HCMain.pbTime.Position := 0;
       if (curstage + 1) > scnt then
-        Main.lNextPosition.Caption := 'конец цикла'
+        HCMain.lNextPosition.Caption := 'конец цикла'
       else
-        Main.lNextPosition.Caption := inttostr(HMarr[curstage][1]);
-      Main.lTime.Caption := inttostr(HMarr[curstage][2]);
+        HCMain.lNextPosition.Caption := inttostr(HMarr[curstage][1]);
+      HCMain.lTime.Caption := inttostr(HMarr[curstage][2]);
       CurTime := CurTime + 1;
     end
     else
     // Если закончился только один из этапов
     begin
       curstage := curstage + 1;
-      Main.lStages.Caption := inttostr(curstage + 1) + '/' + inttostr(scnt);
+      HCMain.lStages.Caption := inttostr(curstage + 1) + '/' + inttostr(scnt);
       // Загружаем настройки следующего этапа
       // Сброс програссбара
-      Main.pbTime.Position := 0;
+      HCMain.pbTime.Position := 0;
       // Время нового цикла
-      Main.pbTime.Max := HMarr[curstage][2];
+      HCMain.pbTime.Max := HMarr[curstage][2];
       // Сброс счетчика времени
       CurTime := 1;
       // Количество сотавшихся секунд
       sttime := HMarr[curstage][2];
-      Main.lTime.Caption := inttostr(HMarr[curstage][2]);
+      HCMain.lTime.Caption := inttostr(HMarr[curstage][2]);
       // Новый цикл
-      Main.lPosition.Caption := inttostr(HMarr[curstage][1]);
+      HCMain.lPosition.Caption := inttostr(HMarr[curstage][1]);
       // Следующий цикл
       if (curstage + 1) >= scnt then
-        Main.lNextPosition.Caption := 'конец цикла'
+        HCMain.lNextPosition.Caption := 'конец цикла'
       else
-        Main.lNextPosition.Caption := inttostr(HMarr[curstage + 1][1]);
+        HCMain.lNextPosition.Caption := inttostr(HMarr[curstage + 1][1]);
     end;
   end
   else // Ничего не закончилось
@@ -121,7 +121,7 @@ begin
     // Увеличим програссбар
     // pbTime.Position := pbTime.Position + 1;
     // Уменьшим оставшееся время
-    Main.lTime.Caption := inttostr(HMarr[curstage][2] - CurTime);
+    HCMain.lTime.Caption := inttostr(HMarr[curstage][2] - CurTime);
     CurTime := CurTime + 1;
   end;
   // CurTime := CurTime + 1;
@@ -131,7 +131,7 @@ begin
 end;
 
 // Запуск цикла
-procedure TMain.btGoClick(Sender: TObject);
+procedure THCMain.btGoClick(Sender: TObject);
 begin
   btGo.Enabled := false;
   sttime := HMarr[0][2]; // Получаем время первого этапа
@@ -151,7 +151,7 @@ begin
 end;
 
 // Загрузка цикла из файла.
-procedure TMain.btLoadClick(Sender: TObject);
+procedure THCMain.btLoadClick(Sender: TObject);
 var
   hmfile: TIniFile; // файл с режимом
   i: integer; // счетчик для циклов
@@ -201,12 +201,12 @@ begin
     str := 'Общее время цикла: ' +
       inttostr(totaltime) + ' сек.' + #10#13 + 'Количество этапов: ' +
       inttostr(scnt);
-    MessageBox(Main.Handle, pchar(str), 'Цикл загружен',
+    MessageBox(HCMain.Handle, pchar(str), 'Цикл загружен',
       MB_OK or MB_ICONINFORMATION);
   end;
 end;
 
-procedure TMain.FormShow(Sender: TObject);
+procedure THCMain.FormShow(Sender: TObject);
 begin
   lPosition.Caption := '__';
   lNextPosition.Caption := '__';

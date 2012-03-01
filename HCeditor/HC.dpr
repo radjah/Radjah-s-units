@@ -2,14 +2,13 @@ program HC;
 
 uses
   Forms,
-  uMain in 'src\uMain.pas' {Main};
+  unHCMain in 'src\unHCMain.pas' {HCMain};
 
 {$R *.res}
 
 begin
   Application.Initialize;
   Application.MainFormOnTaskbar := True;
-  Application.CreateForm(TMain, Main);
+  Application.CreateForm(THCMain, HCMain);
   Application.Run;
-
 end.

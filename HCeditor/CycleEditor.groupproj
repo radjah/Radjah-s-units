@@ -9,6 +9,9 @@
 			<Projects Include="CreateDB.dproj">
 				<Dependencies/>
 			</Projects>
+			<Projects Include="HC.dproj">
+				<Dependencies/>
+			</Projects>
 		</ItemGroup>
 		<ProjectExtensions>
 			<Borland.Personality>Default.Personality.12</Borland.Personality>
@@ -35,14 +38,23 @@
 		<Target Name="CreateDB:Make">
 			<MSBuild Projects="CreateDB.dproj" Targets="Make"/>
 		</Target>
+		<Target Name="HC">
+			<MSBuild Projects="HC.dproj"/>
+		</Target>
+		<Target Name="HC:Clean">
+			<MSBuild Projects="HC.dproj" Targets="Clean"/>
+		</Target>
+		<Target Name="HC:Make">
+			<MSBuild Projects="HC.dproj" Targets="Make"/>
+		</Target>
 		<Target Name="Build">
-			<CallTarget Targets="hceditor;CreateDB"/>
+			<CallTarget Targets="hceditor;CreateDB;HC"/>
 		</Target>
 		<Target Name="Clean">
-			<CallTarget Targets="hceditor:Clean;CreateDB:Clean"/>
+			<CallTarget Targets="hceditor:Clean;CreateDB:Clean;HC:Clean"/>
 		</Target>
 		<Target Name="Make">
-			<CallTarget Targets="hceditor:Make;CreateDB:Make"/>
+			<CallTarget Targets="hceditor:Make;CreateDB:Make;HC:Make"/>
 		</Target>
 		<Import Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')" Project="$(BDS)\Bin\CodeGear.Group.Targets"/>
 	</Project>

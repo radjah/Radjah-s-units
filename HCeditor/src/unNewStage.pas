@@ -58,7 +58,7 @@ var
 implementation
 
 uses
-  unStageEditor, unCommonFunc, unMain;
+  unStageEditor, unCommonFunc, unHCEditorMain;
 
 {$R *.dfm}
 

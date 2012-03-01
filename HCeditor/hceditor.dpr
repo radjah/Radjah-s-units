@@ -2,7 +2,7 @@ program hceditor;
 
 uses
   Forms,
-  unMain in 'src\unMain.pas' {fmMain},
+  unHCEditorMain in 'src\unHCEditorMain.pas' {fmHCEditorMain},
   unStageEditor in 'src\unStageEditor.pas' {fmStageEditor},
   unCommonFunc in 'src\unCommonFunc.pas',
   unNewStage in 'src\unNewStage.pas' {fmNewStage},
@@ -14,7 +14,7 @@ uses
 begin
   Application.Initialize;
   Application.MainFormOnTaskbar := True;
-  Application.CreateForm(TfmMain, fmMain);
+  Application.CreateForm(TfmHCEditorMain, fmHCEditorMain);
   Application.CreateForm(TfmStageEditor, fmStageEditor);
   Application.CreateForm(TfmNewStage, fmNewStage);
   Application.CreateForm(TfmCycleEditor, fmCycleEditor);

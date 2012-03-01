@@ -159,7 +159,7 @@ object fmNewStage: TfmNewStage
     OnClick = btDelPosClick
   end
   object zqGetStruct: TZQuery
-    Connection = fmMain.ZConnect
+    Connection = fmHCEditorMain.ZConnect
     SQL.Strings = (
       'select porder, pid, clevel, ptime from sstruct where'
       'sid=1'
@@ -169,7 +169,7 @@ object fmNewStage: TfmNewStage
     Top = 424
   end
   object zqClearSctruct: TZQuery
-    Connection = fmMain.ZConnect
+    Connection = fmHCEditorMain.ZConnect
     SQL.Strings = (
       'delete from sstruct where'
       'sid=1')
@@ -178,7 +178,7 @@ object fmNewStage: TfmNewStage
     Top = 472
   end
   object zqGetSCount: TZQuery
-    Connection = fmMain.ZConnect
+    Connection = fmHCEditorMain.ZConnect
     SQL.Strings = (
       'select count(pid) as pcount from sstruct where'
       'sid=1')
@@ -192,7 +192,7 @@ object fmNewStage: TfmNewStage
     end
   end
   object zqUpdateName: TZQuery
-    Connection = fmMain.ZConnect
+    Connection = fmHCEditorMain.ZConnect
     SQL.Strings = (
       'update stages'
       'set'

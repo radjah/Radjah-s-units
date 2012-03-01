@@ -51,8 +51,8 @@
 			<DelphiCompile Include="hceditor.dpr">
 				<MainSource>MainSource</MainSource>
 			</DelphiCompile>
-			<DCCReference Include="src\unMain.pas">
-				<Form>fmMain</Form>
+			<DCCReference Include="src\unHCEditorMain.pas">
+				<Form>fmHCEditorMain</Form>
 			</DCCReference>
 			<DCCReference Include="src\unStageEditor.pas">
 				<Form>fmStageEditor</Form>

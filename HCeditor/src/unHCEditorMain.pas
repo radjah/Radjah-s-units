@@ -1,4 +1,4 @@
-unit unMain;
+unit unHCEditorMain;
 
 interface
 
@@ -9,7 +9,7 @@ uses
   IniFiles;
 
 type
-  TfmMain = class(TForm)
+  TfmHCEditorMain = class(TForm)
     ZConnect: TZConnection;
     ztCycle: TZTable;
     dsCycle: TDataSource;
@@ -19,7 +19,6 @@ type
     btStageEditor: TButton;
     zqCommon: TZQuery;
     btDelete: TButton;
-    zqCreateDB: TZQuery;
     btExport: TButton;
     sdExport: TSaveDialog;
     zqExport: TZQuery;
@@ -41,7 +40,7 @@ type
   end;
 
 var
-  fmMain: TfmMain;
+  fmHCEditorMain: TfmHCEditorMain;
 
 implementation
 
@@ -49,7 +48,7 @@ uses unStageEditor, unCommonFunc, unCycleEditor, unPreview;
 {$R *.dfm}
 
 // Проверка наличия циклов в таблице и вкл/выкл кнопок
-procedure TfmMain.CheckCyclesTable;
+procedure TfmHCEditorMain.CheckCyclesTable;
 var
   ccount: integer;
 begin
@@ -76,7 +75,7 @@ begin
 end;
 
 // Создание нового цикла
-procedure TfmMain.btCreatClick(Sender: TObject);
+procedure TfmHCEditorMain.btCreatClick(Sender: TObject);
 var
   newname: string;
 begin
@@ -92,7 +91,7 @@ begin
 end;
 
 // Удаление выбранного цикла
-procedure TfmMain.btDeleteClick(Sender: TObject);
+procedure TfmHCEditorMain.btDeleteClick(Sender: TObject);
 var
   str: string;
 begin
@@ -119,13 +118,13 @@ begin
 end;
 
 // Измененеие выбранного цикла
-procedure TfmMain.btEditClick(Sender: TObject);
+procedure TfmHCEditorMain.btEditClick(Sender: TObject);
 begin
   fmCycleEditor.CycleID := ztCycle.FieldByName('cid').AsInteger;
   fmCycleEditor.ShowModal;
 end;
 
-procedure TfmMain.btExportClick(Sender: TObject);
+procedure TfmHCEditorMain.btExportClick(Sender: TObject);
 var
   totaltime: integer; // Время
   switchcnt: integer; // Количество переключений
@@ -156,7 +155,7 @@ begin
   ztCycle.Refresh;
 end;
 
-procedure TfmMain.btRenameClick(Sender: TObject);
+procedure TfmHCEditorMain.btRenameClick(Sender: TObject);
 var
   newname: string;
   cid:string;
@@ -176,7 +175,7 @@ begin
 end;
 
 // Экспорт цикла в файл
-procedure TfmMain.ExportToHCF;
+procedure TfmHCEditorMain.ExportToHCF;
 var
   steps: integer; // Тут храним количество переключений
   hcfile: TIniFile; // Файл цикла
@@ -202,7 +201,7 @@ begin
 end;
 
 {
-  procedure TfmMain.btDeleteClick(Sender: TObject);
+  procedure TfmHCEditorMain.btDeleteClick(Sender: TObject);
   var
   str: String;
   begin
@@ -213,13 +212,13 @@ end;
   ShowMessage('Ня!');
   end; }
 
-procedure TfmMain.btStageEditorClick(Sender: TObject);
+procedure TfmHCEditorMain.btStageEditorClick(Sender: TObject);
 begin
   fmStageEditor.ShowModal;
 end;
 
 // Получение пути к базе данных
-procedure TfmMain.FormCreate(Sender: TObject);
+procedure TfmHCEditorMain.FormCreate(Sender: TObject);
 var
   dbfile: TFileName;
 begin
@@ -251,7 +250,7 @@ begin
   end;
 end;
 
-procedure TfmMain.FormShow(Sender: TObject);
+procedure TfmHCEditorMain.FormShow(Sender: TObject);
 begin
   CheckCyclesTable;
 end;

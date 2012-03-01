@@ -144,14 +144,14 @@ object fmStageEditor: TfmStageEditor
     OnClick = btEditClick
   end
   object ztStage: TZTable
-    Connection = fmMain.ZConnect
+    Connection = fmHCEditorMain.ZConnect
     ReadOnly = True
     TableName = 'stages'
     Left = 472
     Top = 384
   end
   object ztSStruct: TZTable
-    Connection = fmMain.ZConnect
+    Connection = fmHCEditorMain.ZConnect
     SortedFields = 'porder'
     ReadOnly = True
     TableName = 'sstruct'
@@ -174,13 +174,13 @@ object fmStageEditor: TfmStageEditor
     Top = 384
   end
   object zqCommon: TZQuery
-    Connection = fmMain.ZConnect
+    Connection = fmHCEditorMain.ZConnect
     Params = <>
     Left = 368
     Top = 384
   end
   object zqCheckStages: TZQuery
-    Connection = fmMain.ZConnect
+    Connection = fmHCEditorMain.ZConnect
     SQL.Strings = (
       'select count(sid) as scount from stages')
     Params = <>

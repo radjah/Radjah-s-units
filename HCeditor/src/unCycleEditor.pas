@@ -57,7 +57,7 @@ var
 implementation
 
 uses
-  unMain, unCommonFunc;
+  unHCEditorMain, unCommonFunc;
 
 {$R *.dfm}
 
@@ -122,8 +122,8 @@ begin
   GetMaxOrderNumber;
   SwitchRW(False, [ztCStruct]);
   CurOrd := CurOrd + 1;
-  ztCStruct.AppendRecord([NULL, fmMain.ztCycle.FieldByName('cid').AsInteger,
-    CurOrd, ztStages.FieldByName('sid').AsInteger]);
+  ztCStruct.AppendRecord([NULL, fmHCEditorMain.ztCycle.FieldByName('cid')
+    .AsInteger, CurOrd, ztStages.FieldByName('sid').AsInteger]);
   SwitchRW(true, [ztCStruct]);
   CheckEmpty;
 end;
