@@ -2,22 +2,22 @@ program MainApp;
 
 uses
   Forms,
-  unMain in 'unMain.pas' {fmMain},
-  unName in 'unName.pas' {fmName},
-  unDM in 'unDM.pas' {fmDM: TDataModule},
-  unTypes in 'unTypes.pas',
-  unConnector in 'unConnector.pas' {fmConnector},
-  unSys in 'unSys.pas' {fmSys},
-  unCompConf in 'unCompConf.pas' {fmCompConf},
-  unCommonFunc in 'unCommonFunc.pas',
-  unNewDig in 'unNewDig.pas' {fmNewDig},
-  unUnitConf in 'unUnitConf.pas' {fmUnitConf},
-  unSigTypes in 'unSigTypes.pas' {fmSigTypes},
-  unAddSigGroup in 'unAddSigGroup.pas' {fmAddSigGroup},
-  unProbTags in 'unProbTags.pas' {fmProbTags},
-  unMap in 'unMap.pas' {fmMap},
-  unReport in 'unReport.pas' {fmReport},
-  unMapManual in 'unMapManual.pas' {fmMapManual};
+  unMain in 'src\unMain.pas' {fmMain},
+  unName in 'src\unName.pas' {fmName},
+  unDM in 'src\unDM.pas' {fmDM: TDataModule},
+  unTypes in 'src\unTypes.pas',
+  unConnector in 'src\unConnector.pas' {fmConnector},
+  unSys in 'src\unSys.pas' {fmSys},
+  unCompConf in 'src\unCompConf.pas' {fmCompConf},
+  unCommonFunc in 'src\unCommonFunc.pas',
+  unNewDig in 'src\unNewDig.pas' {fmNewDig},
+  unUnitConf in 'src\unUnitConf.pas' {fmUnitConf},
+  unSigTypes in 'src\unSigTypes.pas' {fmSigTypes},
+  unAddSigGroup in 'src\unAddSigGroup.pas' {fmAddSigGroup},
+  unProbTags in 'src\unProbTags.pas' {fmProbTags},
+  unMap in 'src\unMap.pas' {fmMap},
+  unReport in 'src\unReport.pas' {fmReport},
+  unMapManual in 'src\unMapManual.pas' {fmMapManual};
 
 {$R *.res}
 
