@@ -25,6 +25,7 @@ type
     lStages: TLabel;
     Label4: TLabel;
     Button1: TButton;
+    Series2: TLineSeries;
     procedure btGoClick(Sender: TObject);
     procedure btLoadClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -42,8 +43,10 @@ procedure MyTimerCallBackProg(uTimerID, uMessage: UINT;
 
 var
   HCMain: THCMain;
-  HMarr: array of array [1 .. 2] of integer; // Массив этапов
+  // Массив этапов (1 - позиция, 2 - время)
+  HMarr: array of array [1 .. 2] of integer;
   totaltime: integer; // общее время цикла
+  timecounter: integer; // Счетчик секунд
   curstage: integer; // Текущей этак цикла
   CurTime: integer = 1; // Настройки этапа цикла
   sttime: integer; // время
@@ -64,6 +67,7 @@ var
   str: string;
 begin
   HCMain.pbTime.Position := HCMain.pbTime.Position + 1;
+  timecounter:=timecounter+1;
   // Проверка на конец этапа
   if CurTime >= sttime then
   // Если время отработки этапа прошло
@@ -100,6 +104,7 @@ begin
     // Если закончился только один из этапов
     begin
       curstage := curstage + 1;
+      HCMain.Series2.AddXY(timecounter,HMarr[curstage][1]);
       HCMain.lStages.Caption := inttostr(curstage + 1) + '/' + inttostr(scnt);
       // Загружаем настройки следующего этапа
       // Сброс програссбара
@@ -126,6 +131,7 @@ begin
     // pbTime.Position := pbTime.Position + 1;
     // Уменьшим оставшееся время
     HCMain.lTime.Caption := inttostr(HMarr[curstage][2] - CurTime);
+    HCMain.Series2.AddXY(timecounter,HMarr[curstage][1]);
     CurTime := CurTime + 1;
   end;
   // CurTime := CurTime + 1;
@@ -143,6 +149,10 @@ begin
   lStages.Caption := inttostr(curstage + 1) + '/' + inttostr(scnt);
   // Текущая позиция
   lPosition.Caption := inttostr(HMarr[0][1]);
+  timecounter:=1;
+  Series2.Clear;
+  Series2.AddXY(0, 0);
+  Series2.AddXY(0, HMarr[0][1]);
   // Проверяем на конец цикла (всего одна позиция?)
   if (curstage + 1) > scnt then
     lNextPosition.Caption := 'конец цикла'
@@ -185,6 +195,7 @@ begin
     // Загрузка файла окончена
     // Подготовка интерфейса
     Chart.Series[0].Clear;
+    Series2.Clear;
     Series1.AddXY(0, 0);
     ctotaltime := 0;
     for i := 1 to scnt do

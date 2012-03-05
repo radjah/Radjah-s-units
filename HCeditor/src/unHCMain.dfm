@@ -184,6 +184,24 @@ object HCMain: THCMain
       YValues.Name = 'Y'
       YValues.Order = loNone
     end
+    object Series2: TLineSeries
+      Marks.Arrow.Visible = True
+      Marks.Callout.Brush.Color = clBlack
+      Marks.Callout.Arrow.Visible = True
+      Marks.Visible = False
+      SeriesColor = clRed
+      InvertedStairs = True
+      LinePen.Color = clRed
+      LinePen.Width = 3
+      Pointer.InflateMargins = True
+      Pointer.Style = psRectangle
+      Pointer.Visible = False
+      Stairs = True
+      XValues.Name = 'X'
+      XValues.Order = loAscending
+      YValues.Name = 'Y'
+      YValues.Order = loNone
+    end
   end
   object btGo: TButton
     Left = 229
