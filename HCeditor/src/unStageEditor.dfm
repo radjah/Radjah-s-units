@@ -97,6 +97,7 @@ object fmStageEditor: TfmStageEditor
     Width = 75
     Height = 25
     Caption = #1059#1076#1072#1083#1080#1090#1100
+    Enabled = False
     TabOrder = 3
     OnClick = btSDeleteClick
   end
@@ -140,6 +141,7 @@ object fmStageEditor: TfmStageEditor
     Width = 75
     Height = 25
     Caption = #1048#1079#1084#1077#1085#1080#1090#1100
+    Enabled = False
     TabOrder = 5
     OnClick = btEditClick
   end

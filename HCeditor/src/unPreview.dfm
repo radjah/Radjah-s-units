@@ -51,7 +51,7 @@ object fmPreview: TfmPreview
   end
   object Button1: TButton
     Left = 352
-    Top = 257
+    Top = 255
     Width = 137
     Height = 60
     Caption = #1069#1082#1089#1087#1086#1088#1090' '#1074' '#1092#1072#1081#1083

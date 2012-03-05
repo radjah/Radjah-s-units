@@ -76,10 +76,9 @@ begin
   // ShowMessage(zqCommon.FieldByName('ccid').AsString);
 end;
 
-
 procedure TfmHCEditorMain.btAboutClick(Sender: TObject);
 begin
-  fmAbout.lProgrammName.Caption:='Редактор циклов';
+  fmAbout.lProgrammName.Caption := 'Редактор циклов';
   fmAbout.ShowModal;
 end;
 
@@ -88,14 +87,32 @@ procedure TfmHCEditorMain.btCreatClick(Sender: TObject);
 var
   newname: string;
 begin
-  newname := '';
-  if InputQuery('Создание нового цикла', 'Введите название цикла', newname) then
+  // Проверка на наличие этапов в базе
+  zqCommon.Close;
+  zqCommon.SQL.Clear;
+  zqCommon.SQL.Add('select count(sid) as csid from stages');
+  zqCommon.Open;
+  if zqCommon.FieldByName('csid').AsInteger = 0 then
+    MessageBox(Self.Handle, 'Не задано ни одного этапа!', 'Ошибка!',
+      MB_OK or MB_ICONEXCLAMATION)
+  else
   begin
-    SwitchRW(False, [ztCycle]);
-    ztCycle.AppendRecord([NULL, newname]);
-    btEditClick(Self);
-    SwitchRW(True, [ztCycle]);
-    CheckCyclesTable;
+    // Создание нового цикла
+    newname := '';
+    if InputQuery('Создание нового цикла', 'Введите название цикла',
+      newname) then
+      if trim(newname) = '' then
+        MessageBox(Self.Handle,
+          'Имя не может быть пустым или состоять из пробелов!', 'Ошибка!',
+          MB_OK or MB_ICONEXCLAMATION)
+      else
+      begin
+        SwitchRW(False, [ztCycle]);
+        ztCycle.AppendRecord([NULL, newname]);
+        btEditClick(Self);
+        SwitchRW(True, [ztCycle]);
+        CheckCyclesTable;
+      end;
   end;
 end;
 
@@ -133,6 +150,7 @@ begin
   fmCycleEditor.ShowModal;
 end;
 
+// Экспорт цикла в файл
 procedure TfmHCEditorMain.btExportClick(Sender: TObject);
 var
   totaltime: integer; // Время
@@ -161,18 +179,18 @@ begin
   fmPreview.lbSwitchCount.Caption := 'Количество переключений: ' +
     IntToStr(switchcnt);
   fmPreview.ShowModal;
-  ztCycle.Refresh;
 end;
 
+// Переименование
 procedure TfmHCEditorMain.btRenameClick(Sender: TObject);
 var
   newname: string;
-  cid:string;
+  cid: string;
 begin
   newname := ztCycle.FieldByName('cname').AsString;
   if InputQuery('Переименование цикла', 'Введите название цикла', newname) then
   begin
-    cid:=ztCycle.FieldByName('cid').AsString;
+    cid := ztCycle.FieldByName('cid').AsString;
     SwitchRW(False, [ztCycle]);
     zqCommon.Close;
     zqCommon.SQL.Clear;
@@ -192,6 +210,10 @@ begin
   if sdExport.Execute then
   begin
     hcfile := TIniFile.Create(sdExport.FileName);
+    if hcfile.SectionExists('stages') then
+      hcfile.EraseSection('stages');
+    if hcfile.SectionExists('settings') then
+      hcfile.EraseSection('settings');
     zqExport.First;
     steps := 0;
     // Читаем всю структуру и пишем в файл
@@ -209,18 +231,7 @@ begin
   end;
 end;
 
-{
-  procedure TfmHCEditorMain.btDeleteClick(Sender: TObject);
-  var
-  str: String;
-  begin
-  str := concat('Удалить цикл "', ztCycle.FieldByName('cname').AsString,
-  '" и все его этапы?', #00);
-  if MessageDlg(str, mtConfirmation, [mbYes, mbNo], 0,
-  mbYes) = mrYes then
-  ShowMessage('Ня!');
-  end; }
-
+// Редактирование выбранного цикла
 procedure TfmHCEditorMain.btStageEditorClick(Sender: TObject);
 begin
   fmStageEditor.ShowModal;
@@ -240,18 +251,6 @@ begin
     Application.Terminate;
   end
   else
-  { begin
-    ZConnect.Database := dbfile;
-    zqCreateDB.ExecSQL;
-    ZConnect.Connect;
-    // zqCreateDB.ExecSQL;
-    ztCycle.Open;
-    end
-    else
-    begin
-    ZConnect.Connect;
-    ztCycle.Open;
-    end; }
   begin
     ZConnect.Database := dbfile;
     ZConnect.Connect;

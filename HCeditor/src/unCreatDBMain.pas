@@ -68,11 +68,33 @@ procedure TForm1.btCreateDBClick(Sender: TObject);
 
 var
   DB: TSQLiteDatabase; // База данных
-  // QueryStr: AnsiString;
+  MBResult: integer; // Ответ пользователя
+  DBFilename: TFileName; // Имя новой базы
+  IsNameSet: boolean; // Указаны ли данные?
 begin
-  if sdSaveDB.Execute then
+  MBResult := MessageBox(Self.Handle, 'Создать новую базу в папке программы?' +
+    #10#13 + ' (Нет - указать путь и имя вручную)' + #10#13, 'Создание базы',
+    MB_YESNOCANCEL or MB_ICONQUESTION);
+  if MBResult = IDYES then
   begin
-    DB := TSQLiteDatabase.Create(sdSaveDB.FileName);
+    DBFilename := ExtractFilePath(Application.ExeName) + 'stages.sqlite';
+    IsNameSet := True;
+  end
+  else if MBResult = IDNO then
+  begin
+    if sdSaveDB.Execute then
+    begin
+      DBFilename := sdSaveDB.FileName;
+      IsNameSet := True
+    end
+    else
+      IsNameSet := False;
+  end
+  else
+    IsNameSet := False;
+  if IsNameSet then
+  begin
+    DB := TSQLiteDatabase.Create(DBFilename);
     // Удаление таблиц
     if DB.TableExists('cstruct') then
       DB.ExecSQL('DROP TABLE cstruct');

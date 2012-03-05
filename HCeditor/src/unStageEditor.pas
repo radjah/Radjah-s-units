@@ -58,12 +58,23 @@ begin
   if zqCheckStages.FieldByName('scount').AsInteger = 0 then
   begin
     btSCreateClick(Self);
+    ReopenDS([zqCheckStages]);
+    if zqCheckStages.FieldByName('scount').AsInteger = 0 then
+    begin
+      btSDelete.Enabled := False;
+      btEdit.Enabled := False;
+    end
+    else
+    begin
+      btSDelete.Enabled := True;
+      btEdit.Enabled := True;
+    end;
   end
   else
   begin
     ReopenDS([ztStage, ztSStruct]);
-    btEdit.Enabled := true;
-    btSDelete.Enabled := true;
+    btEdit.Enabled := True;
+    btSDelete.Enabled := True;
     ztStage.First;
     Replot;
   end;
@@ -95,7 +106,7 @@ end;
 // Редактирование этапа
 procedure TfmStageEditor.btEditClick(Sender: TObject);
 begin
-  fmNewStage.IsEdit := true;
+  fmNewStage.IsEdit := True;
   fmNewStage.StageID := ztStage.FieldByName('sid').AsInteger;
   fmNewStage.ShowModal;
 end;
