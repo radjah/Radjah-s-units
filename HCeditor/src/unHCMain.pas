@@ -24,9 +24,11 @@ type
     Series1: TLineSeries;
     lStages: TLabel;
     Label4: TLabel;
+    Button1: TButton;
     procedure btGoClick(Sender: TObject);
     procedure btLoadClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
+    procedure Button1Click(Sender: TObject);
     // procedure FormCreate(Sender: TObject);
   private
     { Private declarations }
@@ -34,7 +36,6 @@ type
     { Public declarations }
     MMTimer1: integer; // Код мультимедийного таймера
   end;
-
 
 procedure MyTimerCallBackProg(uTimerID, uMessage: UINT;
   dwUser, dw1, dw2: DWORD); stdcall;
@@ -50,6 +51,9 @@ var
   tickcount: longint;
 
 implementation
+
+uses
+  unAbout;
 
 {$R *.dfm}
 
@@ -198,12 +202,17 @@ begin
     else
       lNextPosition.Caption := inttostr(HMarr[curstage][1]);
     lTime.Caption := inttostr(HMarr[curstage][2]);
-    str := 'Общее время цикла: ' +
-      inttostr(totaltime) + ' сек.' + #10#13 + 'Количество этапов: ' +
-      inttostr(scnt);
+    str := 'Общее время цикла: ' + inttostr(totaltime) + ' сек.' + #10#13 +
+      'Количество этапов: ' + inttostr(scnt);
     MessageBox(HCMain.Handle, pchar(str), 'Цикл загружен',
       MB_OK or MB_ICONINFORMATION);
   end;
+end;
+
+procedure THCMain.Button1Click(Sender: TObject);
+begin
+  fmAbout.lProgrammName.Caption := 'Программа испытаний';
+  fmAbout.ShowModal;
 end;
 
 procedure THCMain.FormShow(Sender: TObject);

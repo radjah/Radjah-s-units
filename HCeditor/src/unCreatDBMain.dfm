@@ -16,9 +16,9 @@ object Form1: TForm1
   object Label1: TLabel
     Left = 24
     Top = 181
-    Width = 56
+    Width = 61
     Height = 13
-    Caption = 'SQL-'#1079#1072#1087#1088#1086':'
+    Caption = 'SQL-'#1079#1072#1087#1088#1086#1089':'
   end
   object Label2: TLabel
     Left = 287
@@ -104,33 +104,42 @@ object Form1: TForm1
     TabOrder = 7
     OnClick = btCloseDBClick
   end
+  object btAbout: TButton
+    Left = 461
+    Top = 24
+    Width = 201
+    Height = 25
+    Caption = #1054' '#1087#1088#1086#1075#1088#1072#1084#1084#1077
+    TabOrder = 8
+    OnClick = btAboutClick
+  end
   object odOpenDB: TOpenDialog
     DefaultExt = 'sqlite'
     Filter = #1041#1072#1079#1072#1094#1080#1082#1083#1086#1074' (stages.sqlite)|*.sqlite'
-    Left = 592
-    Top = 8
+    Left = 280
+    Top = 80
   end
   object zConn: TZConnection
     Protocol = 'sqlite-3'
-    Left = 336
-    Top = 64
+    Left = 280
+    Top = 32
   end
   object zqCommon: TZQuery
     Connection = zConn
     ReadOnly = True
     Params = <>
-    Left = 392
-    Top = 64
+    Left = 336
+    Top = 32
   end
   object dsCommon: TDataSource
     DataSet = zqCommon
-    Left = 464
-    Top = 64
+    Left = 408
+    Top = 32
   end
   object sdSaveDB: TSaveDialog
     DefaultExt = 'sqlite'
     Filter = #1041#1072#1079#1072' '#1094#1080#1082#1083#1086#1074' (stages.sqlite)|*.sqlite'
-    Left = 592
-    Top = 56
+    Left = 280
+    Top = 128
   end
 end

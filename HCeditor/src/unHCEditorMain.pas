@@ -23,6 +23,7 @@ type
     sdExport: TSaveDialog;
     zqExport: TZQuery;
     btRename: TButton;
+    btAbout: TButton;
     procedure btStageEditorClick(Sender: TObject);
     procedure btCreatClick(Sender: TObject);
     procedure btDeleteClick(Sender: TObject);
@@ -33,6 +34,7 @@ type
     procedure ExportToHCF;
     procedure btExportClick(Sender: TObject);
     procedure btRenameClick(Sender: TObject);
+    procedure btAboutClick(Sender: TObject);
   private
     { Private declarations }
   public
@@ -44,7 +46,7 @@ var
 
 implementation
 
-uses unStageEditor, unCommonFunc, unCycleEditor, unPreview;
+uses unStageEditor, unCommonFunc, unCycleEditor, unPreview, unAbout;
 {$R *.dfm}
 
 // Проверка наличия циклов в таблице и вкл/выкл кнопок
@@ -72,6 +74,13 @@ begin
     btRename.Enabled := True;
   end;
   // ShowMessage(zqCommon.FieldByName('ccid').AsString);
+end;
+
+
+procedure TfmHCEditorMain.btAboutClick(Sender: TObject);
+begin
+  fmAbout.lProgrammName.Caption:='Редактор циклов';
+  fmAbout.ShowModal;
 end;
 
 // Создание нового цикла

@@ -7,7 +7,8 @@ uses
   unCommonFunc in 'src\unCommonFunc.pas',
   unNewStage in 'src\unNewStage.pas' {fmNewStage},
   unCycleEditor in 'src\unCycleEditor.pas' {fmCycleEditor},
-  unPreview in 'src\unPreview.pas' {fmPreview};
+  unPreview in 'src\unPreview.pas' {fmPreview},
+  unAbout in 'src\unAbout.pas' {fmAbout};
 
 {$R *.res}
 
@@ -19,5 +20,6 @@ begin
   Application.CreateForm(TfmNewStage, fmNewStage);
   Application.CreateForm(TfmCycleEditor, fmCycleEditor);
   Application.CreateForm(TfmPreview, fmPreview);
+  Application.CreateForm(TfmAbout, fmAbout);
   Application.Run;
 end.

@@ -24,12 +24,14 @@ type
     btExec: TButton;
     sdSaveDB: TSaveDialog;
     btCloseDB: TButton;
+    btAbout: TButton;
     procedure btCreateDBClick(Sender: TObject);
     procedure btOptimClick(Sender: TObject);
     procedure btOpenDBClick(Sender: TObject);
     procedure btOpenDSClick(Sender: TObject);
     procedure btExecClick(Sender: TObject);
     procedure btCloseDBClick(Sender: TObject);
+    procedure btAboutClick(Sender: TObject);
   private
     { Private declarations }
   public
@@ -42,9 +44,15 @@ var
 implementation
 
 uses
-  unCommonFunc;
+  unCommonFunc, unAbout;
 
 {$R *.dfm}
+
+procedure TForm1.btAboutClick(Sender: TObject);
+begin
+  fmAbout.lProgrammName.Caption := 'Обслуживание базы';
+  fmAbout.ShowModal;
+end;
 
 procedure TForm1.btCloseDBClick(Sender: TObject);
 begin

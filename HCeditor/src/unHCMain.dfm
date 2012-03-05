@@ -210,6 +210,15 @@ object HCMain: THCMain
     TabOrder = 3
     OnClick = btLoadClick
   end
+  object Button1: TButton
+    Left = 63
+    Top = 695
+    Width = 90
+    Height = 25
+    Caption = #1054' '#1087#1088#1086#1075#1088#1072#1084#1084#1077
+    TabOrder = 4
+    OnClick = Button1Click
+  end
   object odOpen: TOpenDialog
     Filter = #1063#1072#1089#1086#1074#1099#1077' '#1094#1080#1082#1083#1099' (*.hcf)|*.hcf'
     Left = 128

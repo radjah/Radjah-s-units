@@ -2,7 +2,7 @@ object fmHCEditorMain: TfmHCEditorMain
   Left = 0
   Top = 0
   Caption = #1056#1077#1076#1072#1082#1090#1086#1088' '#1094#1080#1082#1083#1086#1074
-  ClientHeight = 490
+  ClientHeight = 433
   ClientWidth = 582
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -92,38 +92,47 @@ object fmHCEditorMain: TfmHCEditorMain
     TabOrder = 6
     OnClick = btRenameClick
   end
+  object btAbout: TButton
+    Left = 357
+    Top = 400
+    Width = 217
+    Height = 25
+    Caption = #1054' '#1087#1088#1086#1075#1088#1072#1084#1084#1077
+    TabOrder = 7
+    OnClick = btAboutClick
+  end
   object ZConnect: TZConnection
     AutoCommit = False
     DesignConnection = True
     SQLHourGlass = True
     Protocol = 'sqlite-3'
-    Left = 64
-    Top = 432
+    Left = 368
+    Top = 312
   end
   object ztCycle: TZTable
     Connection = ZConnect
     ReadOnly = True
     TableName = 'cycle'
-    Left = 120
-    Top = 432
+    Left = 424
+    Top = 312
   end
   object dsCycle: TDataSource
     DataSet = ztCycle
-    Left = 168
-    Top = 432
+    Left = 472
+    Top = 312
   end
   object zqCommon: TZQuery
     Connection = ZConnect
     Params = <>
-    Left = 248
-    Top = 432
+    Left = 488
+    Top = 248
   end
   object sdExport: TSaveDialog
     DefaultExt = 'hcf'
     Filter = #1060#1072#1081#1083' '#1094#1080#1082#1083#1072' (*.hcf)|*.hcf'
     Options = [ofEnableSizing]
-    Left = 392
-    Top = 432
+    Left = 368
+    Top = 248
   end
   object zqExport: TZQuery
     Connection = ZConnect
@@ -137,7 +146,7 @@ object fmHCEditorMain: TfmHCEditorMain
       'AND  cstruct.sid = sstruct.sid'
       'ORDER BY  cstruct.corder, sstruct.porder')
     Params = <>
-    Left = 456
-    Top = 432
+    Left = 432
+    Top = 248
   end
 end

@@ -1,3 +1,5 @@
+*.dof
+*.cfg
 *.*res
 *.exe*
 *.dll*
