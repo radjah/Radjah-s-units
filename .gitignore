@@ -5,6 +5,7 @@
 *.dll*
 !sqlite3.dll
 *.tds
+*.ini
 *.ddp
 *.local
 *.rsb
