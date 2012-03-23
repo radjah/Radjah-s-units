@@ -3,7 +3,7 @@ object fmNewStage: TfmNewStage
   Top = 0
   BorderStyle = bsDialog
   Caption = #1053#1086#1074#1099#1081' '#1101#1090#1072#1087
-  ClientHeight = 607
+  ClientHeight = 609
   ClientWidth = 298
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -19,21 +19,21 @@ object fmNewStage: TfmNewStage
   TextHeight = 13
   object Label1: TLabel
     Left = 8
-    Top = 58
+    Top = 61
     Width = 142
     Height = 13
     Caption = #1050#1086#1083#1080#1095#1077#1089#1090#1074#1086' '#1087#1077#1088#1077#1082#1083#1102#1095#1077#1085#1080#1081':'
   end
   object Label2: TLabel
     Left = 8
-    Top = 109
+    Top = 112
     Width = 231
     Height = 13
     Caption = #1055#1086#1079#1080#1094#1080#1080' '#1080' '#1080#1093' '#1087#1088#1086#1076#1086#1083#1078#1080#1090#1077#1083#1100#1085#1086#1089#1090#1100' '#1074' '#1089#1082#1091#1085#1076#1072#1093':'
   end
   object sbPos: TScrollBox
     Left = 8
-    Top = 128
+    Top = 131
     Width = 281
     Height = 281
     VertScrollBar.Smooth = True
@@ -59,7 +59,7 @@ object fmNewStage: TfmNewStage
   end
   object eSwitchCount: TEdit
     Left = 8
-    Top = 77
+    Top = 80
     Width = 81
     Height = 21
     TabOrder = 1
@@ -67,7 +67,7 @@ object fmNewStage: TfmNewStage
   end
   object udSwitchCount: TUpDown
     Left = 89
-    Top = 77
+    Top = 80
     Width = 16
     Height = 21
     Associate = eSwitchCount
@@ -78,7 +78,7 @@ object fmNewStage: TfmNewStage
   end
   object btMaxPosSet: TButton
     Left = 120
-    Top = 75
+    Top = 78
     Width = 101
     Height = 26
     Caption = #1047#1072#1076#1072#1090#1100
@@ -87,7 +87,7 @@ object fmNewStage: TfmNewStage
   end
   object btCreate: TButton
     Left = 76
-    Top = 572
+    Top = 575
     Width = 145
     Height = 25
     Caption = #1057#1086#1079#1076#1072#1090#1100
@@ -107,7 +107,7 @@ object fmNewStage: TfmNewStage
   end
   object chStagePreview: TChart
     Left = 8
-    Top = 415
+    Top = 418
     Width = 282
     Height = 151
     Legend.Visible = False
@@ -141,7 +141,7 @@ object fmNewStage: TfmNewStage
   end
   object btAddPos: TButton
     Left = 227
-    Top = 75
+    Top = 78
     Width = 30
     Height = 25
     Caption = '+1'
@@ -150,7 +150,7 @@ object fmNewStage: TfmNewStage
   end
   object btDelPos: TButton
     Left = 260
-    Top = 75
+    Top = 78
     Width = 30
     Height = 25
     Caption = '-1'
@@ -166,7 +166,7 @@ object fmNewStage: TfmNewStage
       'order by porder')
     Params = <>
     Left = 24
-    Top = 424
+    Top = 427
   end
   object zqClearSctruct: TZQuery
     Connection = fmHCEditorMain.ZConnect
@@ -175,7 +175,7 @@ object fmNewStage: TfmNewStage
       'sid=1')
     Params = <>
     Left = 24
-    Top = 472
+    Top = 475
   end
   object zqGetSCount: TZQuery
     Connection = fmHCEditorMain.ZConnect
@@ -184,23 +184,32 @@ object fmNewStage: TfmNewStage
       'sid=1')
     Params = <>
     Left = 24
-    Top = 520
+    Top = 523
     object zqGetSCountpcount: TWideStringField
       FieldName = 'pcount'
       ReadOnly = True
       Size = 255
     end
   end
+  object zqGetName: TZQuery
+    Connection = fmHCEditorMain.ZConnect
+    SQL.Strings = (
+      'select sname from stages where'
+      'sid=1')
+    Params = <>
+    Left = 104
+    Top = 427
+  end
   object zqUpdateName: TZQuery
     Connection = fmHCEditorMain.ZConnect
     SQL.Strings = (
       'update stages'
       'set'
-      'sname='#39#1082#1090#1086' '#1079#1072#1073#1099#1083' '#1079#1072#1084#1077#1085#1080#1090#1100' '#1080#1084#1103#39
+      'sname="'#1082#1090#1086'-'#1090#1086' '#1079#1072#1073#1099#1083' '#1091#1082#1072#1079#1072#1090#1100' '#1080#1080#1103'"'
       'where'
       'sid=1')
     Params = <>
     Left = 104
-    Top = 424
+    Top = 483
   end
 end

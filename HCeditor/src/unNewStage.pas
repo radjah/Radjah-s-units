@@ -25,9 +25,10 @@ type
     zqGetStruct: TZQuery;
     zqClearSctruct: TZQuery;
     zqGetSCount: TZQuery;
-    zqUpdateName: TZQuery;
+    zqGetName: TZQuery;
     zqGetSCountpcount: TWideStringField;
     udPosTpl: TUpDown;
+    zqUpdateName: TZQuery;
     procedure btMaxPosSetClick(Sender: TObject);
     procedure udTplChanging(Sender: TObject; var AllowChange: boolean);
     procedure ChartReplot;
@@ -106,7 +107,7 @@ begin
   // Создаем счетчик под позиции
   UDPosArr[i] := TUpDown.Create(sbPos);
   UDPosArr[i].Min := 0;
-  UDPosArr[i].Max := 100;
+  UDPosArr[i].Max := 10000;
   UDPosArr[i].Position := 0;
   UDPosArr[i].Parent := sbPos;
   UDPosArr[i].OnChanging := udPosTpl.OnChanging;
@@ -114,13 +115,15 @@ begin
   // Создаем счетчик
   UDArr[i] := TUpDown.Create(sbPos);
   UDArr[i].Min := 1;
-  UDArr[i].Max := 1000;
+  UDArr[i].Max := 10000;
   UDArr[i].Position := 1;
   UDArr[i].Parent := sbPos;
   UDArr[i].OnChanging := udTpl.OnChanging;
   UDArr[i].Associate := EditArr[i];
   udSwitchCount.Position := udSwitchCount.Position + 1;
-  leStageName.Text := 'ПК ' + inttostr(udSwitchCount.Position) + ' перекл.';
+  // Измнять имя только при создании цикла или при пустом поле
+  if (not IsEdit) or (trim(leStageName.Text) = '') then
+    leStageName.Text := 'ПК ' + inttostr(udSwitchCount.Position) + ' перекл.';
   if Length(LabelArr) = 1 then
     btDelPos.Enabled := false;
   ChartReplot;
@@ -186,8 +189,9 @@ begin
     SetLength(UDArr, Length(UDArr) - 1);
     SetLength(EditPosArr, Length(EditPosArr) - 1);
     SetLength(UDPosArr, Length(UDPosArr) - 1);
-    // Изменить название этапа
-    leStageName.Text := 'ПК ' + inttostr(udSwitchCount.Position) + ' перекл.';
+    // Измнять имя только при создании цикла или при пустом поле
+    if (not IsEdit) or (trim(leStageName.Text) = '') then
+      leStageName.Text := 'ПК ' + inttostr(udSwitchCount.Position) + ' перекл.';
     // Перестроить превью
     ChartReplot;
   end;
@@ -267,7 +271,6 @@ begin
   ChartReplot;
 end;
 
-
 // Динамическое обновление графика
 procedure TfmNewStage.udTplChanging(Sender: TObject; var AllowChange: boolean);
 begin
@@ -323,7 +326,6 @@ begin
     // Подготавлием очистку
     zqClearSctruct.Close;
     zqClearSctruct.SQL[1] := 'sid=' + inttostr(StageID);
-    // ShowMessage(zqClearSctruct.SQL[0] + #10#13 + zqClearSctruct.SQL[1]);
     // Не открываем и не запускаем SQL
     // Создаем поля для редактирования
     udSwitchCount.Position := pcnt;
@@ -337,6 +339,11 @@ begin
     end;
     // Обновляем превью
     ChartReplot;
+    // Получаем имя этапа
+    zqGetName.Close;
+    zqGetName.SQL[1] := 'sid=' + inttostr(StageID);
+    zqGetName.Open;
+    leStageName.Text := zqGetName.FieldByName('sname').AsString;
     // Изменяем кнопку
     btCreate.Caption := 'Изменить';
   end;

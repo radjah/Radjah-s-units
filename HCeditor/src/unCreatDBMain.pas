@@ -74,8 +74,9 @@ var
   IsNameSet: boolean; // Указаны ли данные?
 begin
   MBResult := MessageBox(Self.Handle, 'Создать новую базу в папке программы?' +
-    #10#13 + ' (Нет - указать путь и имя вручную)' + #10#13, 'Создание базы',
-    MB_YESNOCANCEL or MB_ICONQUESTION);
+    #10#13 + #10#13 + 'Внимание! Существующая база при этом будет очищена!' +
+    #10#13 + #10#13 + ' (Нет - указать путь и имя вручную)' + #10#13,
+    'Создание базы', MB_YESNOCANCEL or MB_ICONQUESTION);
   if MBResult = IDYES then
   begin
     DBFilename := ExtractFilePath(Application.ExeName) + 'stages.sqlite';
