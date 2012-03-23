@@ -129,8 +129,7 @@ var
   str: string;
 begin
   // Запрос
-  str := 'Удалить цикл "' + ztStage.FieldByName('sname').AsWideString +
-    '" и все его этапы?';
+  str := 'Удалить этап "' + ztStage.FieldByName('sname').AsWideString + '"?';
   if MessageBox(Self.Handle, Pchar(str), 'Запрос', MB_YESNO OR MB_ICONQUESTION)
     = IDYES then
   begin
@@ -159,7 +158,7 @@ begin
     end
     else
       MessageBox(Self.Handle, 'Такой этап участвует в созданных циклах.' +
-        #10#13 + 'Удаление не возможно', 'Ошибка удалени',
+        #10#13 + 'Удаление не возможно!', 'Ошибка удаления',
         MB_OK OR MB_ICONEXCLAMATION);
   end;
 end;

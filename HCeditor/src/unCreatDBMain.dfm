@@ -1,9 +1,10 @@
 object Form1: TForm1
   Left = 0
   Top = 0
+  BorderStyle = bsDialog
   Caption = #1054#1073#1089#1083#1091#1078#1080#1074#1072#1085#1080#1077' '#1073#1072#1079#1099
-  ClientHeight = 500
-  ClientWidth = 683
+  ClientHeight = 502
+  ClientWidth = 685
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -11,6 +12,7 @@ object Form1: TForm1
   Font.Name = 'Tahoma'
   Font.Style = []
   OldCreateOrder = False
+  Position = poDesktopCenter
   PixelsPerInch = 96
   TextHeight = 13
   object btCreateDB: TButton

@@ -123,7 +123,10 @@ begin
     DB.ExecSQL('CREATE INDEX cindex ON sstruct (sid, porder);');
     DB.ExecSQL('CREATE INDEX sname_idx ON stages (sname);');
     DB.Free;
-    ShowMessage('Если вы видите это сообщение, то база успешно создана.');
+    MessageBox(Self.Handle,
+      'Если вы видите это сообщение, то база успешно создана.',
+      'Создание базы данных', MB_OK or MB_ICONINFORMATION);
+    // ShowMessage('Если вы видите это сообщение, то база успешно создана.');
   end;
 end;
 
@@ -132,7 +135,8 @@ begin
   zqCommon.Close;
   zqCommon.SQL := mmSQL.Lines;
   zqCommon.ExecSQL;
-  ShowMessage('Запрос выполнен.');
+  MessageBox(Self.Handle, 'Запрос выполнен.'+#10#13+'Записей обработано: '+inttostr(zqCommon.RowsAffected), 'Обслуживание базы данных',
+    MB_OK or MB_ICONINFORMATION);
 end;
 
 procedure TForm1.btOpenDBClick(Sender: TObject);
@@ -145,7 +149,8 @@ begin
     btOpenDS.Enabled := True;
     btOpenDB.Enabled := False;
     btCloseDB.Enabled := True;
-    ShowMessage('База открыта. Можно выполнять запросы.');
+    MessageBox(Self.Handle, 'База открыта. Можно выполнять запросы.',
+      'Обслуживание базы данных', MB_OK or MB_ICONINFORMATION);
   end;
 end;
 
@@ -166,7 +171,8 @@ begin
     DB.ExecSQL('REINDEX;');
     DB.ExecSQL('VACUUM;');
     DB.Free;
-    ShowMessage('База данных оптимизирована.');
+    MessageBox(Self.Handle, 'База данных оптимизирована.',
+      'Оптимизация базы данных', MB_OK or MB_ICONINFORMATION);
   end;
 end;
 

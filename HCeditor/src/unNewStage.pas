@@ -300,6 +300,7 @@ begin
   ResetDialog;
   IsEdit := false;
   btCreate.Caption := 'Создать';
+  Caption:='Новый этап';
 end;
 
 // Подготовка диалога к редактированию цикла
@@ -346,6 +347,7 @@ begin
     leStageName.Text := zqGetName.FieldByName('sname').AsString;
     // Изменяем кнопку
     btCreate.Caption := 'Изменить';
+    Caption:='Редактирование этапа';
   end;
 end;
 
