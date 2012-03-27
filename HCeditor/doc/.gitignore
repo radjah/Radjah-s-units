@@ -2,3 +2,4 @@
 !*.png
 !*.tex
 !.gitignore
+!*.doc*

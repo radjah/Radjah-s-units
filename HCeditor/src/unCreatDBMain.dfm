@@ -1,4 +1,4 @@
-object Form1: TForm1
+object fmDBService: TfmDBService
   Left = 0
   Top = 0
   BorderStyle = bsDialog

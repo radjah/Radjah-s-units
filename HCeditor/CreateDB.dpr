@@ -2,7 +2,7 @@ program CreateDB;
 
 uses
   Forms,
-  unCreatDBMain in 'src\unCreatDBMain.pas' {Form1},
+  unCreatDBMain in 'src\unCreatDBMain.pas' {fmDBService},
   unCommonFunc in 'src\unCommonFunc.pas',
   unAbout in 'src\unAbout.pas' {fmAbout};
 
@@ -11,7 +11,7 @@ uses
 begin
   Application.Initialize;
   Application.MainFormOnTaskbar := True;
-  Application.CreateForm(TForm1, Form1);
+  Application.CreateForm(TfmDBService, fmDBService);
   Application.CreateForm(TfmAbout, fmAbout);
   Application.Run;
 end.

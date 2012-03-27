@@ -8,7 +8,7 @@ uses
   ZAbstractConnection, ZConnection, Grids, DBGrids, StdCtrls;
 
 type
-  TForm1 = class(TForm)
+  TfmDBService = class(TForm)
     odOpenDB: TOpenDialog;
     btCreateDB: TButton;
     btOptim: TButton;
@@ -40,7 +40,7 @@ type
   end;
 
 var
-  Form1: TForm1;
+  fmDBService: TfmDBService;
 
 implementation
 
@@ -49,23 +49,27 @@ uses
 
 {$R *.dfm}
 
-procedure TForm1.btAboutClick(Sender: TObject);
+// О программе
+procedure TfmDBService.btAboutClick(Sender: TObject);
 begin
   fmAbout.lProgrammName.Caption := 'Обслуживание базы';
   fmAbout.ShowModal;
 end;
 
-procedure TForm1.btCloseDBClick(Sender: TObject);
+// Закрытие базы
+procedure TfmDBService.btCloseDBClick(Sender: TObject);
 begin
   zConn.Disconnect;
   btExec.Enabled := False;
   btOpenDS.Enabled := False;
   btOpenDB.Enabled := True;
   btCloseDB.Enabled := False;
-  ShowMessage('База закрыта.');
+  MessageBox(Self.Handle, 'База закрыта.', 'Обслуживание базы данных',
+    MB_OK or MB_ICONINFORMATION);
 end;
 
-procedure TForm1.btCreateDBClick(Sender: TObject);
+// Создание новой базы
+procedure TfmDBService.btCreateDBClick(Sender: TObject);
 
 var
   DB: TSQLiteDatabase; // База данных
@@ -73,15 +77,18 @@ var
   DBFilename: TFileName; // Имя новой базы
   IsNameSet: boolean; // Указаны ли данные?
 begin
+  // Запрос
   MBResult := MessageBox(Self.Handle, 'Создать новую базу в папке программы?' +
     #10#13 + #10#13 + 'Внимание! Существующая база при этом будет очищена!' +
     #10#13 + #10#13 + ' (Нет - указать путь и имя вручную)' + #10#13,
     'Создание базы', MB_YESNOCANCEL or MB_ICONQUESTION);
+  // Если создаем базу по месту
   if MBResult = IDYES then
   begin
     DBFilename := ExtractFilePath(Application.ExeName) + 'stages.sqlite';
     IsNameSet := True;
   end
+  // Если сами указываем место
   else if MBResult = IDNO then
   begin
     if sdSaveDB.Execute then
@@ -94,6 +101,7 @@ begin
   end
   else
     IsNameSet := False;
+  // Если не передумали
   if IsNameSet then
   begin
     DB := TSQLiteDatabase.Create(DBFilename);
@@ -126,20 +134,25 @@ begin
     MessageBox(Self.Handle,
       'Если вы видите это сообщение, то база успешно создана.',
       'Создание базы данных', MB_OK or MB_ICONINFORMATION);
-    // ShowMessage('Если вы видите это сообщение, то база успешно создана.');
   end;
 end;
 
-procedure TForm1.btExecClick(Sender: TObject);
+// Выполнение запроса
+procedure TfmDBService.btExecClick(Sender: TObject);
+var
+  str: string;
 begin
   zqCommon.Close;
   zqCommon.SQL := mmSQL.Lines;
   zqCommon.ExecSQL;
-  MessageBox(Self.Handle, 'Запрос выполнен.'+#10#13+'Записей обработано: '+inttostr(zqCommon.RowsAffected), 'Обслуживание базы данных',
+  str := 'Запрос выполнен.' + #10#13 + 'Записей обработано: ' +
+    inttostr(zqCommon.RowsAffected);
+  MessageBox(Self.Handle, Pchar(str), 'Обслуживание базы данных',
     MB_OK or MB_ICONINFORMATION);
 end;
 
-procedure TForm1.btOpenDBClick(Sender: TObject);
+// Открытие файла базы данных
+procedure TfmDBService.btOpenDBClick(Sender: TObject);
 begin
   if odOpenDB.Execute then
   begin
@@ -154,14 +167,22 @@ begin
   end;
 end;
 
-procedure TForm1.btOpenDSClick(Sender: TObject);
+// Открыть набор данных из сапроса
+procedure TfmDBService.btOpenDSClick(Sender: TObject);
+var
+  str: string;
 begin
   zqCommon.Close;
   zqCommon.SQL := mmSQL.Lines;
   zqCommon.Open;
+  str := 'Набор данных создан и открыт.' + #10#13 + 'Записей обработано: ' +
+    inttostr(zqCommon.RowsAffected);
+  MessageBox(Self.Handle, Pchar(str), 'Обслуживание базы данных',
+    MB_OK or MB_ICONINFORMATION);
 end;
 
-procedure TForm1.btOptimClick(Sender: TObject);
+// Оптимизация базы
+procedure TfmDBService.btOptimClick(Sender: TObject);
 var
   DB: TSQLiteDatabase; // База данных
 begin

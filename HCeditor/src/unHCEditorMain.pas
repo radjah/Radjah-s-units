@@ -190,14 +190,22 @@ begin
   newname := ztCycle.FieldByName('cname').AsString;
   if InputQuery('Переименование цикла', 'Введите название цикла', newname) then
   begin
-    cid := ztCycle.FieldByName('cid').AsString;
-    SwitchRW(False, [ztCycle]);
-    zqCommon.Close;
-    zqCommon.SQL.Clear;
-    zqCommon.SQL.Add('UPDATE cycle SET cname=''' + newname + '''');
-    zqCommon.SQL.Add('WHERE cid=' + cid);
-    zqCommon.ExecSQL;
-    SwitchRW(True, [ztCycle]);
+    // Проверка на пустое поле и имя из пробелов
+    if trim(newname) = '' then
+      MessageBox(Self.Handle,
+        'Имя не может быть пустым или состоять из пробелов!', 'Ошибка!',
+        MB_OK or MB_ICONEXCLAMATION)
+    else
+    begin
+      cid := ztCycle.FieldByName('cid').AsString;
+      SwitchRW(False, [ztCycle]);
+      zqCommon.Close;
+      zqCommon.SQL.Clear;
+      zqCommon.SQL.Add('UPDATE cycle SET cname=''' + newname + '''');
+      zqCommon.SQL.Add('WHERE cid=' + cid);
+      zqCommon.ExecSQL;
+      SwitchRW(True, [ztCycle]);
+    end;
   end;
 end;
 
