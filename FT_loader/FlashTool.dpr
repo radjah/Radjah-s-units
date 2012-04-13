@@ -1,7 +1,9 @@
 program FlashTool;
 
 uses
-  windows, registry, classes, dialogs;
+  forms, windows, registry, classes, Messages, Dialogs;
+
+{$R *.res}
 
 var
   Rlst: LongBool;
@@ -21,6 +23,7 @@ begin
     // RegObj.CurrentPath:='SOFTWARE\JavaSoft\Java Runtime Environment';
     RegObj.OpenKey('SOFTWARE\JavaSoft\Java Runtime Environment', false);
     RegObj.GetKeyNames(JavaSubKeys);
+    RegObj.CloseKey;
     // for i := 0 to JavaSubKeys.Count - 1 do
     // ShowMessage(JavaSubKeys.Strings[i]);
     if JavaSubKeys.Count = 0 then
@@ -31,10 +34,10 @@ begin
     begin
       RegObj.OpenKey('SOFTWARE\JavaSoft\Java Runtime Environment\' +
         JavaSubKeys.Strings[0], false);
-      javaparams := RegObj.GetDataAsString('JavaHome', false) +
+      javaparams := RegObj.ReadString('JavaHome') +
         '\bin\javaw.exe -jar x10flasher.jar';
-      // ShowMessage(RegObj.GetDataAsString('JavaHome', false));
-      // ShowMessage(javaparams);
+      //ShowMessage(RegObj.ReadString('JavaHome'));
+      //ShowMessage(javaparams);
       FillChar(StartUpInfo, SizeOf(TStartUpInfo), 0);
       with StartUpInfo do
       begin
