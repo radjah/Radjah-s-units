@@ -1,9 +1,10 @@
 object fmMain: TfmMain
   Left = 0
   Top = 0
+  BorderStyle = bsDialog
   Caption = #1050#1086#1085#1074#1077#1088#1090#1086#1088' '#1090#1072#1088#1080#1088#1086#1074#1086#1095#1085#1099#1093' '#1090#1072#1073#1083#1080#1094
-  ClientHeight = 494
-  ClientWidth = 452
+  ClientHeight = 393
+  ClientWidth = 458
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -11,22 +12,40 @@ object fmMain: TfmMain
   Font.Name = 'Tahoma'
   Font.Style = []
   OldCreateOrder = False
+  Position = poDesktopCenter
   PixelsPerInch = 96
   TextHeight = 13
   object Label1: TLabel
     Left = 24
     Top = 16
-    Width = 401
-    Height = 33
+    Width = 400
+    Height = 26
     Caption = 
       #1059#1082#1072#1078#1080#1090#1077' '#1087#1072#1087#1082#1091' '#1076#1083#1103' '#1089#1086#1093#1088#1072#1085#1077#1085#1080#1103' '#1092#1072#1081#1083#1086#1074' '#1085#1072#1089#1090#1088#1086#1077#1082' '#1076#1083#1103' '#1079#1072#1075#1088#1091#1079#1082#1080' '#1074' '#1073#1083#1086#1082 +
       ' '#1040#1057#1048#1059#1058'. '#1048#1079' '#1086#1076#1085#1086#1081' '#1090#1072#1088#1080#1088#1086#1074#1086#1095#1085#1086#1081' '#1090#1072#1073#1083#1080#1094#1099' '#1087#1086#1083#1091#1095#1072#1077#1090#1089#1103' '#1076#1074#1072' '#1092#1072#1081#1083#1072' '#1085#1072#1089#1090#1088 +
       #1086#1077#1082'.'
     WordWrap = True
   end
+  object Label2: TLabel
+    Left = 24
+    Top = 219
+    Width = 400
+    Height = 26
+    Caption = 
+      #1055#1088#1077#1092#1080#1082#1089' '#1072#1074#1090#1086#1084#1072#1090#1080#1095#1077#1089#1082#1080' '#1087#1088#1086#1089#1090#1072#1074#1083#1103#1077#1090#1089#1103' '#1087#1077#1088#1077#1076' '#1085#1086#1084#1077#1088#1086#1084' '#1073#1083#1086#1082#1072' '#1074' '#1080#1084#1077#1085#1080' ' +
+      #1092#1072#1081#1083#1072' '#1085#1072#1089#1090#1088#1086#1077#1082'.'
+    WordWrap = True
+  end
+  object Label3: TLabel
+    Left = 24
+    Top = 269
+    Width = 325
+    Height = 13
+    Caption = #1044#1086#1087#1086#1083#1085#1080#1090#1077#1083#1100#1085#1099#1077' '#1085#1072#1089#1090#1088#1086#1081#1082#1080' ('#1082#1086#1101#1092#1092#1080#1094#1080#1077#1085#1090#1099' '#1080' '#1090#1072#1088#1080#1088#1086#1074#1082#1072' '#1073#1072#1082#1072')'
+  end
   object btConver: TButton
     Left = 353
-    Top = 152
+    Top = 138
     Width = 80
     Height = 25
     Caption = #1054#1073#1079#1086#1088
@@ -35,7 +54,7 @@ object fmMain: TfmMain
   end
   object leFolder: TLabeledEdit
     Left = 24
-    Top = 154
+    Top = 140
     Width = 323
     Height = 21
     EditLabel.Width = 119
@@ -45,7 +64,7 @@ object fmMain: TfmMain
   end
   object lePrefix: TLabeledEdit
     Left = 24
-    Top = 200
+    Top = 184
     Width = 323
     Height = 21
     EditLabel.Width = 48
@@ -70,6 +89,22 @@ object fmMain: TfmMain
     Height = 25
     Caption = #1054#1073#1079#1086#1088
     TabOrder = 4
+  end
+  object btAdvSettings: TButton
+    Left = 353
+    Top = 264
+    Width = 80
+    Height = 25
+    Caption = #1053#1072#1089#1090#1088#1086#1081#1082#1080
+    TabOrder = 5
+  end
+  object btConvert: TButton
+    Left = 158
+    Top = 344
+    Width = 137
+    Height = 25
+    Caption = #1055#1088#1077#1086#1073#1088#1072#1079#1086#1074#1072#1090#1100'!'
+    TabOrder = 6
   end
   object odXLSFile: TOpenDialog
     Left = 256

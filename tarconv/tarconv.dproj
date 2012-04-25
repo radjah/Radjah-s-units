@@ -49,8 +49,11 @@
 			<DelphiCompile Include="tarconv.dpr">
 				<MainSource>MainSource</MainSource>
 			</DelphiCompile>
-			<DCCReference Include="unMain.pas">
+			<DCCReference Include="src\unMain.pas">
 				<Form>fmMain</Form>
+			</DCCReference>
+			<DCCReference Include="src\unAdvSettings.pas">
+				<Form>btAdvSettings</Form>
 			</DCCReference>
 			<BuildConfiguration Include="Release">
 				<Key>Cfg_2</Key>

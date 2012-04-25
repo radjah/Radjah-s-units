@@ -15,6 +15,10 @@ type
     lePrefix: TLabeledEdit;
     leTarFile: TLabeledEdit;
     btTarFile: TButton;
+    Label2: TLabel;
+    btAdvSettings: TButton;
+    Label3: TLabel;
+    btConvert: TButton;
     procedure btConverClick(Sender: TObject);
   private
     { Private declarations }
