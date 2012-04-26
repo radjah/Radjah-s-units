@@ -3,7 +3,8 @@ program tarconv;
 uses
   Forms,
   unMain in 'src\unMain.pas' {fmMain},
-  unAdvSettings in 'src\unAdvSettings.pas' {btAdvSettings};
+  unAdvSettings in 'src\unAdvSettings.pas' {fmAdvSettings},
+  MyFunctions in '..\libs\MyFunctions.pas';
 
 {$R *.res}
 
@@ -12,6 +13,6 @@ begin
   Application.MainFormOnTaskbar := True;
   Application.Title:='Конвертор тарировочных таблиц';
   Application.CreateForm(TfmMain, fmMain);
-  Application.CreateForm(TbtAdvSettings, btAdvSettings);
+  Application.CreateForm(TfmAdvSettings, fmAdvSettings);
   Application.Run;
 end.

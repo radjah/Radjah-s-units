@@ -29,7 +29,7 @@ object fmMain: TfmMain
   object Label2: TLabel
     Left = 24
     Top = 219
-    Width = 400
+    Width = 395
     Height = 26
     Caption = 
       #1055#1088#1077#1092#1080#1082#1089' '#1072#1074#1090#1086#1084#1072#1090#1080#1095#1077#1089#1082#1080' '#1087#1088#1086#1089#1090#1072#1074#1083#1103#1077#1090#1089#1103' '#1087#1077#1088#1077#1076' '#1085#1086#1084#1077#1088#1086#1084' '#1073#1083#1086#1082#1072' '#1074' '#1080#1084#1077#1085#1080' ' +
@@ -89,6 +89,7 @@ object fmMain: TfmMain
     Height = 25
     Caption = #1054#1073#1079#1086#1088
     TabOrder = 4
+    OnClick = btTarFileClick
   end
   object btAdvSettings: TButton
     Left = 353
@@ -97,6 +98,7 @@ object fmMain: TfmMain
     Height = 25
     Caption = #1053#1072#1089#1090#1088#1086#1081#1082#1080
     TabOrder = 5
+    OnClick = btAdvSettingsClick
   end
   object btConvert: TButton
     Left = 158
@@ -105,8 +107,23 @@ object fmMain: TfmMain
     Height = 25
     Caption = #1055#1088#1077#1086#1073#1088#1072#1079#1086#1074#1072#1090#1100'!'
     TabOrder = 6
+    OnClick = btConvertClick
+  end
+  object cbSaveSettings: TCheckBox
+    Left = 24
+    Top = 304
+    Width = 161
+    Height = 17
+    Caption = #1057#1086#1093#1088#1072#1085#1080#1090#1100' '#1087#1091#1090#1100' '#1080' '#1087#1088#1077#1092#1080#1082#1089'.'
+    Checked = True
+    State = cbChecked
+    TabOrder = 7
   end
   object odXLSFile: TOpenDialog
+    FileName = 
+      'E:\proj\stat\tarprog\'#1058#1072#1088#1080#1088#1086#1074#1082#1072' '#1076#1083#1103' 2'#1058#1069'116 '#8470'0140 (192, 193 '#1082#1086#1084#1087#1083#1077 +
+      #1082#1090').xls'
+    Filter = #1060#1072#1081#1083#1099' '#1090#1072#1088#1080#1088#1086#1074#1086#1082' (*.xls)|*.xls'
     Left = 256
     Top = 48
   end
