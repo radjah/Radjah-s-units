@@ -86,12 +86,18 @@ begin
     fmAdvSettings.Close;
   except
     on E: EConvertError do
+    begin
       MessageBox(Self.Handle,
         Pchar(E.Message + #10#13 + 'Проверьте введенные значения.'),
         'Ошибка сохранения!', MB_OK or MB_ICONERROR);
+      settings.Free;
+    end;
     on E: EIniFileException do
+    begin
       MessageBox(Self.Handle, Pchar('Не удалось сохранить файл настроек.' +
         #10#13 + E.Message), 'Ошибка сохранения!', MB_OK or MB_ICONERROR);
+      settings.Free;
+    end;
   end;
 
 end;

@@ -55,7 +55,6 @@
 			<DCCReference Include="src\unAdvSettings.pas">
 				<Form>fmAdvSettings</Form>
 			</DCCReference>
-			<DCCReference Include="..\libs\MyFunctions.pas"/>
 			<BuildConfiguration Include="Release">
 				<Key>Cfg_2</Key>
 				<CfgParent>Base</CfgParent>

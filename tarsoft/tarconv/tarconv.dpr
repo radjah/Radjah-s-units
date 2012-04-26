@@ -3,8 +3,7 @@ program tarconv;
 uses
   Forms,
   unMain in 'src\unMain.pas' {fmMain},
-  unAdvSettings in 'src\unAdvSettings.pas' {fmAdvSettings},
-  MyFunctions in '..\libs\MyFunctions.pas';
+  unAdvSettings in 'src\unAdvSettings.pas' {fmAdvSettings};
 
 {$R *.res}
 

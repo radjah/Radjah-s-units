@@ -13,6 +13,7 @@ object fmMain: TfmMain
   Font.Style = []
   OldCreateOrder = False
   Position = poDesktopCenter
+  OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
   object Label1: TLabel
@@ -124,6 +125,7 @@ object fmMain: TfmMain
       'E:\proj\stat\tarprog\'#1058#1072#1088#1080#1088#1086#1074#1082#1072' '#1076#1083#1103' 2'#1058#1069'116 '#8470'0140 (192, 193 '#1082#1086#1084#1087#1083#1077 +
       #1082#1090').xls'
     Filter = #1060#1072#1081#1083#1099' '#1090#1072#1088#1080#1088#1086#1074#1086#1082' (*.xls)|*.xls'
+    Options = [ofPathMustExist, ofFileMustExist, ofEnableSizing, ofDontAddToRecent]
     Left = 256
     Top = 48
   end
