@@ -4,7 +4,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, shlobj, ExtCtrls, IniFiles, ComObj;
+  Dialogs, StdCtrls, shlobj, ExtCtrls, IniFiles, ComObj, MyFunctions;
 
 type
   TfmMain = class(TForm)
@@ -41,11 +41,12 @@ const
     '<Settings xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"' +
     ' xmlns:xsd="http://www.w3.org/2001/XMLSchema">' + #10#13 +
     '<version>33817089</version>';
+  TarDTS = '<CalibrationTable><rows><TableRow><H>4</H><V>-46</V></TableRow>' +
+    '<TableRow><H>20</H><V>100</V></TableRow></rows></CalibrationTable>';
 
 implementation
 
-uses
-  unAdvSettings;
+uses unAdvSettings;
 
 {$R *.dfm}
 
@@ -55,6 +56,7 @@ begin
 end;
 
 procedure TfmMain.btConverClick(Sender: TObject);
+
 var
   Dir: array [0 .. MAX_PATH] of char;
   BrInfo: BROWSEINFO;
@@ -108,10 +110,12 @@ end;
 
 // Конвертация файла
 procedure TfmMain.ConvertFile;
+
 var
   TarFileXLS, Book, Sheet: variant;
-  SetFileFirst, SetFileSeconf: TStringList;
+  SetFileFirst, SetFileSecond: TStringList;
   i: integer;
+  FileFirstNum, FileSecondNum: string;
 begin
   try
     if FileExists(ExtractFilePath(Application.ExeName) + 'tarconv.ini') then
@@ -128,87 +132,166 @@ begin
         Sheet := TarFileXLS.WorkBooks.Item[1].Worksheets.Item[1];
         // Создаем TStringList-ы для сохранения файлов
         SetFileFirst := TStringList.Create;
-        SetFileSeconf := TStringList.Create;
+        SetFileFirst.Clear;
+                SetFileSecond := TStringList.Create;
+                SetFileSecond.Clear;
         // Заголовок
         SetFileFirst.Add(TarXMLHead);
-        SetFileSeconf.Add(TarXMLHead);
+        SetFileSecond.Add(TarXMLHead);
         // Читаем настройки фильтров из ini-файла
         SetFileFirst.Add('<filters>' + #10#13 + '<FiltersConf>');
-        SetFileSeconf.Add('<filters>' + #10#13 + '<FiltersConf>');
+        SetFileSecond.Add('<filters>' + #10#13 + '<FiltersConf>');
         // 1-й датчик давления
         // Апература
         SetFileFirst.Add('<aperture>' + iniset.ReadString('Filters',
           'P1Aperture', '0') + '</aperture>');
-        SetFileSeconf.Add('<aperture>' + iniset.ReadString('Filters',
+        SetFileSecond.Add('<aperture>' + iniset.ReadString('Filters',
           'P1Aperture', '0') + '</aperture>');
         // Медианный
         SetFileFirst.Add('<median>' + iniset.ReadString('Filters', 'P1Median',
           '1') + '</median>');
-        SetFileSeconf.Add('<median>' + iniset.ReadString('Filters', 'P1Median',
+        SetFileSecond.Add('<median>' + iniset.ReadString('Filters', 'P1Median',
           '1') + '</median>');
         // Кальмана
         SetFileFirst.Add('<kalman>' + iniset.ReadString('Filters', 'P1Median',
           '1') + '</kalman>');
-        SetFileSeconf.Add('<kalman>' + iniset.ReadString('Filters', 'P1Median',
+        SetFileSecond.Add('<kalman>' + iniset.ReadString('Filters', 'P1Median',
           '1') + '</kalman>');
         // Закрыли
         SetFileFirst.Add('</FiltersConf>' + #10#13 + '<FiltersConf>');
-        SetFileSeconf.Add('</FiltersConf>' + #10#13 + '<FiltersConf>');
+        SetFileSecond.Add('</FiltersConf>' + #10#13 + '<FiltersConf>');
         // 2-й датчик давления
         // Апература
         SetFileFirst.Add('<aperture>' + iniset.ReadString('Filters',
           'P2Aperture', '0') + '</aperture>');
-        SetFileSeconf.Add('<aperture>' + iniset.ReadString('Filters',
+        SetFileSecond.Add('<aperture>' + iniset.ReadString('Filters',
           'P2Aperture', '0') + '</aperture>');
         // Медианный
         SetFileFirst.Add('<median>' + iniset.ReadString('Filters', 'P2Median',
           '1') + '</median>');
-        SetFileSeconf.Add('<median>' + iniset.ReadString('Filters', 'P2Median',
+        SetFileSecond.Add('<median>' + iniset.ReadString('Filters', 'P2Median',
           '1') + '</median>');
         // Кальмана
         SetFileFirst.Add('<kalman>' + iniset.ReadString('Filters', 'P2Median',
           '1') + '</kalman>');
-        SetFileSeconf.Add('<kalman>' + iniset.ReadString('Filters', 'P2Median',
+        SetFileSecond.Add('<kalman>' + iniset.ReadString('Filters', 'P2Median',
           '1') + '</kalman>');
         // Закрыли
         SetFileFirst.Add('</FiltersConf>' + #10#13 + '<FiltersConf>');
-        SetFileSeconf.Add('</FiltersConf>' + #10#13 + '<FiltersConf>');
+        SetFileSecond.Add('</FiltersConf>' + #10#13 + '<FiltersConf>');
         // Датчик температуры
         // Апература
         SetFileFirst.Add('<aperture>' + iniset.ReadString('Filters',
           'TAperture', '0') + '</aperture>');
-        SetFileSeconf.Add('<aperture>' + iniset.ReadString('Filters',
+        SetFileSecond.Add('<aperture>' + iniset.ReadString('Filters',
           'TAperture', '0') + '</aperture>');
         // Медианный
         SetFileFirst.Add('<median>' + iniset.ReadString('Filters', 'TMedian',
           '1') + '</median>');
-        SetFileSeconf.Add('<median>' + iniset.ReadString('Filters', 'TMedian',
+        SetFileSecond.Add('<median>' + iniset.ReadString('Filters', 'TMedian',
           '1') + '</median>');
         // Кальмана
         SetFileFirst.Add('<kalman>' + iniset.ReadString('Filters', 'TMedian',
           '1') + '</kalman>');
-        SetFileSeconf.Add('<kalman>' + iniset.ReadString('Filters', 'TMedian',
+        SetFileSecond.Add('<kalman>' + iniset.ReadString('Filters', 'TMedian',
           '1') + '</kalman>');
         // Закрыли
-        SetFileFirst.Add('</FiltersConf>' + #10#13 + '</filters>');
-        SetFileSeconf.Add('</FiltersConf>' + #10#13 + '</filters>');
+        SetFileFirst.Add('</FiltersConf>' + #10#13 + '</filters>' + #10#13 +
+          '<tables>');
+        SetFileSecond.Add('</FiltersConf>' + #10#13 + '</filters>' + #10#13 +
+          '<tables>');
         // Тарировочные таблицы
         // 1-й датчик давления
         // Заголовок
-        SetFileFirst.Add('<tables>' + #10#13 + '<CalibrationTable>' + #10#13 +
-          '<rows>');
-        SetFileSeconf.Add('<tables>' + #10#13 + '<CalibrationTable>' + #10#13 +
-          '<rows>');
+        SetFileFirst.Add('<CalibrationTable>' + #10#13 + '<rows>');
+        SetFileSecond.Add('<CalibrationTable>' + #10#13 + '<rows>');
         // Читаем настройки датчика для первого и второго блока
         for i := 4 to 11 do
         begin
-          // Заглушка!
+          // Заголовок
+          SetFileFirst.Add('<TableRow>');
+          SetFileSecond.Add('<TableRow>');
+          // Запись значений
+          SetFileFirst.Add('<H>' + Sheet.Cells[i, 1].AsString + '</H>');
+          SetFileSecond.Add('<H>' + Sheet.Cells[i, 5].AsString + '</H>');
+          SetFileFirst.Add('<V>' + Sheet.Cells[i, 2].AsString + '</V>');
+          SetFileSecond.Add('<V>' + Sheet.Cells[i, 6].AsString + '</V>');
+          // Закрывающий тег
+          SetFileFirst.Add('</TableRow>');
+          SetFileSecond.Add('</TableRow>');
         end;
+        // Закрываем тарировочную таблицу 1-го датчика
+        SetFileFirst.Add('</rows>' + #10#13 + '</CalibrationTable>');
+        SetFileSecond.Add('</rows>' + #10#13 + '</CalibrationTable>');
+        // 2-й датчик давления
+        // Заголовок
+        SetFileFirst.Add('<CalibrationTable>' + #10#13 + '<rows>');
+        SetFileSecond.Add('<CalibrationTable>' + #10#13 + '<rows>');
+        // Читаем настройки датчика для первого и второго блока
+        for i := 4 to 11 do
+        begin
+          // Заголовок
+          SetFileFirst.Add('<TableRow>');
+          SetFileSecond.Add('<TableRow>');
+          // Запись значений
+          SetFileFirst.Add('<H>' + Sheet.Cells[i, 3].AsString + '</H>');
+          SetFileSecond.Add('<H>' + Sheet.Cells[i, 7].AsString + '</H>');
+          SetFileFirst.Add('<V>' + Sheet.Cells[i, 4].AsString + '</V>');
+          SetFileSecond.Add('<V>' + Sheet.Cells[i, 8].AsString + '</V>');
+          // Закрывающий тег
+          SetFileFirst.Add('</TableRow>');
+          SetFileSecond.Add('</TableRow>');
+        end;
+        // Закрываем тарировочную таблицу 2-го датчика
+        SetFileFirst.Add('</rows>' + #10#13 + '</CalibrationTable>');
+        SetFileSecond.Add('</rows>' + #10#13 + '</CalibrationTable>');
+        // Тарировка ДТС
+        SetFileFirst.Add(TarFileXLS);
+        SetFileSecond.Add(TarDTS);
+        // Тарировка бака
+        iniset := TIniFile.Create(ExtractFilePath(Application.ExeName) +
+          'tarconv.ini');
+        // Заголовок
+        SetFileFirst.Add('<CalibrationTable>' + #10#13 + '<rows>');
+        SetFileSecond.Add('<CalibrationTable>' + #10#13 + '<rows>');
+        for i := 1 to iniset.ReadInteger('Fuel', 'Pointscount', 0) do
+        begin
+          // Заголовок
+          SetFileFirst.Add('<TableRow>');
+          SetFileSecond.Add('<TableRow>');
+          // Запись значений
+          SetFileFirst.Add('<H>' + iniset.ReadString('Fuel', 'H' + IntToStr(i),
+            '0') + '</H>');
+          SetFileSecond.Add('<H>' + iniset.ReadString('Fuel', 'H' + IntToStr(i),
+            '0') + '</H>');
+          SetFileFirst.Add('<V>' + iniset.ReadString('Fuel', 'V' + IntToStr(i),
+            '0') + '</V>');
+          SetFileSecond.Add('<V>' + iniset.ReadString('Fuel', 'V' + IntToStr(i),
+            '0') + '</V>');
+          // Закрывающий тег
+          SetFileFirst.Add('</TableRow>');
+          SetFileSecond.Add('</TableRow>');
+        end;
+        // Закрываем тарировку
+        SetFileFirst.Add('</rows></CalibrationTable></tables>');
+        SetFileSecond.Add('</rows></CalibrationTable></tables>');
+        // Финиш совсем
+        SetFileFirst.Add
+          ('<arcFirst>60000</arcFirst><arcPeriod>60000</arcPeriod></Settings>');
+        SetFileSecond.Add
+          ('<arcFirst>60000</arcFirst><arcPeriod>60000</arcPeriod></Settings>');
+        // Сохранение файлов
+        FileFirstNum := ReplaceStr(Sheet.Cells[3, 1].AsString, '-1', '');
 
+        FileSecondNum := ReplaceStr(Sheet.Cells[5, 1].AsString, '-1', '');
+        SetFileFirst.SaveToFile(leFolder.Text + '\' + lePrefix.Text + ' ' +
+          FileFirstNum + '.set');
+        SetFileSecond.SaveToFile(leFolder.Text + '\' + lePrefix.Text + ' ' +
+          FileSecondNum + '.set');
         // SetFileFirst.SaveToFile(leFolder.Text+'\'+lePrefix.Text+'.set');
         // Всё закрываем
         SetFileFirst.Free;
-        SetFileSeconf.Free;
+        SetFileSecond.Free;
         TarFileXLS.Quit;
       end
       else
