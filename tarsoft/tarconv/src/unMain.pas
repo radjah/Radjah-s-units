@@ -46,7 +46,7 @@ const
 
 implementation
 
-uses unAdvSettings;
+uses unAdvSettings, unViewDebug;
 
 {$R *.dfm}
 
@@ -122,6 +122,11 @@ begin
     begin
       if FileExists(leTarFile.Text) then
       begin
+        // Создаем TStringList-ы для сохранения файлов
+        SetFileFirst := TStringList.Create;
+        SetFileFirst.Clear;
+        SetFileSecond := TStringList.Create;
+        SetFileSecond.Clear;
         // Создаем новую таблицу
         TarFileXLS := CreateOleObject('Excel.Application');
         // Молчать в тряпочку
@@ -130,11 +135,8 @@ begin
         TarFileXLS.WorkBooks.Add(leTarFile.Text);
         Book := TarFileXLS.WorkBooks.Item[1];
         Sheet := TarFileXLS.WorkBooks.Item[1].Worksheets.Item[1];
-        // Создаем TStringList-ы для сохранения файлов
-        SetFileFirst := TStringList.Create;
-        SetFileFirst.Clear;
-                SetFileSecond := TStringList.Create;
-                SetFileSecond.Clear;
+        iniset := TIniFile.Create(ExtractFilePath(Application.ExeName) +
+          'tarconv.ini');
         // Заголовок
         SetFileFirst.Add(TarXMLHead);
         SetFileSecond.Add(TarXMLHead);
@@ -212,10 +214,10 @@ begin
           SetFileFirst.Add('<TableRow>');
           SetFileSecond.Add('<TableRow>');
           // Запись значений
-          SetFileFirst.Add('<H>' + Sheet.Cells[i, 1].AsString + '</H>');
-          SetFileSecond.Add('<H>' + Sheet.Cells[i, 5].AsString + '</H>');
-          SetFileFirst.Add('<V>' + Sheet.Cells[i, 2].AsString + '</V>');
-          SetFileSecond.Add('<V>' + Sheet.Cells[i, 6].AsString + '</V>');
+          SetFileFirst.Add('<H>' + string(Sheet.Cells[i, 1].Value) + '</H>');
+          SetFileSecond.Add('<H>' + string(Sheet.Cells[i, 5].Value) + '</H>');
+          SetFileFirst.Add('<V>' + string(Sheet.Cells[i, 2].Value) + '</V>');
+          SetFileSecond.Add('<V>' + string(Sheet.Cells[i, 6].Value) + '</V>');
           // Закрывающий тег
           SetFileFirst.Add('</TableRow>');
           SetFileSecond.Add('</TableRow>');
@@ -234,10 +236,10 @@ begin
           SetFileFirst.Add('<TableRow>');
           SetFileSecond.Add('<TableRow>');
           // Запись значений
-          SetFileFirst.Add('<H>' + Sheet.Cells[i, 3].AsString + '</H>');
-          SetFileSecond.Add('<H>' + Sheet.Cells[i, 7].AsString + '</H>');
-          SetFileFirst.Add('<V>' + Sheet.Cells[i, 4].AsString + '</V>');
-          SetFileSecond.Add('<V>' + Sheet.Cells[i, 8].AsString + '</V>');
+          SetFileFirst.Add('<H>' + string(Sheet.Cells[i, 3].Value) + '</H>');
+          SetFileSecond.Add('<H>' + string(Sheet.Cells[i, 7].Value) + '</H>');
+          SetFileFirst.Add('<V>' + string(Sheet.Cells[i, 4].Value) + '</V>');
+          SetFileSecond.Add('<V>' + string(Sheet.Cells[i, 8].Value) + '</V>');
           // Закрывающий тег
           SetFileFirst.Add('</TableRow>');
           SetFileSecond.Add('</TableRow>');
@@ -246,7 +248,7 @@ begin
         SetFileFirst.Add('</rows>' + #10#13 + '</CalibrationTable>');
         SetFileSecond.Add('</rows>' + #10#13 + '</CalibrationTable>');
         // Тарировка ДТС
-        SetFileFirst.Add(TarFileXLS);
+        SetFileFirst.Add(TarDTS);
         SetFileSecond.Add(TarDTS);
         // Тарировка бака
         iniset := TIniFile.Create(ExtractFilePath(Application.ExeName) +
@@ -281,9 +283,9 @@ begin
         SetFileSecond.Add
           ('<arcFirst>60000</arcFirst><arcPeriod>60000</arcPeriod></Settings>');
         // Сохранение файлов
-        FileFirstNum := ReplaceStr(Sheet.Cells[3, 1].AsString, '-1', '');
+        FileFirstNum := ReplaceStr(string(Sheet.Cells[3, 1].Value), '-1', '');
 
-        FileSecondNum := ReplaceStr(Sheet.Cells[5, 1].AsString, '-1', '');
+        FileSecondNum := ReplaceStr(string(Sheet.Cells[3, 5].Value), '-1', '');
         SetFileFirst.SaveToFile(leFolder.Text + '\' + lePrefix.Text + ' ' +
           FileFirstNum + '.set');
         SetFileSecond.SaveToFile(leFolder.Text + '\' + lePrefix.Text + ' ' +
@@ -293,6 +295,8 @@ begin
         SetFileFirst.Free;
         SetFileSecond.Free;
         TarFileXLS.Quit;
+        MessageBox(Self.Handle, 'Преобразование выполнено.', 'Информация',
+          MB_OK or MB_ICONINFORMATION);
       end
       else
         MessageBox(Self.Handle, Pchar('Не удается открыть файл' + #10#13 +
@@ -308,10 +312,29 @@ begin
       MessageBox(Self.Handle, Pchar('Ошибка работы с XLS-файлом' + #10#13 +
         E.Message), 'Ошибка работы с файлом!', MB_OK or MB_ICONERROR);
       TarFileXLS.Quit;
+      fmViewDebug.mFirst.Lines := SetFileFirst;
+      fmViewDebug.mSecond.Lines := SetFileSecond;
+      fmViewDebug.ShowModal;
     end;
     on E: EIniFileException do
+    begin
       MessageBox(Self.Handle, Pchar('Не удалось обработать файл настроек.' +
         #10#13 + E.Message), 'Ошибка чтения настроек!', MB_OK or MB_ICONERROR);
+      TarFileXLS.Quit;
+      fmViewDebug.mFirst.Lines := SetFileFirst;
+      fmViewDebug.mSecond.Lines := SetFileSecond;
+      fmViewDebug.ShowModal;
+    end;
+    on E: EConvertError do
+    begin
+      MessageBox(Self.Handle, Pchar('Ошибка преобразования типов данных:' +
+        #10#13 + E.Message + #10#13 + 'Проверьте содержимое файла.'),
+        'Ошибка работы с файлом!', MB_OK or MB_ICONERROR);
+      TarFileXLS.Quit;
+      fmViewDebug.mFirst.Lines := SetFileFirst;
+      fmViewDebug.mSecond.Lines := SetFileSecond;
+      fmViewDebug.ShowModal;
+    end;
   end;
 end;
 
