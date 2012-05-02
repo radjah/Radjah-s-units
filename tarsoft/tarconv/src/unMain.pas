@@ -155,9 +155,9 @@ begin
         SetFileSecond.Add('<median>' + iniset.ReadString('Filters', 'P1Median',
           '1') + '</median>');
         // Кальмана
-        SetFileFirst.Add('<kalman>' + iniset.ReadString('Filters', 'P1Median',
+        SetFileFirst.Add('<kalman>' + iniset.ReadString('Filters', 'P1Kalman',
           '1') + '</kalman>');
-        SetFileSecond.Add('<kalman>' + iniset.ReadString('Filters', 'P1Median',
+        SetFileSecond.Add('<kalman>' + iniset.ReadString('Filters', 'P1Kalman',
           '1') + '</kalman>');
         // Закрыли
         SetFileFirst.Add('</FiltersConf>' + #10#13 + '<FiltersConf>');
@@ -174,9 +174,9 @@ begin
         SetFileSecond.Add('<median>' + iniset.ReadString('Filters', 'P2Median',
           '1') + '</median>');
         // Кальмана
-        SetFileFirst.Add('<kalman>' + iniset.ReadString('Filters', 'P2Median',
+        SetFileFirst.Add('<kalman>' + iniset.ReadString('Filters', 'P2Kalman',
           '1') + '</kalman>');
-        SetFileSecond.Add('<kalman>' + iniset.ReadString('Filters', 'P2Median',
+        SetFileSecond.Add('<kalman>' + iniset.ReadString('Filters', 'P2Kalman',
           '1') + '</kalman>');
         // Закрыли
         SetFileFirst.Add('</FiltersConf>' + #10#13 + '<FiltersConf>');
@@ -193,9 +193,9 @@ begin
         SetFileSecond.Add('<median>' + iniset.ReadString('Filters', 'TMedian',
           '1') + '</median>');
         // Кальмана
-        SetFileFirst.Add('<kalman>' + iniset.ReadString('Filters', 'TMedian',
+        SetFileFirst.Add('<kalman>' + iniset.ReadString('Filters', 'TKalman',
           '1') + '</kalman>');
-        SetFileSecond.Add('<kalman>' + iniset.ReadString('Filters', 'TMedian',
+        SetFileSecond.Add('<kalman>' + iniset.ReadString('Filters', 'TKalman',
           '1') + '</kalman>');
         // Закрыли
         SetFileFirst.Add('</FiltersConf>' + #10#13 + '</filters>' + #10#13 +
@@ -214,10 +214,14 @@ begin
           SetFileFirst.Add('<TableRow>');
           SetFileSecond.Add('<TableRow>');
           // Запись значений
-          SetFileFirst.Add('<H>' + string(Sheet.Cells[i, 1].Value) + '</H>');
-          SetFileSecond.Add('<H>' + string(Sheet.Cells[i, 5].Value) + '</H>');
-          SetFileFirst.Add('<V>' + string(Sheet.Cells[i, 2].Value) + '</V>');
-          SetFileSecond.Add('<V>' + string(Sheet.Cells[i, 6].Value) + '</V>');
+          SetFileFirst.Add('<H>' + ReplaceStr(string(Sheet.Cells[i, 1].Value),
+            ',', '.') + '</H>');
+          SetFileSecond.Add('<H>' + ReplaceStr(string(Sheet.Cells[i, 5].Value),
+            ',', '.') + '</H>');
+          SetFileFirst.Add('<V>' + ReplaceStr(string(Sheet.Cells[i, 2].Value),
+            ',', '.') + '</V>');
+          SetFileSecond.Add('<V>' + ReplaceStr(string(Sheet.Cells[i, 6].Value),
+            ',', '.') + '</V>');
           // Закрывающий тег
           SetFileFirst.Add('</TableRow>');
           SetFileSecond.Add('</TableRow>');
@@ -236,10 +240,14 @@ begin
           SetFileFirst.Add('<TableRow>');
           SetFileSecond.Add('<TableRow>');
           // Запись значений
-          SetFileFirst.Add('<H>' + string(Sheet.Cells[i, 3].Value) + '</H>');
-          SetFileSecond.Add('<H>' + string(Sheet.Cells[i, 7].Value) + '</H>');
-          SetFileFirst.Add('<V>' + string(Sheet.Cells[i, 4].Value) + '</V>');
-          SetFileSecond.Add('<V>' + string(Sheet.Cells[i, 8].Value) + '</V>');
+          SetFileFirst.Add('<H>' + ReplaceStr(string(Sheet.Cells[i, 3].Value),
+            ',', '.') + '</H>');
+          SetFileSecond.Add('<H>' + ReplaceStr(string(Sheet.Cells[i, 7].Value),
+            ',', '.') + '</H>');
+          SetFileFirst.Add('<V>' + ReplaceStr(string(Sheet.Cells[i, 4].Value),
+            ',', '.') + '</V>');
+          SetFileSecond.Add('<V>' + ReplaceStr(string(Sheet.Cells[i, 8].Value),
+            ',', '.') + '</V>');
           // Закрывающий тег
           SetFileFirst.Add('</TableRow>');
           SetFileSecond.Add('</TableRow>');
@@ -262,14 +270,14 @@ begin
           SetFileFirst.Add('<TableRow>');
           SetFileSecond.Add('<TableRow>');
           // Запись значений
-          SetFileFirst.Add('<H>' + iniset.ReadString('Fuel', 'H' + IntToStr(i),
-            '0') + '</H>');
-          SetFileSecond.Add('<H>' + iniset.ReadString('Fuel', 'H' + IntToStr(i),
-            '0') + '</H>');
-          SetFileFirst.Add('<V>' + iniset.ReadString('Fuel', 'V' + IntToStr(i),
-            '0') + '</V>');
-          SetFileSecond.Add('<V>' + iniset.ReadString('Fuel', 'V' + IntToStr(i),
-            '0') + '</V>');
+          SetFileFirst.Add('<H>' + ReplaceStr(iniset.ReadString('Fuel',
+            'H' + IntToStr(i), '0'), ',', '.') + '</H>');
+          SetFileSecond.Add('<H>' + ReplaceStr(iniset.ReadString('Fuel',
+            'H' + IntToStr(i), '0'), ',', '.') + '</H>');
+          SetFileFirst.Add('<V>' + ReplaceStr(iniset.ReadString('Fuel',
+            'V' + IntToStr(i), '0'), ',', '.') + '</V>');
+          SetFileSecond.Add('<V>' + ReplaceStr(iniset.ReadString('Fuel',
+            'V' + IntToStr(i), '0'), ',', '.') + '</V>');
           // Закрывающий тег
           SetFileFirst.Add('</TableRow>');
           SetFileSecond.Add('</TableRow>');
