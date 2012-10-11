@@ -12,6 +12,7 @@ object IVK_DM: TIVK_DM
   object tbTags: TADOTable
     Connection = connIVK_DB
     CursorType = ctStatic
+    IndexFieldNames = 'Logging_Name'
     TableName = 'BS3_Analog_Table_Tags'
     Left = 152
     Top = 16
@@ -19,6 +20,7 @@ object IVK_DM: TIVK_DM
   object tbTWX_GLOBAL: TADOTable
     Connection = connIVK_DB
     CursorType = ctStatic
+    IndexFieldNames = 'Table_Name'
     TableName = 'TWX_GLOBAL'
     Left = 80
     Top = 16
