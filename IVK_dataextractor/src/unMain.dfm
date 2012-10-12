@@ -228,7 +228,7 @@ object fmMain: TfmMain
     Top = 559
     Width = 130
     Height = 25
-    Caption = #1048#1079#1074#1083#1077#1095' '#1076#1072#1085#1085#1099#1077
+    Caption = #1048#1079#1074#1083#1077#1095#1100' '#1076#1072#1085#1085#1099#1077
     Enabled = False
     TabOrder = 5
     OnClick = btExtractClick
@@ -247,6 +247,7 @@ object fmMain: TfmMain
     Width = 130
     Height = 25
     Caption = #1055#1088#1086#1089#1084#1086#1090#1088
+    Enabled = False
     TabOrder = 7
     OnClick = btViewClick
   end
@@ -662,7 +663,7 @@ object fmMain: TfmMain
     Connection = IVK_DM.connIVK_DB
     Parameters = <>
     SQL.Strings = (
-      'select * from #tmpselect'
+      'select SI, TD,SMS, VAL from #tmpselect'
       'order by SI, TD, SMS')
     Left = 552
     Top = 8
@@ -670,6 +671,12 @@ object fmMain: TfmMain
   object sdResult: TSaveDialog
     Filter = #1050#1085#1080#1075#1080' Excel (*.xls)|*.xls'
     Left = 632
+    Top = 8
+  end
+  object odConn: TOpenDialog
+    DefaultExt = '*.udl'
+    Filter = #1053#1072#1089#1090#1088#1086#1081#1082#1080' '#1089#1086#1077#1076#1080#1085#1077#1085#1080#1103' (*.udl)|*.udl'
+    Left = 688
     Top = 8
   end
 end
