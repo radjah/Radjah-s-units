@@ -318,6 +318,7 @@ object fmMain: TfmMain
   end
   object sdResult: TSaveDialog
     Filter = #1050#1085#1080#1075#1080' Excel (*.xls)|*.xls|'#1060#1072#1081#1083' '#1076#1072#1085#1085#1099#1093' (*.msr)|*.msr'
+    Options = [ofOverwritePrompt, ofHideReadOnly, ofPathMustExist, ofNoNetworkButton, ofEnableSizing]
     Left = 632
     Top = 8
   end
