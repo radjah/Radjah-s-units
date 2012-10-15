@@ -6,7 +6,7 @@ uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, DB, ZAbstractRODataset, ZAbstractDataset, ZDataset, StdCtrls,
   unDataModule, ADODB, Grids, DBGrids, OleAuto, ComCtrls, MyFunctions,
-  ExcelAddOns, unView;
+  ExcelAddOns, unView, unStruct;
 
 type
   TfmMain = class(TForm)
@@ -59,6 +59,7 @@ implementation
 
 {$R *.dfm}
 
+{ === Извлечение данных для просмотра или сохрарения === }
 procedure TfmMain.ExtractData;
 var
   tabs, samples: integer; // Счатчик
@@ -198,22 +199,37 @@ var
   datasumm: real; // Накопитель для суммы значений
   datacount: integer; // Счетчик для делителя
   Excel, Book, Sheet: variant; // Переменный для Excel
+  ExpData: TExpData;
+  ExpDataFile: file of TExpData;
 begin
   try
     if sdResult.Execute then
     begin
       AddLog(mLog, 'Экспорт данных начался...');
       ExtractData;
-      // Создаем новую таблицу
-      Excel := CreateOleObject('Excel.Application');
-      // Молчать в тряпочку
-      Excel.DisplayAlerts := false;
-      AddLog(mLog, 'Объект Excel создан');
-      // Создаём новую книгу
-      Excel.WorkBooks.Add;
-      Book := Excel.WorkBooks.Item[1];
-      Excel.WorkBooks.Item[1].Worksheets.Add;
-      Sheet := Excel.WorkBooks.Item[1].Worksheets.Item[1];
+      // Excel?
+      if sdResult.FilterIndex = 1 then
+      begin
+        // Создаем новую таблицу
+        Excel := CreateOleObject('Excel.Application');
+        // Молчать в тряпочку
+        Excel.DisplayAlerts := false;
+        AddLog(mLog, 'Объект Excel создан');
+        // Создаём новую книгу
+        Excel.WorkBooks.Add;
+        Book := Excel.WorkBooks.Item[1];
+        // Excel.WorkBooks.Item[1].Worksheets.Add;
+        Sheet := Excel.WorkBooks.Item[1].Worksheets.Item[1];
+        // Sheet.Columns['B:B'].Select;
+        // Excel.Selection.NumberFormat := 'dd/mm/yyyy h:mm:ss';
+      end;
+      // Файл данных?
+      if sdResult.FilterIndex = 2 then
+      begin
+        // Подготовка типизированного файла
+        AssignFile(ExpDataFile, sdResult.FileName);
+        Rewrite(ExpDataFile);
+      end;
       AddLog(mLog, 'Выполняется запись данных...');
       // Читаем все данные в Excel
       row := 1;
@@ -234,13 +250,25 @@ begin
         else
         // Иначе получаем среднее значение и выводим
         begin
-          // ID сигнала
-          Sheet.Cells[row, 1].FormulaR1C1 := qForExport.FieldByName('SI')
-            .AsInteger;
-          // Время замера
-          Sheet.Cells[row, 2].FormulaR1C1 := begTD;
-          // Значение
-          Sheet.Cells[row, 3].FormulaR1C1 := datasumm / datacount;
+          // Если работаем с Excel
+          if sdResult.FilterIndex = 1 then
+          begin
+            // ID сигнала
+            Sheet.Cells[row, 1].FormulaR1C1 := qForExport.FieldByName('SI')
+              .AsInteger;
+            // Время замера
+            Sheet.Cells[row, 2].FormulaR1C1 := begTD;
+            // Значение
+            Sheet.Cells[row, 3].FormulaR1C1 := datasumm / datacount;
+          end;
+          // Если работаем с файлом данных
+          if sdResult.FilterIndex = 2 then
+          begin
+            ExpData.SigID := qForExport.FieldByName('SI').AsInteger;
+            ExpData.DT := begTD;
+            ExpData.Val := datasumm / datacount;
+            Write(ExpDataFile, ExpData);
+          end;
           // Будем писать в следующую строку
           row := row + 1;
           // Изменяем эталонное дата-время
@@ -253,18 +281,35 @@ begin
         // Переходим на следующую запись
         qForExport.Next;
       end;
-      // Сохраняем последнюю запись
-      Sheet.Cells[row, 1].FormulaR1C1 := qForExport.FieldByName('SI').AsInteger;
-      // Время замера
-      Sheet.Cells[row, 2].FormulaR1C1 := begTD;
-      // Значение
-      Sheet.Cells[row, 3].FormulaR1C1 := datasumm / datacount;
+      if sdResult.FilterIndex = 1 then
+      begin
+        // Сохраняем последнюю запись
+        Sheet.Cells[row, 1].FormulaR1C1 := qForExport.FieldByName('SI')
+          .AsInteger;
+        // Время замера
+        Sheet.Cells[row, 2].FormulaR1C1 := begTD;
+        // Значение
+        Sheet.Cells[row, 3].FormulaR1C1 := datasumm / datacount;
+      end;
+      if sdResult.FilterIndex = 2 then
+      begin
+        ExpData.SigID := qForExport.FieldByName('SI').AsInteger;
+        ExpData.DT := begTD;
+        ExpData.Val := datasumm / datacount;
+        Write(ExpDataFile, ExpData);
+      end;
       AddLog(mLog, 'Данные записаны!');
-      Book.SaveAs(sdResult.FileName, xlWorkbookNormal);
+      if sdResult.FilterIndex = 1 then
+        Book.SaveAs(sdResult.FileName, xlWorkbookNormal);
+      if sdResult.FilterIndex = 2 then
+        CloseFile(ExpDataFile);
       AddLog(mLog, 'Файл сохранен!');
-      // Выходим
-      Excel.Quit;
-      AddLog(mLog, 'Объект Excel уничтожен');
+      if sdResult.FilterIndex = 1 then
+      begin
+        // Выходим
+        Excel.Quit;
+        AddLog(mLog, 'Объект Excel уничтожен');
+      end;
       // qExtractor.SQL.SaveToFile('q.txt');
       AddLog(mLog, 'Экспорт данных завершен!');
     end;
@@ -272,9 +317,8 @@ begin
     // Если не смогли соединиться
     on E: EOleException do
     begin
-      MessageBox(Self.Handle,
-        pchar('Возникла ошибка при подключении/отключении:' + #10#13 +
-        E.Message), 'Ошибка подключения/отключения', MB_OK or MB_ICONERROR);
+      MessageBox(Self.Handle, pchar('Возникла ошибка:' + #10#13 + E.Message),
+        'Ошибка при работе', MB_OK or MB_ICONERROR);
       AddLog(mLog, 'Ошибка: ' + E.Message);
     end;
     // Если не смогли открыть что-то

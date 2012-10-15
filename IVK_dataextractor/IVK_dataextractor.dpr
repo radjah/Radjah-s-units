@@ -6,7 +6,8 @@ uses
   unMain in 'src\unMain.pas' {fmMain},
   MyFunctions in '..\libs\MyFunctions.pas',
   ExcelAddOns in '..\libs\ExcelAddOns.pas',
-  unView in 'src\unView.pas' {fmView};
+  unView in 'src\unView.pas' {fmView},
+  unStruct in 'src\unStruct.pas';
 
 {$R *.res}
 
