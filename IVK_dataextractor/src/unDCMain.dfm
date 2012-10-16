@@ -1,9 +1,10 @@
 object fmDCMain: TfmDCMain
   Left = 0
   Top = 0
+  BorderStyle = bsDialog
   Caption = 'fmDCMain'
-  ClientHeight = 173
-  ClientWidth = 388
+  ClientHeight = 175
+  ClientWidth = 390
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -11,6 +12,7 @@ object fmDCMain: TfmDCMain
   Font.Name = 'Tahoma'
   Font.Style = []
   OldCreateOrder = False
+  Position = poScreenCenter
   PixelsPerInch = 96
   TextHeight = 13
   object leDataFile: TLabeledEdit
@@ -61,11 +63,15 @@ object fmDCMain: TfmDCMain
     OnClick = btConvertClick
   end
   object odDataFile: TOpenDialog
+    DefaultExt = 'msr'
+    Filter = #1060#1072#1081#1083' '#1076#1072#1085#1085#1099#1093' (*.msr)|*.msr'
     Options = [ofHideReadOnly, ofPathMustExist, ofFileMustExist, ofEnableSizing]
     Left = 32
     Top = 112
   end
   object sdExcelFile: TSaveDialog
+    DefaultExt = 'xls'
+    Filter = #1050#1085#1080#1075#1080' Excel (*.xls)|*.xls'
     Left = 320
     Top = 120
   end

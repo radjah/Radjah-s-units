@@ -194,11 +194,13 @@ end;
 { === Составление запроса и извлечение данных === }
 procedure TfmMain.btExtractClick(Sender: TObject);
 var
-  row: integer; // Счатчик
+  row, BeginCol, BeginRow: integer; // Счатчик
   begTD, curTD: TDateTime; // Для сравнения даты и времени
   datasumm: real; // Накопитель для суммы значений
   datacount: integer; // Счетчик для делителя
-  Excel, Book, Sheet: variant; // Переменный для Excel
+  RowCount, ColCount: integer; // Количество строк и столбцов
+  Excel, Book, Sheet, ArrayData, Cell1, Cell2, Range: variant;
+  // Переменный для Excel
   ExpData: TExpData;
   ExpDataFile: file of TExpData;
 begin
@@ -207,9 +209,17 @@ begin
     begin
       AddLog(mLog, 'Экспорт данных начался...');
       ExtractData;
+
       // Excel?
       if sdResult.FilterIndex = 1 then
       begin
+        sdResult.DefaultExt := 'xls';
+        // Координаты левого верхнего угла области, в которую будем выводить данные
+        BeginCol := 1;
+        BeginRow := 1;
+        // Количество строк и столбцов
+        RowCount := qForExport.RecordCount;
+        ColCount := qForExport.FieldCount;
         // Создаем новую таблицу
         Excel := CreateOleObject('Excel.Application');
         // Молчать в тряпочку
@@ -220,12 +230,15 @@ begin
         Book := Excel.WorkBooks.Item[1];
         // Excel.WorkBooks.Item[1].Worksheets.Add;
         Sheet := Excel.WorkBooks.Item[1].Worksheets.Item[1];
+        // Массив данных для вывода
+        ArrayData := VarArrayCreate([1, RowCount, 1, ColCount], varVariant);
         // Sheet.Columns['B:B'].Select;
         // Excel.Selection.NumberFormat := 'dd/mm/yyyy h:mm:ss';
       end;
       // Файл данных?
       if sdResult.FilterIndex = 2 then
       begin
+        sdResult.DefaultExt := 'msr';
         // Подготовка типизированного файла
         AssignFile(ExpDataFile, sdResult.FileName);
         Rewrite(ExpDataFile);
@@ -254,12 +267,15 @@ begin
           if sdResult.FilterIndex = 1 then
           begin
             // ID сигнала
-            Sheet.Cells[row, 1].FormulaR1C1 := qForExport.FieldByName('SI')
-              .AsInteger;
+            ArrayData[row, 1] := qForExport.FieldByName('SI').AsVariant;
             // Время замера
-            Sheet.Cells[row, 2].FormulaR1C1 := begTD;
+            ArrayData[row, 2] := begTD;
             // Значение
-            Sheet.Cells[row, 3].FormulaR1C1 := datasumm / datacount;
+            ArrayData[row, 3] := datasumm / datacount;
+            { Sheet.Cells[row, 1].FormulaR1C1 := qForExport.FieldByName('SI')
+              .AsInteger;
+              Sheet.Cells[row, 2].FormulaR1C1 := begTD;
+              Sheet.Cells[row, 3].FormulaR1C1 := datasumm / datacount; }
           end;
           // Если работаем с файлом данных
           if sdResult.FilterIndex = 2 then
@@ -281,15 +297,19 @@ begin
         // Переходим на следующую запись
         qForExport.Next;
       end;
+      // Сохраняем последнюю запись
       if sdResult.FilterIndex = 1 then
       begin
-        // Сохраняем последнюю запись
-        Sheet.Cells[row, 1].FormulaR1C1 := qForExport.FieldByName('SI')
-          .AsInteger;
+        // ID сигнала
+        ArrayData[row, 1] := qForExport.FieldByName('SI').AsVariant;
         // Время замера
-        Sheet.Cells[row, 2].FormulaR1C1 := begTD;
+        ArrayData[row, 2] := begTD;
         // Значение
-        Sheet.Cells[row, 3].FormulaR1C1 := datasumm / datacount;
+        ArrayData[row, 3] := datasumm / datacount;
+        { Sheet.Cells[row, 1].FormulaR1C1 := qForExport.FieldByName('SI')
+          .AsInteger;
+          Sheet.Cells[row, 2].FormulaR1C1 := begTD;
+          Sheet.Cells[row, 3].FormulaR1C1 := datasumm / datacount; }
       end;
       if sdResult.FilterIndex = 2 then
       begin
@@ -299,8 +319,16 @@ begin
         Write(ExpDataFile, ExpData);
       end;
       AddLog(mLog, 'Данные записаны!');
+      // Особая магия для Excel
       if sdResult.FilterIndex = 1 then
+      begin
+        Cell1 := Sheet.Cells[BeginRow, BeginCol];
+        Cell2 := Sheet.Cells[BeginRow + RowCount - 1,
+          BeginCol + ColCount - 1];
+        Range := Sheet.Range[Cell1, Cell2];
+        Range.Value := ArrayData;
         Book.SaveAs(sdResult.FileName, xlWorkbookNormal);
+      end;
       if sdResult.FilterIndex = 2 then
         CloseFile(ExpDataFile);
       AddLog(mLog, 'Файл сохранен!');
