@@ -2,7 +2,7 @@ object fmDCMain: TfmDCMain
   Left = 0
   Top = 0
   BorderStyle = bsDialog
-  Caption = 'fmDCMain'
+  Caption = #1055#1088#1077#1086#1073#1088#1072#1079#1086#1074#1072#1085#1080#1077' '#1076#1072#1084#1087#1072' '#1076#1072#1085#1085#1099#1093' '#1074' xls'
   ClientHeight = 175
   ClientWidth = 390
   Color = clBtnFace
