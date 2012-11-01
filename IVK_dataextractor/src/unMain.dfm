@@ -329,4 +329,17 @@ object fmMain: TfmMain
     Left = 688
     Top = 8
   end
+  object qSignalList: TADOQuery
+    Connection = IVK_DM.connIVK_DB
+    Parameters = <>
+    SQL.Strings = (
+      'CREATE TABLE [dbo].[#signallist]('
+      #9'[ID] [int] IDENTITY(1,1) NOT NULL,'
+      #9'[Tag_Index] [int] NOT NULL,'
+      #9'[Table_Name] [nvarchar](60) NOT NULL,'
+      #9'[Tables_Number] [int] NOT NULL'
+      ')')
+    Left = 520
+    Top = 176
+  end
 end

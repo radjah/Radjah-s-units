@@ -5,7 +5,7 @@ object IVK_DM: TIVK_DM
   object connIVK_DB: TADOConnection
     ConnectionString = 'FILE NAME=E:\proj\stat\IVK_dataextractor\conn.udl'
     Mode = cmRead
-    Provider = 'E:\proj\stat\IVK_dataextractor\conn.udl'
+    Provider = 'SQLNCLI10.1'
     Left = 232
     Top = 16
   end

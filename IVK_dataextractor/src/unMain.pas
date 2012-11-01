@@ -40,6 +40,7 @@ type
     sdResult: TSaveDialog;
     btView: TButton;
     odConn: TOpenDialog;
+    qSignalList: TADOQuery;
     procedure btConnectClick(Sender: TObject);
     procedure btGetTagsClick(Sender: TObject);
     procedure btExtractClick(Sender: TObject);
@@ -83,8 +84,6 @@ begin
     qExtractor.SQL.Clear;
     qClearTmp.ExecSQL;
     AddLog(mLog, 'Очистка временной таблицы...');
-    // ShowMessage('tabcount=' + IntToStr(tabcount) + #10#13 + 'tablename=' +
-    // tablename + #10#13 + 'sigidx=' + IntToStr(sigidx));
     // Генерация запроса
     AddLog(mLog, 'Формирование запроса...');
     for tabs := 1 to tabcount do
@@ -127,14 +126,14 @@ begin
     on E: EOleException do
     begin
       MessageBox(Self.Handle,
-        pchar('Возникла ошибка при подключении/отключении:' + #10#13 +
+        pchar('Возникла ошибка:' + #10#13 +
         E.Message), 'Ошибка подключения/отключения', MB_OK or MB_ICONERROR);
       AddLog(mLog, 'Ошибка: ' + E.Message);
     end;
     // Если не смогли открыть что-то
     on E: EADOError do
     begin
-      MessageBox(Self.Handle, pchar('Возникла ошибка при работе с базой:' +
+      MessageBox(Self.Handle, pchar('Возникла ошибка:' +
         #10#13 + E.Message), 'Ошибка подключения/отключения',
         MB_OK or MB_ICONERROR);
       AddLog(mLog, 'Ошибка: ' + E.Message);
@@ -176,14 +175,14 @@ begin
     on E: EOleException do
     begin
       MessageBox(Self.Handle,
-        pchar('Возникла ошибка при подключении/отключении:' + #10#13 +
+        pchar('Возникла ошибка:' + #10#13 +
         E.Message), 'Ошибка подключения/отключения', MB_OK or MB_ICONERROR);
       AddLog(mLog, 'Ошибка: ' + E.Message);
     end;
     // Если не смогли открыть что-то
     on E: EADOError do
     begin
-      MessageBox(Self.Handle, pchar('Возникла ошибка при работе с базой:' +
+      MessageBox(Self.Handle, pchar('Возникла ошибка:' +
         #10#13 + E.Message), 'Ошибка подключения/отключения',
         MB_OK or MB_ICONERROR);
       AddLog(mLog, 'Ошибка: ' + E.Message);
@@ -352,7 +351,7 @@ begin
     // Если не смогли открыть что-то
     on E: EADOError do
     begin
-      MessageBox(Self.Handle, pchar('Возникла ошибка при работе с базой:' +
+      MessageBox(Self.Handle, pchar('Возникла ошибка:' +
         #10#13 + E.Message), 'Ошибка подключения/отключения',
         MB_OK or MB_ICONERROR);
       AddLog(mLog, 'Ошибка: ' + E.Message);
@@ -386,14 +385,14 @@ begin
     on E: EOleException do
     begin
       MessageBox(Self.Handle,
-        pchar('Возникла ошибка при подключении/отключении:' + #10#13 +
+        pchar('Возникла ошибка:' + #10#13 +
         E.Message), 'Ошибка подключения/отключения', MB_OK or MB_ICONERROR);
       AddLog(mLog, 'Ошибка: ' + E.Message);
     end;
     // Если не смогли открыть что-то
     on E: EADOError do
     begin
-      MessageBox(Self.Handle, pchar('Возникла ошибка при работе с базой:' +
+      MessageBox(Self.Handle, pchar('Возникла ошибка:' +
         #10#13 + E.Message), 'Ошибка подключения/отключения',
         MB_OK or MB_ICONERROR);
       AddLog(mLog, 'Ошибка: ' + E.Message);
