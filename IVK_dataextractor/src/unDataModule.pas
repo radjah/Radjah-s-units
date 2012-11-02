@@ -10,6 +10,7 @@ type
     connIVK_DB: TADOConnection;
     tbTags: TADOTable;
     tbTWX_GLOBAL: TADOTable;
+    tbSignalList: TADOTable;
   private
     { Private declarations }
   public

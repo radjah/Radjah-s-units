@@ -6,7 +6,7 @@ uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, DB, ZAbstractRODataset, ZAbstractDataset, ZDataset, StdCtrls,
   unDataModule, ADODB, Grids, DBGrids, OleAuto, ComCtrls, MyFunctions,
-  ExcelAddOns, unView, unStruct;
+  ExcelAddOns, unView, unStruct, Buttons;
 
 type
   TfmMain = class(TForm)
@@ -29,9 +29,6 @@ type
     Label5: TLabel;
     Label6: TLabel;
     btExtract: TButton;
-    qGetTabCount: TADOQuery;
-    qGetTabCountTables_Number: TIntegerField;
-    qGetTabCountTable_Name: TStringField;
     qTempTable: TADOQuery;
     qClearTmp: TADOQuery;
     Label7: TLabel;
@@ -41,12 +38,22 @@ type
     btView: TButton;
     odConn: TOpenDialog;
     qSignalList: TADOQuery;
+    dbgSignalList: TDBGrid;
+    dsSignalList: TDataSource;
+    btAdd: TBitBtn;
+    btRemove: TBitBtn;
+    btClear: TBitBtn;
+    qClearList: TADOQuery;
+    Label8: TLabel;
     procedure btConnectClick(Sender: TObject);
     procedure btGetTagsClick(Sender: TObject);
     procedure btExtractClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure btViewClick(Sender: TObject);
     procedure ExtractData;
+    procedure btClearClick(Sender: TObject);
+    procedure btAddClick(Sender: TObject);
+    procedure btRemoveClick(Sender: TObject);
   private
     { Private declarations }
   public
@@ -55,6 +62,8 @@ type
 
 var
   fmMain: TfmMain;
+  TableCount: integer; // Количество таблиц с замерами
+  TablesName: string; // Префикс таблиц
 
 implementation
 
@@ -65,8 +74,6 @@ procedure TfmMain.ExtractData;
 var
   tabs, samples: integer; // Счатчик
   timeshift: integer; // Сдвиг времени в часах
-  tablename: string; // Префикс имени таблицы
-  tabcount: integer; // Количество таблиц с данными
   samplecount: integer; // Количество замеров в одной строке
   sigidx: integer; // Индекс сигнала
 begin
@@ -75,9 +82,6 @@ begin
     timeshift := 4;
     // Параметры выборки
     AddLog(mLog, 'Получение конфигурации...');
-    qGetTabCount.Open;
-    tabcount := qGetTabCount.FieldByName('Tables_Number').AsInteger;
-    tablename := qGetTabCount.FieldByName('Table_Name').AsString;
     sigidx := IVK_DM.tbTags.FieldByName('Tag_Index').AsInteger;
     // Подготовка компонента
     qExtractor.Close;
@@ -86,7 +90,7 @@ begin
     AddLog(mLog, 'Очистка временной таблицы...');
     // Генерация запроса
     AddLog(mLog, 'Формирование запроса...');
-    for tabs := 1 to tabcount do
+    for tabs := 1 to TableCount do
     begin
       // Формирование запроса для таблицы
       for samples := 1 to samplecount do
@@ -98,7 +102,7 @@ begin
           ') as TD, Sample_MSec_' + IntToStr(samples) + ' as SMS, Sample_Value_'
           + IntToStr(samples) + ' as VAL');
         // Таблица для выборки
-        qExtractor.SQL.Add('FROM ' + Trim(tablename) + '_' + IntToStr(tabs));
+        qExtractor.SQL.Add('FROM ' + TablesName + '_' + IntToStr(tabs));
         // Условия выборки
         qExtractor.SQL.Add('WHERE (NOT (Sample_TDate_' + IntToStr(samples) +
           ' IS NULL)) AND (NOT (Sample_MSec_' + IntToStr(samples) +
@@ -125,20 +129,46 @@ begin
     // Если не смогли соединиться
     on E: EOleException do
     begin
-      MessageBox(Self.Handle,
-        pchar('Возникла ошибка:' + #10#13 +
-        E.Message), 'Ошибка подключения/отключения', MB_OK or MB_ICONERROR);
+      MessageBox(Self.Handle, pchar('Возникла ошибка:' + #10#13 + E.Message),
+        'Ошибка подключения/отключения', MB_OK or MB_ICONERROR);
       AddLog(mLog, 'Ошибка: ' + E.Message);
     end;
     // Если не смогли открыть что-то
     on E: EADOError do
     begin
-      MessageBox(Self.Handle, pchar('Возникла ошибка:' +
-        #10#13 + E.Message), 'Ошибка подключения/отключения',
-        MB_OK or MB_ICONERROR);
+      MessageBox(Self.Handle, pchar('Возникла ошибка:' + #10#13 + E.Message),
+        'Ошибка подключения/отключения', MB_OK or MB_ICONERROR);
       AddLog(mLog, 'Ошибка: ' + E.Message);
     end;
   end;
+end;
+
+{ === Добавление выбранного параметра в список === }
+procedure TfmMain.btAddClick(Sender: TObject);
+begin
+  try
+    IVK_DM.tbSignalList.AppendRecord
+      ([nil, IVK_DM.tbTags.FieldByName('Tag_Index').AsInteger,
+      Trim(IVK_DM.tbTags.FieldByName('Logging_Name').AsString), TablesName,
+      TableCount]);
+    if IVK_DM.tbSignalList.RecordCount > 0 then
+      btRemove.Enabled := True;
+  except
+    on E: EDatabaseError do
+    begin
+      MessageBox(Self.Handle, pchar('Возникла ошибка:' + #10#13 + E.Message),
+        'Ошибка работы с базой', MB_OK or MB_ICONERROR);
+      AddLog(mLog, 'Ошибка: ' + E.Message);
+    end;
+  end;
+end;
+
+{ === Очистка списка сигналов === }
+procedure TfmMain.btClearClick(Sender: TObject);
+begin
+  qClearList.Close;
+  qClearList.ExecSQL;
+  ReopenDatasets([IVK_DM.tbSignalList]);
 end;
 
 { === Подключение и отключение === }
@@ -151,11 +181,15 @@ begin
       IVK_DM.tbTags.Close;
       IVK_DM.tbTWX_GLOBAL.Close;
       IVK_DM.connIVK_DB.Close;
-      // IVK_DM.connIVK_DB.Connected := false;
+      // IVK_DM.connIVK_DB.Connected := False;
       btConnect.Caption := 'Соединить';
-      btExtract.Enabled := false;
-      btGetTags.Enabled := false;
-      btView.Enabled := false;
+      // Отключение кнопок
+      btExtract.Enabled := False;
+      btGetTags.Enabled := False;
+      btAdd.Enabled := False;
+      btRemove.Enabled := False;
+      btClear.Enabled := False;
+      btView.Enabled := False;
       AddLog(mLog, 'Соединение с базой разорвано!');
     end
     else
@@ -164,27 +198,29 @@ begin
       IVK_DM.connIVK_DB.Connected := True;
       IVK_DM.tbTWX_GLOBAL.Open;
       AddLog(mLog, 'Соединение с базой установлено!');
-      // Временная таблица
+      // Временные таблицы
       qTempTable.ExecSQL;
-      AddLog(mLog, 'Временная таблица создана.');
+      qSignalList.ExecSQL;
+      IVK_DM.tbSignalList.Open;
+      AddLog(mLog, 'Временные таблицы созданы.');
       btConnect.Caption := 'Отключить';
+      // Включение кнопок
       btGetTags.Enabled := True;
+      btClear.Enabled := True;
     end;
   except
     // Если не смогли соединиться
     on E: EOleException do
     begin
-      MessageBox(Self.Handle,
-        pchar('Возникла ошибка:' + #10#13 +
-        E.Message), 'Ошибка подключения/отключения', MB_OK or MB_ICONERROR);
+      MessageBox(Self.Handle, pchar('Возникла ошибка:' + #10#13 + E.Message),
+        'Ошибка подключения/отключения', MB_OK or MB_ICONERROR);
       AddLog(mLog, 'Ошибка: ' + E.Message);
     end;
     // Если не смогли открыть что-то
     on E: EADOError do
     begin
-      MessageBox(Self.Handle, pchar('Возникла ошибка:' +
-        #10#13 + E.Message), 'Ошибка подключения/отключения',
-        MB_OK or MB_ICONERROR);
+      MessageBox(Self.Handle, pchar('Возникла ошибка:' + #10#13 + E.Message),
+        'Ошибка подключения/отключения', MB_OK or MB_ICONERROR);
       AddLog(mLog, 'Ошибка: ' + E.Message);
     end;
   end;
@@ -208,12 +244,12 @@ begin
     begin
       AddLog(mLog, 'Экспорт данных начался...');
       ExtractData;
-
       // Excel?
       if sdResult.FilterIndex = 1 then
       begin
         sdResult.DefaultExt := 'xls';
-        // Координаты левого верхнего угла области, в которую будем выводить данные
+        // Координаты левого верхнего угла области,
+        // в которую будем выводить данные
         BeginCol := 1;
         BeginRow := 1;
         // Количество строк и столбцов
@@ -222,8 +258,9 @@ begin
         // Создаем новую таблицу
         Excel := CreateOleObject('Excel.Application');
         // Молчать в тряпочку
-        Excel.DisplayAlerts := false;
+        Excel.DisplayAlerts := False;
         AddLog(mLog, 'Объект Excel создан');
+        // Excel.SheetsInNewWorkbook := 0;
         // Создаём новую книгу
         Excel.WorkBooks.Add;
         Book := Excel.WorkBooks.Item[1];
@@ -271,10 +308,6 @@ begin
             ArrayData[row, 2] := begTD;
             // Значение
             ArrayData[row, 3] := datasumm / datacount;
-            { Sheet.Cells[row, 1].FormulaR1C1 := qForExport.FieldByName('SI')
-              .AsInteger;
-              Sheet.Cells[row, 2].FormulaR1C1 := begTD;
-              Sheet.Cells[row, 3].FormulaR1C1 := datasumm / datacount; }
           end;
           // Если работаем с файлом данных
           if sdResult.FilterIndex = 2 then
@@ -305,10 +338,6 @@ begin
         ArrayData[row, 2] := begTD;
         // Значение
         ArrayData[row, 3] := datasumm / datacount;
-        { Sheet.Cells[row, 1].FormulaR1C1 := qForExport.FieldByName('SI')
-          .AsInteger;
-          Sheet.Cells[row, 2].FormulaR1C1 := begTD;
-          Sheet.Cells[row, 3].FormulaR1C1 := datasumm / datacount; }
       end;
       if sdResult.FilterIndex = 2 then
       begin
@@ -322,8 +351,7 @@ begin
       if sdResult.FilterIndex = 1 then
       begin
         Cell1 := Sheet.Cells[BeginRow, BeginCol];
-        Cell2 := Sheet.Cells[BeginRow + RowCount - 1,
-          BeginCol + ColCount - 1];
+        Cell2 := Sheet.Cells[BeginRow + RowCount - 1, BeginCol + ColCount - 1];
         Range := Sheet.Range[Cell1, Cell2];
         Range.Value := ArrayData;
         Book.SaveAs(sdResult.FileName, xlWorkbookNormal);
@@ -351,9 +379,8 @@ begin
     // Если не смогли открыть что-то
     on E: EADOError do
     begin
-      MessageBox(Self.Handle, pchar('Возникла ошибка:' +
-        #10#13 + E.Message), 'Ошибка подключения/отключения',
-        MB_OK or MB_ICONERROR);
+      MessageBox(Self.Handle, pchar('Возникла ошибка:' + #10#13 + E.Message),
+        'Ошибка подключения/отключения', MB_OK or MB_ICONERROR);
       AddLog(mLog, 'Ошибка: ' + E.Message);
     end;
   end;
@@ -363,38 +390,59 @@ end;
 procedure TfmMain.btGetTagsClick(Sender: TObject);
 begin
   try
+    // Подготовка переменных
     IVK_DM.tbTags.Close;
     IVK_DM.tbTags.tablename := IVK_DM.tbTWX_GLOBAL.FieldByName
       ('Table_Tags').AsString;
     IVK_DM.tbTags.Open;
-    qGetTabCount.Close;
-    qGetTabCount.SQL[2] := 'Table_Tags=''' + IVK_DM.tbTWX_GLOBAL.FieldByName
-      ('Table_Tags').AsString + '''';
+    // Правка запросов для получения количества таблиц при извлечении
+    TableCount := IVK_DM.tbTWX_GLOBAL.FieldByName('Tables_Number').AsInteger;
+    TablesName := Trim(IVK_DM.tbTWX_GLOBAL.FieldByName('Table_Name').AsString);
+    // qGetTabCount.SQL[2] := 'Table_Tags=''' + IVK_DM.tbTWX_GLOBAL.FieldByName
+    // ('Table_Tags').AsString + '''';
+    // Если в выбранной группе есть теги
     if IVK_DM.tbTags.RecordCount > 0 then
     begin
       btExtract.Enabled := True;
       btView.Enabled := True;
+      btAdd.Enabled := True;
     end
+    // Если группа пустая
     else
     begin
-      btExtract.Enabled := false;
-      btView.Enabled := false;
+      btExtract.Enabled := False;
+      btView.Enabled := False;
     end;
   except
     // Если не смогли соединиться
     on E: EOleException do
     begin
-      MessageBox(Self.Handle,
-        pchar('Возникла ошибка:' + #10#13 +
-        E.Message), 'Ошибка подключения/отключения', MB_OK or MB_ICONERROR);
+      MessageBox(Self.Handle, pchar('Возникла ошибка:' + #10#13 + E.Message),
+        'Ошибка подключения/отключения', MB_OK or MB_ICONERROR);
       AddLog(mLog, 'Ошибка: ' + E.Message);
     end;
     // Если не смогли открыть что-то
     on E: EADOError do
     begin
-      MessageBox(Self.Handle, pchar('Возникла ошибка:' +
-        #10#13 + E.Message), 'Ошибка подключения/отключения',
-        MB_OK or MB_ICONERROR);
+      MessageBox(Self.Handle, pchar('Возникла ошибка:' + #10#13 + E.Message),
+        'Ошибка подключения/отключения', MB_OK or MB_ICONERROR);
+      AddLog(mLog, 'Ошибка: ' + E.Message);
+    end;
+  end;
+end;
+
+{ === Удаление параметра из набора === }
+procedure TfmMain.btRemoveClick(Sender: TObject);
+begin
+  try
+    IVK_DM.tbSignalList.Delete;
+    if IVK_DM.tbSignalList.RecordCount = 0 then
+      btRemove.Enabled := False;
+  except
+    on E: EDatabaseError do
+    begin
+      MessageBox(Self.Handle, pchar('Возникла ошибка:' + #10#13 + E.Message),
+        'Ошибка подключения/отключения', MB_OK or MB_ICONERROR);
       AddLog(mLog, 'Ошибка: ' + E.Message);
     end;
   end;

@@ -3,11 +3,12 @@ unit MyFunctions;
 interface
 
 uses
-  Windows, StrUtils, StdCtrls, SysUtils;
+  Windows, StrUtils, StdCtrls, SysUtils, DB, ADODB;
 
 function ReplaceStr(const S, Srch, Replace: string): string;
 function GetPath(const S: string): string;
 procedure AddLog(LogMemo: TMemo; LogStr: string);
+procedure ReopenDatasets(DS: array of TDataSet);
 
 implementation
 
@@ -44,6 +45,18 @@ end;
 procedure AddLog(LogMemo: TMemo; LogStr: string);
 begin
   LogMemo.Lines.Add(TimeToStr(Now) + ': ' + LogStr);
+end;
+
+{ === Переоткрывает наборы данных === }
+procedure ReopenDatasets(DS: array of TDataSet);
+var
+  i: integer;
+begin
+  for i := 0 to Length(DS) - 1 do
+  begin
+    DS[i].Close;
+    DS[i].Open;
+  end
 end;
 
 end.
