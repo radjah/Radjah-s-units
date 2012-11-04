@@ -1,8 +1,8 @@
-program ffupd;
+program tbupd;
 
 uses
   Forms,
-  Unit1 in 'Unit1.pas' {TBupdApp};
+  unMain in 'src\unMain.pas' {TBupdApp};
 
 {$R *.res}
 

@@ -29,7 +29,7 @@ object TBupdApp: TTBupdApp
     Height = 13
     Caption = #1060#1072#1081#1083' '#1086#1073#1085#1086#1074#1083#1077#1085#1080#1103':'
   end
-  object Edit1: TEdit
+  object eTBPath: TEdit
     Left = 24
     Top = 24
     Width = 273
@@ -37,16 +37,16 @@ object TBupdApp: TTBupdApp
     ReadOnly = True
     TabOrder = 0
   end
-  object Button1: TButton
+  object btTBBrowse: TButton
     Left = 304
     Top = 24
     Width = 73
     Height = 25
     Caption = #1054#1073#1079#1086#1088'...'
     TabOrder = 1
-    OnClick = Button1Click
+    OnClick = btTBBrowseClick
   end
-  object Edit2: TEdit
+  object eUpdateFile: TEdit
     Left = 24
     Top = 72
     Width = 273
@@ -54,16 +54,16 @@ object TBupdApp: TTBupdApp
     ReadOnly = True
     TabOrder = 2
   end
-  object Button2: TButton
+  object btUpdateFileBrowse: TButton
     Left = 304
     Top = 72
     Width = 73
     Height = 25
     Caption = #1054#1073#1079#1086#1088'...'
     TabOrder = 3
-    OnClick = Button2Click
+    OnClick = btUpdateFileBrowseClick
   end
-  object Button3: TButton
+  object btUpdate: TButton
     Left = 21
     Top = 112
     Width = 107
@@ -73,9 +73,9 @@ object TBupdApp: TTBupdApp
     ParentShowHint = False
     ShowHint = True
     TabOrder = 4
-    OnClick = Button3Click
+    OnClick = btUpdateClick
   end
-  object Button4: TButton
+  object btCleanup: TButton
     Left = 280
     Top = 112
     Width = 97
@@ -85,9 +85,9 @@ object TBupdApp: TTBupdApp
     ParentShowHint = False
     ShowHint = True
     TabOrder = 5
-    OnClick = Button4Click
+    OnClick = btCleanupClick
   end
-  object Button5: TButton
+  object btCheck: TButton
     Left = 152
     Top = 112
     Width = 97
@@ -98,7 +98,7 @@ object TBupdApp: TTBupdApp
     ParentShowHint = False
     ShowHint = True
     TabOrder = 6
-    OnClick = Button5Click
+    OnClick = btCheckClick
   end
   object odff: TOpenDialog
     Filter = 'Thunderbird.exe|Thunderbird.exe'
