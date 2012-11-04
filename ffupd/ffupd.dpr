@@ -2,13 +2,13 @@ program ffupd;
 
 uses
   Forms,
-  Unit1 in 'Unit1.pas' {FFupdApp};
+  unMain in 'src\unMain.pas' {FFupdApp};
 
 {$R *.res}
 
 begin
   Application.Initialize;
-  Application.CreateForm(TFFupdApp, FFupdApp);
   Application.Title:='Обновление Mozilla Firefox';
+  Application.CreateForm(TFFupdApp, FFupdApp);
   Application.Run;
 end.

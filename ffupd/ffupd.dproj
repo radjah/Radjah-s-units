@@ -49,7 +49,7 @@
 			<DelphiCompile Include="ffupd.dpr">
 				<MainSource>MainSource</MainSource>
 			</DelphiCompile>
-			<DCCReference Include="Unit1.pas">
+			<DCCReference Include="src\unMain.pas">
 				<Form>FFupdApp</Form>
 			</DCCReference>
 			<BuildConfiguration Include="Debug">

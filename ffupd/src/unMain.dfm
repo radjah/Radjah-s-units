@@ -29,7 +29,7 @@ object FFupdApp: TFFupdApp
     Height = 13
     Caption = #1060#1072#1081#1083' '#1086#1073#1085#1086#1074#1083#1077#1085#1080#1103':'
   end
-  object Edit1: TEdit
+  object eFFPath: TEdit
     Left = 24
     Top = 24
     Width = 273
@@ -37,16 +37,16 @@ object FFupdApp: TFFupdApp
     ReadOnly = True
     TabOrder = 0
   end
-  object Button1: TButton
+  object btFFPathBrowse: TButton
     Left = 304
     Top = 24
     Width = 73
     Height = 25
     Caption = #1054#1073#1079#1086#1088'...'
     TabOrder = 1
-    OnClick = Button1Click
+    OnClick = btFFPathBrowseClick
   end
-  object Edit2: TEdit
+  object eUpdateFile: TEdit
     Left = 24
     Top = 72
     Width = 273
@@ -54,16 +54,16 @@ object FFupdApp: TFFupdApp
     ReadOnly = True
     TabOrder = 2
   end
-  object Button2: TButton
+  object btUpdateBrowse: TButton
     Left = 304
     Top = 72
     Width = 73
     Height = 25
     Caption = #1054#1073#1079#1086#1088'...'
     TabOrder = 3
-    OnClick = Button2Click
+    OnClick = btUpdateBrowseClick
   end
-  object Button3: TButton
+  object btUpdate: TButton
     Left = 21
     Top = 112
     Width = 107
@@ -73,9 +73,9 @@ object FFupdApp: TFFupdApp
     ParentShowHint = False
     ShowHint = True
     TabOrder = 4
-    OnClick = Button3Click
+    OnClick = btUpdateClick
   end
-  object Button4: TButton
+  object btCleanUp: TButton
     Left = 280
     Top = 112
     Width = 97
@@ -85,9 +85,9 @@ object FFupdApp: TFFupdApp
     ParentShowHint = False
     ShowHint = True
     TabOrder = 5
-    OnClick = Button4Click
+    OnClick = btCleanUpClick
   end
-  object Button5: TButton
+  object btCheck: TButton
     Left = 152
     Top = 112
     Width = 97
@@ -98,14 +98,14 @@ object FFupdApp: TFFupdApp
     ParentShowHint = False
     ShowHint = True
     TabOrder = 6
-    OnClick = Button5Click
+    OnClick = btCheckClick
   end
-  object odff: TOpenDialog
+  object odFFPath: TOpenDialog
     Filter = 'Firefox.exe|Firefox.exe'
     InitialDir = '%programfiles%'
     Left = 344
   end
-  object odmar: TOpenDialog
+  object odUpdateFile: TOpenDialog
     Filter = #1060#1072#1081#1083#1099' '#1086#1073#1085#1086#1074#1083#1077#1085#1080#1103' (*.mar)|*.mar'
     InitialDir = '.'
     Left = 376
