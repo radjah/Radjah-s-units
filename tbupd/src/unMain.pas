@@ -15,8 +15,8 @@ type
     Label2: TLabel;
     btUpdateFileBrowse: TButton;
     btUpdate: TButton;
-    odff: TOpenDialog;
-    odmar: TOpenDialog;
+    odTBPath: TOpenDialog;
+    odUpdateFile: TOpenDialog;
     XPManifest1: TXPManifest;
     btCleanup: TButton;
     btCheck: TButton;
@@ -40,65 +40,89 @@ implementation
 
 procedure TTBupdApp.btTBBrowseClick(Sender: TObject);
 begin
-  if odff.Execute then eTBPath.Text:=ExtractFilePath(odff.FileName);
+  if odTBPath.Execute then
+    eTBPath.Text := ExtractFilePath(odTBPath.FileName);
 end;
 
 procedure TTBupdApp.btUpdateFileBrowseClick(Sender: TObject);
 begin
-  if odmar.Execute then eUpdateFile.Text:=odmar.FileName;
+  if odUpdateFile.Execute then
+    eUpdateFile.Text := odUpdateFile.FileName;
 end;
 
 procedure TTBupdApp.btUpdateClick(Sender: TObject);
 begin
-  if (eTBPath.Text<>'') and (eUpdateFile.Text<>'') then
+  if (eTBPath.Text <> '') and (eUpdateFile.Text <> '') then
   begin
-    if FileExists(eTBPath.Text+'thunderbir-update\updater.exe') then DeleteFile(eTBPath.Text+'thunderbir-update\updater.exe');
-    if FileExists(eTBPath.Text+'thunderbir-update\updater.ini') then DeleteFile(eTBPath.Text+'thunderbir-update\updater.ini');
-    if FileExists(eTBPath.Text+'thunderbir-update\update.log') then DeleteFile(eTBPath.Text+'thunderbir-update\update.log');
-    if FileExists(eTBPath.Text+'thunderbir-update\update.mar') then DeleteFile(eTBPath.Text+'thunderbir-update\update.mar');
-    if FileExists(eTBPath.Text+'thunderbir-update\update.manifest') then DeleteFile(eTBPath.Text+'thunderbir-update\update.manifest');
-    if FileExists(eTBPath.Text+'thunderbir-update\update.status') then DeleteFile(eTBPath.Text+'thunderbir-update\update.status');
-    if DirectoryExists(eTBPath.Text+'thunderbir-update') then RemoveDir(eTBPath.Text+'thunderbir-update');
-    if CreateDirectory(pchar(eTBPath.Text+'thunderbir-update'),nil) and
-      CopyFile(pchar(eUpdateFile.Text),pchar(eTBPath.Text+'thunderbir-update\update.mar'),FALSE) and
-      CopyFile(pchar(eTBPath.Text+'updater.exe'),pchar(eTBPath.Text+'thunderbir-update\updater.exe'),FALSE) and
-      CopyFile(pchar(eTBPath.Text+'updater.ini'),pchar(eTBPath.Text+'thunderbir-update\updater.ini'),FALSE)
-      then
-      begin
-        SetCurrentDirectory(pchar(eTBPath.Text));
-        WinExec('thunderbir-update\updater.exe .\thunderbir-update 0',SW_SHOWDEFAULT);
-        btCheck.Enabled:=True;
-      end
-    else showmessage('Не удалось скопировать файлы!'+#13+'Удалите папку '+eTBPath.Text+'thunderbir-update');
-  end else showmessage('Не все данные указаны!');
+    if FileExists(eTBPath.Text + 'thunderbir-update\updater.exe') then
+      DeleteFile(eTBPath.Text + 'thunderbir-update\updater.exe');
+    if FileExists(eTBPath.Text + 'thunderbir-update\updater.ini') then
+      DeleteFile(eTBPath.Text + 'thunderbir-update\updater.ini');
+    if FileExists(eTBPath.Text + 'thunderbir-update\update.log') then
+      DeleteFile(eTBPath.Text + 'thunderbir-update\update.log');
+    if FileExists(eTBPath.Text + 'thunderbir-update\update.mar') then
+      DeleteFile(eTBPath.Text + 'thunderbir-update\update.mar');
+    if FileExists(eTBPath.Text + 'thunderbir-update\update.manifest') then
+      DeleteFile(eTBPath.Text + 'thunderbir-update\update.manifest');
+    if FileExists(eTBPath.Text + 'thunderbir-update\update.status') then
+      DeleteFile(eTBPath.Text + 'thunderbir-update\update.status');
+    if DirectoryExists(eTBPath.Text + 'thunderbir-update') then
+      RemoveDir(eTBPath.Text + 'thunderbir-update');
+    if CreateDirectory(pchar(eTBPath.Text + 'thunderbir-update'), nil) and
+      CopyFile(pchar(eUpdateFile.Text),
+      pchar(eTBPath.Text + 'thunderbir-update\update.mar'), FALSE) and
+      CopyFile(pchar(eTBPath.Text + 'updater.exe'),
+      pchar(eTBPath.Text + 'thunderbir-update\updater.exe'), FALSE) and
+      CopyFile(pchar(eTBPath.Text + 'updater.ini'),
+      pchar(eTBPath.Text + 'thunderbir-update\updater.ini'), FALSE) then
+    begin
+      SetCurrentDirectory(pchar(eTBPath.Text));
+      WinExec('thunderbir-update\updater.exe .\thunderbir-update 0',
+        SW_SHOWDEFAULT);
+      btCheck.Enabled := True;
+    end
+    else
+      showmessage('Не удалось скопировать файлы!' + #13 + 'Удалите папку ' +
+        eTBPath.Text + 'thunderbir-update');
+  end
+  else
+    showmessage('Не все данные указаны!');
 end;
 
 procedure TTBupdApp.btCleanupClick(Sender: TObject);
 begin
-if (eTBPath.Text<>'') then
+  if (eTBPath.Text <> '') then
   begin
-    if FileExists(eTBPath.Text+'thunderbir-update\updater.exe') then DeleteFile(eTBPath.Text+'thunderbir-update\updater.exe');
-    if FileExists(eTBPath.Text+'thunderbir-update\updater.ini') then DeleteFile(eTBPath.Text+'thunderbir-update\updater.ini');
-    if FileExists(eTBPath.Text+'thunderbir-update\update.log') then DeleteFile(eTBPath.Text+'thunderbir-update\update.log');
-    if FileExists(eTBPath.Text+'thunderbir-update\update.mar') then DeleteFile(eTBPath.Text+'thunderbir-update\update.mar');
-    if FileExists(eTBPath.Text+'thunderbir-update\update.manifest') then DeleteFile(eTBPath.Text+'thunderbir-update\update.manifest');
-    if FileExists(eTBPath.Text+'thunderbir-update\update.status') then DeleteFile(eTBPath.Text+'thunderbir-update\update.status');
-    if DirectoryExists(eTBPath.Text+'thunderbir-update') then RemoveDir(eTBPath.Text+'thunderbir-update');
-  end else showmessage('Не все данные указаны!');
+    if FileExists(eTBPath.Text + 'thunderbir-update\updater.exe') then
+      DeleteFile(eTBPath.Text + 'thunderbir-update\updater.exe');
+    if FileExists(eTBPath.Text + 'thunderbir-update\updater.ini') then
+      DeleteFile(eTBPath.Text + 'thunderbir-update\updater.ini');
+    if FileExists(eTBPath.Text + 'thunderbir-update\update.log') then
+      DeleteFile(eTBPath.Text + 'thunderbir-update\update.log');
+    if FileExists(eTBPath.Text + 'thunderbir-update\update.mar') then
+      DeleteFile(eTBPath.Text + 'thunderbir-update\update.mar');
+    if FileExists(eTBPath.Text + 'thunderbir-update\update.manifest') then
+      DeleteFile(eTBPath.Text + 'thunderbir-update\update.manifest');
+    if FileExists(eTBPath.Text + 'thunderbir-update\update.status') then
+      DeleteFile(eTBPath.Text + 'thunderbir-update\update.status');
+    if DirectoryExists(eTBPath.Text + 'thunderbir-update') then
+      RemoveDir(eTBPath.Text + 'thunderbir-update');
+  end
+  else
+    showmessage('Не все данные указаны!');
 end;
 
 procedure TTBupdApp.btCheckClick(Sender: TObject);
 var
-  fin:ANSIstring;
-  res:textfile;
+  fin: ANSIstring;
+  res: textfile;
 begin
-        AssignFile(res,eTBPath.Text+'thunderbir-update\update.status');
-        Reset(res);
-        Readln(res,fin);
-        ShowMessage(fin);
-        CloseFile(res);
-        btCheck.Enabled:=False;
+  AssignFile(res, eTBPath.Text + 'thunderbir-update\update.status');
+  Reset(res);
+  Readln(res, fin);
+  showmessage(fin);
+  CloseFile(res);
+  btCheck.Enabled := FALSE;
 end;
 
 end.
-

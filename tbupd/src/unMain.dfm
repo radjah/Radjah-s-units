@@ -100,12 +100,12 @@ object TBupdApp: TTBupdApp
     TabOrder = 6
     OnClick = btCheckClick
   end
-  object odff: TOpenDialog
+  object odTBPath: TOpenDialog
     Filter = 'Thunderbird.exe|Thunderbird.exe'
     InitialDir = '%programfiles%'
     Left = 344
   end
-  object odmar: TOpenDialog
+  object odUpdateFile: TOpenDialog
     Filter = #1060#1072#1081#1083#1099' '#1086#1073#1085#1086#1074#1083#1077#1085#1080#1103' (*.mar)|*.mar'
     InitialDir = '.'
     Left = 376
