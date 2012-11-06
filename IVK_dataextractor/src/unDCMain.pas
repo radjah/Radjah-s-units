@@ -105,6 +105,7 @@ begin
       Book.SaveAs(leExcelFile.Text, xlWorkbookNormal);
       // Закрываем
       Excel.Quit;
+      VarClear(ValArr);
       MessageBox(Self.Handle, 'Преобразование выполнено!', 'Сообщение',
         MB_OK or MB_ICONINFORMATION);
     end;

@@ -50,7 +50,8 @@ type
     procedure btExtractClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure btViewClick(Sender: TObject);
-    procedure ExtractData;
+    procedure ExtractData(SigIdx: integer; TablesName: string;
+      TableCount: integer);
     procedure btClearClick(Sender: TObject);
     procedure btAddClick(Sender: TObject);
     procedure btRemoveClick(Sender: TObject);
@@ -70,19 +71,18 @@ implementation
 {$R *.dfm}
 
 { === Извлечение данных для просмотра или сохрарения === }
-procedure TfmMain.ExtractData;
+procedure TfmMain.ExtractData(SigIdx: integer; TablesName: string;
+  TableCount: integer);
 var
   tabs, samples: integer; // Счатчик
   timeshift: integer; // Сдвиг времени в часах
   samplecount: integer; // Количество замеров в одной строке
-  sigidx: integer; // Индекс сигнала
 begin
   try
     samplecount := 36;
     timeshift := 4;
     // Параметры выборки
     AddLog(mLog, 'Получение конфигурации...');
-    sigidx := IVK_DM.tbTags.FieldByName('Tag_Index').AsInteger;
     // Подготовка компонента
     qExtractor.Close;
     qExtractor.SQL.Clear;
@@ -107,7 +107,7 @@ begin
         qExtractor.SQL.Add('WHERE (NOT (Sample_TDate_' + IntToStr(samples) +
           ' IS NULL)) AND (NOT (Sample_MSec_' + IntToStr(samples) +
           ' IS NULL)) AND (NOT (Sample_Value_' + IntToStr(samples) +
-          ' IS NULL)) and Signal_Index=' + IntToStr(sigidx));
+          ' IS NULL)) and Signal_Index=' + IntToStr(SigIdx));
         qExtractor.SQL.Add('and Sample_TDate_' + IntToStr(samples) +
           ' BETWEEN DATEADD(hh,' + IntToStr(-timeshift) + ',''' +
           FormatDateTime('yyyymmdd', dtpDateBegin.Date) + ' ' +
@@ -229,7 +229,7 @@ end;
 { === Составление запроса и извлечение данных === }
 procedure TfmMain.btExtractClick(Sender: TObject);
 var
-  row, BeginCol, BeginRow: integer; // Счатчик
+  row, BeginCol, BeginRow, i: integer; // Счатчик
   begTD, curTD: TDateTime; // Для сравнения даты и времени
   datasumm: real; // Накопитель для суммы значений
   datacount: integer; // Счетчик для делителя
@@ -238,152 +238,314 @@ var
   // Переменный для Excel
   ExpData: TExpData;
   ExpDataFile: file of TExpData;
+  ExportMethodFlag: boolean;
+  // Флаг типа экспорта:
+  // True - по списку
+  // False - только выбранный
 begin
   try
     if sdResult.Execute then
     begin
-      AddLog(mLog, 'Экспорт данных начался...');
-      ExtractData;
+      // Проверяем условия экспорта
       // Excel?
       if sdResult.FilterIndex = 1 then
       begin
-        sdResult.DefaultExt := 'xls';
-        // Координаты левого верхнего угла области,
-        // в которую будем выводить данные
-        BeginCol := 1;
-        BeginRow := 1;
-        // Количество строк и столбцов
-        RowCount := qForExport.RecordCount;
-        ColCount := qForExport.FieldCount;
-        // Создаем новую таблицу
-        Excel := CreateOleObject('Excel.Application');
-        // Молчать в тряпочку
-        Excel.DisplayAlerts := False;
-        AddLog(mLog, 'Объект Excel создан');
-        // Excel.SheetsInNewWorkbook := 0;
-        // Создаём новую книгу
-        Excel.WorkBooks.Add;
-        Book := Excel.WorkBooks.Item[1];
-        // Excel.WorkBooks.Item[1].Worksheets.Add;
-        Sheet := Excel.WorkBooks.Item[1].Worksheets.Item[1];
-        // Массив данных для вывода
-        ArrayData := VarArrayCreate([1, RowCount, 1, ColCount], varVariant);
-        // Sheet.Columns['B:B'].Select;
-        // Excel.Selection.NumberFormat := 'dd/mm/yyyy h:mm:ss';
-      end;
-      // Файл данных?
-      if sdResult.FilterIndex = 2 then
-      begin
-        sdResult.DefaultExt := 'msr';
-        // Подготовка типизированного файла
-        AssignFile(ExpDataFile, sdResult.FileName);
-        Rewrite(ExpDataFile);
-      end;
-      AddLog(mLog, 'Выполняется запись данных...');
-      // Читаем все данные в Excel
-      row := 1;
-      datasumm := 0;
-      datacount := 0;
-      begTD := qForExport.FieldByName('TD').AsDateTime;
-      while NOT qForExport.Eof do
-      begin
-        // Получаем значение датаврпемя в виде строки
-        curTD := qForExport.FieldByName('TD').AsDateTime;
-        // Если секунда замера не изменилась
-        if begTD = curTD then
-        // Накапливаем сумму и делитель
+        // Нет записей?
+        if IVK_DM.tbSignalList.RecordCount = 0 then
+          // Только то, что выбрано?
+          if MessageBox(Self.Handle, 'Список для экспорта пуст.' + #10#13 +
+            'Экспортировать только выбранный сигнал?', 'Запрос',
+            MB_OKCANCEL or MB_ICONQUESTION) = IDOK then
+            ExportMethodFlag := False
+            // Отказ от экспорта
+          else
+            Exit;
+        // Экспортируем по списку
+        ExportMethodFlag := True;
+        // У нас всё еще Excel, поэтому начинаем шаманить
+        // Проверяем выбранный метод
+        AddLog(mLog, 'Экспорт данных начался...');
+        if ExportMethodFlag then
         begin
-          datacount := datacount + 1;
-          datasumm := datasumm + qForExport.FieldByName('VAL').AsFloat;
-        end
-        else
-        // Иначе получаем среднее значение и выводим
-        begin
-          // Если работаем с Excel
-          if sdResult.FilterIndex = 1 then
+          // Становимся в начало таблицы
+          IVK_DM.tbSignalList.First;
+          // Создаём новый объект
+          Excel := CreateOleObject('Excel.Application');
+          // Молчать в тряпочку
+          Excel.DisplayAlerts := False;
+          AddLog(mLog, 'Объект Excel создан');
+          // Создаём новую книгу
+          Excel.WorkBooks.Add;
+          Book := Excel.WorkBooks.Item[1];
+          // Прибиваем лишние листы
+          for i := 1 to Book.Sheets.Count - 1 do
+            Book.Sheets.Item[1].Delete;
+          // и создаём нужное количество
+          for i := 1 to IVK_DM.tbSignalList.RecordCount - 1 do
+            Book.Sheets.Add;
+          // Теперь в книге количество страниц равно
+          // количеству извлекаемых параметров
+          // Приступаем к извлечению
+          for i := 1 to IVK_DM.tbSignalList.RecordCount do
           begin
+            Sheet := Book.Worksheets.Item[i];
+            // Достём данные
+            ExtractData(IVK_DM.tbSignalList.FieldByName('Tag_Index').AsInteger,
+              IVK_DM.tbSignalList.FieldByName('Table_Name').AsString,
+              IVK_DM.tbSignalList.FieldByName('Tables_Number').AsInteger);
+            // Координаты левого верхнего угла области,
+            // в которую будем выводить данные
+            BeginCol := 1;
+            BeginRow := 1;
+            // Количество строк и столбцов
+            RowCount := qForExport.RecordCount;
+            ColCount := qForExport.FieldCount;
+            // Создаем новую таблицу
+            // Excel.SheetsInNewWorkbook := 0;
+            // Массив данных для вывода
+            ArrayData := VarArrayCreate([1, RowCount, 1, ColCount], varVariant);
+            AddLog(mLog, 'Выполняется запись данных...');
+            // Читаем все данные в Excel
+            row := 1;
+            datasumm := 0;
+            datacount := 0;
+            begTD := qForExport.FieldByName('TD').AsDateTime;
+            while NOT qForExport.Eof do
+            begin
+              // Получаем значение дата-время в виде строки
+              curTD := qForExport.FieldByName('TD').AsDateTime;
+              // Если секунда замера не изменилась
+              if begTD = curTD then
+              // Накапливаем сумму и делитель
+              begin
+                datacount := datacount + 1;
+                datasumm := datasumm + qForExport.FieldByName('VAL').AsFloat;
+              end
+              else
+              // Иначе получаем среднее значение и выводим
+              begin
+                // ID сигнала
+                ArrayData[row, 1] := qForExport.FieldByName('SI').AsVariant;
+                // Время замера
+                ArrayData[row, 2] := begTD;
+                // Значение
+                ArrayData[row, 3] := datasumm / datacount;
+              end;
+              row := row + 1;
+              // Изменяем эталонное дата-время
+              begTD := qForExport.FieldByName('TD').AsDateTime;
+              // Сбрасываем количество замеров в новую секунду
+              datacount := 1;
+              // Запоминаем первое значение
+              datasumm := qForExport.FieldByName('VAL').AsFloat;
+              // Переходим на следующую запись
+              qForExport.Next;
+            end;
+            // Сохраняем последнюю запись
             // ID сигнала
             ArrayData[row, 1] := qForExport.FieldByName('SI').AsVariant;
             // Время замера
             ArrayData[row, 2] := begTD;
             // Значение
             ArrayData[row, 3] := datasumm / datacount;
+            AddLog(mLog, 'Данные записаны!');
+            // Пишем кусок данных на указанный лист
+            Cell1 := Sheet.Cells[BeginRow, BeginCol];
+            Cell2 := Sheet.Cells[BeginRow + RowCount - 1,
+              BeginCol + ColCount - 1];
+            Range := Sheet.Range[Cell1, Cell2];
+            Range.Value := ArrayData;
+            VarClear(ArrayData);
           end;
-          // Если работаем с файлом данных
-          if sdResult.FilterIndex = 2 then
-          begin
-            ExpData.SigID := qForExport.FieldByName('SI').AsInteger;
-            ExpData.DT := begTD;
-            ExpData.Val := datasumm / datacount;
-            Write(ExpDataFile, ExpData);
-          end;
-          // Будем писать в следующую строку
-          row := row + 1;
-          // Изменяем эталонное дата-время
+          // Выходим
+          Excel.Quit;
+          AddLog(mLog, 'Объект Excel уничтожен');
+          AddLog(mLog, 'Экспорт данных завершен!');
+        end
+        else
+        // Если выкачивает только выбранный параметр
+        begin
+          // Достём данные
+          ExtractData(IVK_DM.tbTags.FieldByName('Tag_Index').AsInteger,
+            TablesName, TableCount);
+          // Координаты левого верхнего угла области,
+          // в которую будем выводить данные
+          BeginCol := 1;
+          BeginRow := 1;
+          // Количество строк и столбцов
+          RowCount := qForExport.RecordCount;
+          ColCount := qForExport.FieldCount;
+          // Создаем новую таблицу
+          // Excel.SheetsInNewWorkbook := 0;
+          // Массив данных для вывода
+          ArrayData := VarArrayCreate([1, RowCount, 1, ColCount], varVariant);
+          AddLog(mLog, 'Выполняется запись данных...');
+          // Читаем все данные в Excel
+          row := 1;
+          datasumm := 0;
+          datacount := 0;
           begTD := qForExport.FieldByName('TD').AsDateTime;
-          // Сбрасываем количество замеров в новую секунду
-          datacount := 1;
-          // Запоминаем первое значение
-          datasumm := qForExport.FieldByName('VAL').AsFloat;
+          while NOT qForExport.Eof do
+          begin
+            // Получаем значение дата-время в виде строки
+            curTD := qForExport.FieldByName('TD').AsDateTime;
+            // Если секунда замера не изменилась
+            if begTD = curTD then
+            // Накапливаем сумму и делитель
+            begin
+              datacount := datacount + 1;
+              datasumm := datasumm + qForExport.FieldByName('VAL').AsFloat;
+            end
+            else
+            // Иначе получаем среднее значение и выводим
+            begin
+              // ID сигнала
+              ArrayData[row, 1] := qForExport.FieldByName('SI').AsVariant;
+              // Время замера
+              ArrayData[row, 2] := begTD;
+              // Значение
+              ArrayData[row, 3] := datasumm / datacount;
+            end;
+            row := row + 1;
+            // Изменяем эталонное дата-время
+            begTD := qForExport.FieldByName('TD').AsDateTime;
+            // Сбрасываем количество замеров в новую секунду
+            datacount := 1;
+            // Запоминаем первое значение
+            datasumm := qForExport.FieldByName('VAL').AsFloat;
+            // Переходим на следующую запись
+            qForExport.Next;
+          end;
+          // Сохраняем последнюю запись
+          // ID сигнала
+          ArrayData[row, 1] := qForExport.FieldByName('SI').AsVariant;
+          // Время замера
+          ArrayData[row, 2] := begTD;
+          // Значение
+          ArrayData[row, 3] := datasumm / datacount;
+          AddLog(mLog, 'Данные записаны!');
+          // Запись в Excel
+          // Создаём новый объект
+          Excel := CreateOleObject('Excel.Application');
+          // Молчать в тряпочку
+          Excel.DisplayAlerts := False;
+          AddLog(mLog, 'Объект Excel создан');
+          // Создаём новую книгу
+          Excel.WorkBooks.Add;
+          Book := Excel.WorkBooks.Item[1];
+          // Прибиваем лишние листы
+          for i := 1 to Book.Sheets.Count - 1 do
+            Book.Sheets.Item[1].Delete;
+          Sheet := Book.Worksheets.Item[1];
+          // Пишем кусок данных на указанный лист
+          Cell1 := Sheet.Cells[BeginRow, BeginCol];
+          Cell2 := Sheet.Cells[BeginRow + RowCount - 1,
+            BeginCol + ColCount - 1];
+          Range := Sheet.Range[Cell1, Cell2];
+          Range.Value := ArrayData;
+          Book.SaveAs(sdResult.FileName, xlWorkbookNormal);
+          AddLog(mLog, 'Файл сохранен!');
+          VarClear(ArrayData);
+          // Выходим
+          Excel.Quit;
+          AddLog(mLog, 'Объект Excel уничтожен');
+          AddLog(mLog, 'Экспорт данных завершен!');
         end;
-        // Переходим на следующую запись
-        qForExport.Next;
+        // Сохранение в типизированный файл
+
+
+
+
+        // Дальше идет старое говно
+
+        // Выкачиваем первую порцию данных
+        ExtractData();
+        // Excel?
+        if sdResult.FilterIndex = 1 then
+        begin
+          sdResult.DefaultExt := 'xls';
+          // Sheet.Columns['B:B'].Select;
+          // Excel.Selection.NumberFormat := 'dd/mm/yyyy h:mm:ss';
+        end;
+        // Файл данных?
+        if sdResult.FilterIndex = 2 then
+        begin
+          sdResult.DefaultExt := 'msr';
+          // Подготовка типизированного файла
+          AssignFile(ExpDataFile, sdResult.FileName);
+          Rewrite(ExpDataFile);
+        end;
+        AddLog(mLog, 'Выполняется запись данных...');
+
+        // Если работаем с файлом данных
+        if sdResult.FilterIndex = 2 then
+        begin
+          ExpData.SigID := qForExport.FieldByName('SI').AsInteger;
+          ExpData.DT := begTD;
+          ExpData.Val := datasumm / datacount;
+          Write(ExpDataFile, ExpData);
+        end;
+        // Будем писать в следующую строку
+
       end;
-      // Сохраняем последнюю запись
-      if sdResult.FilterIndex = 1 then
-      begin
-        // ID сигнала
-        ArrayData[row, 1] := qForExport.FieldByName('SI').AsVariant;
-        // Время замера
-        ArrayData[row, 2] := begTD;
-        // Значение
-        ArrayData[row, 3] := datasumm / datacount;
-      end;
-      if sdResult.FilterIndex = 2 then
-      begin
-        ExpData.SigID := qForExport.FieldByName('SI').AsInteger;
-        ExpData.DT := begTD;
-        ExpData.Val := datasumm / datacount;
-        Write(ExpDataFile, ExpData);
-      end;
-      AddLog(mLog, 'Данные записаны!');
-      // Особая магия для Excel
-      if sdResult.FilterIndex = 1 then
-      begin
-        Cell1 := Sheet.Cells[BeginRow, BeginCol];
-        Cell2 := Sheet.Cells[BeginRow + RowCount - 1, BeginCol + ColCount - 1];
-        Range := Sheet.Range[Cell1, Cell2];
-        Range.Value := ArrayData;
-        Book.SaveAs(sdResult.FileName, xlWorkbookNormal);
-      end;
-      if sdResult.FilterIndex = 2 then
-        CloseFile(ExpDataFile);
-      AddLog(mLog, 'Файл сохранен!');
-      if sdResult.FilterIndex = 1 then
-      begin
-        // Выходим
-        Excel.Quit;
-        AddLog(mLog, 'Объект Excel уничтожен');
-      end;
-      // qExtractor.SQL.SaveToFile('q.txt');
-      AddLog(mLog, 'Экспорт данных завершен!');
+      // Переходим на следующую запись
+      qForExport.Next;
     end;
-  except
-    // Если не смогли соединиться
-    on E: EOleException do
+    // Сохраняем последнюю запись
+    if sdResult.FilterIndex = 1 then
     begin
-      MessageBox(Self.Handle, pchar('Возникла ошибка:' + #10#13 + E.Message),
-        'Ошибка при работе', MB_OK or MB_ICONERROR);
-      AddLog(mLog, 'Ошибка: ' + E.Message);
+      // ID сигнала
+      ArrayData[row, 1] := qForExport.FieldByName('SI').AsVariant;
+      // Время замера
+      ArrayData[row, 2] := begTD;
+      // Значение
+      ArrayData[row, 3] := datasumm / datacount;
     end;
-    // Если не смогли открыть что-то
-    on E: EADOError do
+    if sdResult.FilterIndex = 2 then
     begin
-      MessageBox(Self.Handle, pchar('Возникла ошибка:' + #10#13 + E.Message),
-        'Ошибка подключения/отключения', MB_OK or MB_ICONERROR);
-      AddLog(mLog, 'Ошибка: ' + E.Message);
+      ExpData.SigID := qForExport.FieldByName('SI').AsInteger;
+      ExpData.DT := begTD;
+      ExpData.Val := datasumm / datacount;
+      Write(ExpDataFile, ExpData);
     end;
+    AddLog(mLog, 'Данные записаны!');
+    // Особая магия для Excel
+    if sdResult.FilterIndex = 1 then
+    begin
+      Cell1 := Sheet.Cells[BeginRow, BeginCol];
+      Cell2 := Sheet.Cells[BeginRow + RowCount - 1, BeginCol + ColCount - 1];
+      Range := Sheet.Range[Cell1, Cell2];
+      Range.Value := ArrayData;
+      Book.SaveAs(sdResult.FileName, xlWorkbookNormal);
+    end;
+    if sdResult.FilterIndex = 2 then
+      CloseFile(ExpDataFile);
+    AddLog(mLog, 'Файл сохранен!');
+    if sdResult.FilterIndex = 1 then
+    begin
+      // Выходим
+      Excel.Quit;
+      AddLog(mLog, 'Объект Excel уничтожен');
+    end;
+    // qExtractor.SQL.SaveToFile('q.txt');
+    AddLog(mLog, 'Экспорт данных завершен!');
   end;
+except
+  // Если не смогли соединиться
+  on E: EOleException do
+  begin
+    MessageBox(Self.Handle, pchar('Возникла ошибка:' + #10#13 + E.Message),
+      'Ошибка при работе', MB_OK or MB_ICONERROR);
+    AddLog(mLog, 'Ошибка: ' + E.Message);
+  end;
+  // Если не смогли открыть что-то
+  on E: EADOError do
+  begin
+    MessageBox(Self.Handle, pchar('Возникла ошибка:' + #10#13 + E.Message),
+      'Ошибка подключения/отключения', MB_OK or MB_ICONERROR);
+    AddLog(mLog, 'Ошибка: ' + E.Message);
+  end;
+end;
 end;
 
 { === Получить список тегов в выбранной группе === }
