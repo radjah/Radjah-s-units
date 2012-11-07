@@ -16,7 +16,6 @@ begin
   Application.MainFormOnTaskbar := True;
   Application.CreateForm(TIVK_DM, IVK_DM);
   Application.CreateForm(TfmMain, fmMain);
-  Application.CreateForm(TfmMain, fmMain);
   Application.CreateForm(TfmView, fmView);
   Application.Run;
 end.
