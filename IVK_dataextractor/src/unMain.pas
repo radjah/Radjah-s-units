@@ -45,6 +45,7 @@ type
     btClear: TBitBtn;
     qClearList: TADOQuery;
     Label8: TLabel;
+    cbFillTime: TCheckBox;
     procedure btConnectClick(Sender: TObject);
     procedure btGetTagsClick(Sender: TObject);
     procedure btExtractClick(Sender: TObject);
@@ -236,7 +237,7 @@ end;
 { === Составление запроса и извлечение данных === }
 procedure TfmMain.btExtractClick(Sender: TObject);
 var
-  row, BeginCol, BeginRow, i: integer; // Счатчик
+  row, BeginCol, BeginRow, i, j: integer; // Счатчик
   begTD, curTD: TDateTime; // Для сравнения даты и времени
   datasumm: real; // Накопитель для суммы значений
   datacount: integer; // Счетчик для делителя
@@ -246,6 +247,7 @@ var
   ExpData: TExpData;
   ExpDataFile: file of TExpData;
   ExportMethodFlag: boolean;
+  ExpDataArr: array of TExpData;
   // Флаг типа экспорта:
   // True - по списку
   // False - только выбранный
@@ -316,22 +318,28 @@ begin
             // в которую будем выводить данные
             BeginCol := 1;
             BeginRow := 1;
-            // Количество строк и столбцов
-            RowCount := qForExport.RecordCount + 1;
-            ColCount := qForExport.FieldCount;
-            // Создаем новую таблицу
-            // Excel.SheetsInNewWorkbook := 0;
-            // Массив данных для вывода
-            ArrayData := VarArrayCreate([1, RowCount, 1, ColCount], varVariant);
+            // Без восстановления замеров
+            if cbFillTime.Checked = False then
+            begin
+              // Количество строк и столбцов
+              RowCount := qForExport.RecordCount + 1;
+              ColCount := qForExport.FieldCount;
+              // Массив данных для вывода
+              ArrayData := VarArrayCreate([1, RowCount, 1, ColCount],
+                varVariant);
+              row := 1;
+            end
+            // С восстановлением замеров
+            else
+              row := 0;
             AddLog(mLog, 'Выполняется запись данных...');
             // Читаем все данные в Excel
-            row := 1;
             datasumm := 0;
             datacount := 0;
             begTD := qForExport.FieldByName('TD').AsDateTime;
             while NOT qForExport.Eof do
             begin
-              // Получаем значение дата-время в виде строки
+              // Получаем значение дата-время
               curTD := qForExport.FieldByName('TD').AsDateTime;
               // Если секунда замера не изменилась
               if begTD = curTD then
@@ -343,14 +351,49 @@ begin
               else
               // Иначе получаем среднее значение и выводим
               begin
-                // ID сигнала
-                ArrayData[row, 1] := qForExport.FieldByName('SI').AsVariant;
-                // Время замера
-                ArrayData[row, 2] := begTD;
-                // Значение
-                ArrayData[row, 3] := datasumm / datacount;
-                // Будем писать в слудующую строку
-                row := row + 1;
+                if cbFillTime.Checked = False then
+                // Если пропущенные замеры не восстанавливаем
+                begin
+                  // ID сигнала
+                  ArrayData[row, 1] := qForExport.FieldByName('SI').AsVariant;
+                  // Время замера
+                  ArrayData[row, 2] := begTD;
+                  // Значение
+                  ArrayData[row, 3] := datasumm / datacount;
+                  // Будем писать в слудующую строку
+                  row := row + 1;
+                end
+                else
+                begin
+                  // Наращиваем массив
+                  SetLength(ExpDataArr, row + 1);
+                  // Записываем замер
+                  // ID сигнала
+                  ExpDataArr[row].SigID := qForExport.FieldByName('SI')
+                    .AsInteger;
+                  // Время замера
+                  ExpDataArr[row].DT := begTD;
+                  // Значение
+                  ExpDataArr[row].Val := datasumm / datacount;
+                  // Отодвигаем границу
+                  // Указывает на пока не существующий элемент массива
+                  row := row + 1;
+                  // Добавляем к проверяемому времени секунду
+                  begTD := begTD + StrToTime('0:00:01');
+                  // Пока не добежим до новой временной отметки
+                  while begTD < curTD do
+                  begin
+                    // Наращиваем массив
+                    SetLength(ExpDataArr, row + 1);
+                    // Заполняем новый элемент из старого
+                    ExpDataArr[row] := ExpDataArr[row - 1];
+                    // Отодвигаем границу
+                    // Указывает на пока не существующий элемент массива
+                    row := row + 1;
+                    // Отодвигаем время
+                    begTD := begTD + StrToTime('0:00:01');
+                  end;
+                end;
                 // Изменяем эталонное дата-время
                 begTD := qForExport.FieldByName('TD').AsDateTime;
                 // Сбрасываем количество замеров в новую секунду
@@ -364,12 +407,43 @@ begin
             // Сохраняем последнюю запись
             // Отладка
             // ShowMessage('row = ' + IntToStr(row));
-            // ID сигнала
-            ArrayData[row, 1] := qForExport.FieldByName('SI').AsVariant;
-            // Время замера
-            ArrayData[row, 2] := begTD;
-            // Значение
-            ArrayData[row, 3] := datasumm / datacount;
+            if cbFillTime.Checked = False then
+            // Без восстановления замеров
+            begin
+              // ID сигнала
+              ArrayData[row, 1] := qForExport.FieldByName('SI').AsVariant;
+              // Время замера
+              ArrayData[row, 2] := begTD;
+              // Значение
+              ArrayData[row, 3] := datasumm / datacount;
+            end
+            else
+            // С восстановлением замеров
+            begin
+              // Наращиваем массив
+              SetLength(ExpDataArr, row + 1);
+              // Записываем замер
+              // ID сигнала
+              ExpDataArr[row].SigID := qForExport.FieldByName('SI').AsInteger;
+              // Время замера
+              ExpDataArr[row].DT := begTD;
+              // Значение
+              ExpDataArr[row].Val := datasumm / datacount;
+              // Массив данных для вывода
+              RowCount := Length(ExpDataArr);
+              ArrayData := VarArrayCreate([1, RowCount, 1, ColCount],
+                varVariant);
+              // Заполняем массив
+              for j := 1 to RowCount do
+              begin
+                // ID сигнала
+                ArrayData[j, 1] := ExpDataArr[j - 1].SigID;
+                // Время замера
+                ArrayData[j, 2] := ExpDataArr[j - 1].DT;
+                // Значение
+                ArrayData[j, 3] := ExpDataArr[j - 1].Val;
+              end;
+            end;
             AddLog(mLog, 'Данные записаны!');
             // Пишем кусок данных на указанный лист
             Cell1 := Sheet.Cells[BeginRow, BeginCol];

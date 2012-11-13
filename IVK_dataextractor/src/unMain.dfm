@@ -3,7 +3,7 @@ object fmMain: TfmMain
   Top = 0
   BorderStyle = bsDialog
   Caption = #1048#1079#1074#1083#1077#1095#1077#1085#1080#1077' '#1076#1072#1085#1085#1099#1093
-  ClientHeight = 599
+  ClientHeight = 635
   ClientWidth = 755
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -150,7 +150,7 @@ object fmMain: TfmMain
     Left = 8
     Top = 415
     Width = 417
-    Height = 138
+    Height = 170
     Caption = #1055#1072#1088#1072#1084#1077#1090#1088#1099' '#1074#1099#1073#1086#1088#1082#1080
     TabOrder = 4
     object Label3: TLabel
@@ -222,10 +222,18 @@ object fmMain: TfmMain
       Kind = dtkTime
       TabOrder = 3
     end
+    object cbFillTime: TCheckBox
+      Left = 16
+      Top = 136
+      Width = 186
+      Height = 17
+      Caption = #1053#1077#1087#1088#1077#1088#1099#1074#1085#1086#1077' '#1074#1088#1077#1084#1103
+      TabOrder = 4
+    end
   end
   object btExtract: TButton
     Left = 224
-    Top = 566
+    Top = 602
     Width = 130
     Height = 25
     Caption = #1048#1079#1074#1083#1077#1095#1100' '#1076#1072#1085#1085#1099#1077
@@ -237,13 +245,13 @@ object fmMain: TfmMain
     Left = 472
     Top = 441
     Width = 273
-    Height = 150
+    Height = 186
     ScrollBars = ssBoth
     TabOrder = 6
   end
   object btView: TButton
     Left = 80
-    Top = 566
+    Top = 602
     Width = 130
     Height = 25
     Caption = #1055#1088#1086#1089#1084#1086#1090#1088
