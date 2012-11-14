@@ -277,7 +277,16 @@ begin
       end
       // Если типизированный файл
       else
-        ExportMethodFlag := False;
+      begin
+        if MessageBox(Self.Handle, 'Выбранный формат несовместим с извлечением '
+          + 'нескольких сигналов одновременно.' + #10#13 +
+          'Извлечь только выбранный сигнал?', 'Запрос', MB_OKCANCEL or
+          MB_ICONQUESTION) = IDOK then
+          ExportMethodFlag := False
+          // Отказ от экспорта
+        else
+          Exit;
+      end;
       { = Все проверки пройдены, можно начинать обработку. = }
       // Проверяем выбранный метод
       AddLog(mLog, 'Экспорт данных начался...');
@@ -307,7 +316,7 @@ begin
         // Для каждого выбранного параметра
         begin
           Sheet := Book.Worksheets.Item[i];
-          // Достём данные
+          // Достаём данные
           ExtractData(IVK_DM.tbSignalList.FieldByName('Tag_Index').AsInteger,
             IVK_DM.tbSignalList.FieldByName('Table_Name').AsString,
             IVK_DM.tbSignalList.FieldByName('Tables_Number').AsInteger);
@@ -315,9 +324,9 @@ begin
           if qForExport.RecordCount > 0 then
           // Если за выбранный промежуток нет данных.
           begin
-            row := 0;
             AddLog(mLog, 'Выполняется запись данных...');
             // Читаем все данные в Excel
+            row := 0;
             datasumm := 0;
             datacount := 0;
             begTD := qForExport.FieldByName('TD').AsDateTime;
