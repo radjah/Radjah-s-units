@@ -232,7 +232,7 @@ object fmMain: TfmMain
     end
   end
   object btExtract: TButton
-    Left = 224
+    Left = 256
     Top = 602
     Width = 130
     Height = 25
@@ -250,9 +250,9 @@ object fmMain: TfmMain
     TabOrder = 6
   end
   object btView: TButton
-    Left = 80
+    Left = 8
     Top = 602
-    Width = 130
+    Width = 89
     Height = 25
     Caption = #1055#1088#1086#1089#1084#1086#1090#1088
     Enabled = False
@@ -368,6 +368,16 @@ object fmMain: TfmMain
     ParentDoubleBuffered = False
     TabOrder = 11
     OnClick = btClearClick
+  end
+  object btPlot: TButton
+    Left = 121
+    Top = 602
+    Width = 89
+    Height = 25
+    Caption = #1043#1088#1072#1092#1080#1082#1080
+    Enabled = False
+    TabOrder = 12
+    OnClick = btPlotClick
   end
   object qExtractor: TADOQuery
     Connection = IVK_DM.connIVK_DB
