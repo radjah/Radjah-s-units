@@ -161,8 +161,8 @@ object fmMain: TfmMain
       Caption = #1044#1072#1090#1072' '#1085#1072#1095#1072#1083#1072':'
     end
     object Label4: TLabel
-      Left = 216
-      Top = 32
+      Left = 176
+      Top = 31
       Width = 87
       Height = 13
       Caption = #1044#1072#1090#1072' '#1086#1082#1086#1085#1095#1072#1085#1080#1103':'
@@ -175,7 +175,7 @@ object fmMain: TfmMain
       Caption = #1042#1088#1077#1084#1103' '#1085#1072#1095#1072#1083#1072':'
     end
     object Label6: TLabel
-      Left = 216
+      Left = 176
       Top = 77
       Width = 91
       Height = 13
@@ -184,7 +184,7 @@ object fmMain: TfmMain
     object dtpDateBegin: TDateTimePicker
       Left = 16
       Top = 48
-      Width = 186
+      Width = 145
       Height = 21
       Date = 41193.000000000000000000
       Time = 41193.000000000000000000
@@ -192,9 +192,9 @@ object fmMain: TfmMain
       TabOrder = 0
     end
     object dtpDateEnd: TDateTimePicker
-      Left = 216
-      Top = 48
-      Width = 186
+      Left = 176
+      Top = 50
+      Width = 145
       Height = 21
       Date = 41193.345461296300000000
       Time = 41193.345461296300000000
@@ -204,7 +204,7 @@ object fmMain: TfmMain
     object dtpTimeBegin: TDateTimePicker
       Left = 16
       Top = 96
-      Width = 186
+      Width = 145
       Height = 21
       Date = 41193.346280370370000000
       Time = 41193.346280370370000000
@@ -213,9 +213,9 @@ object fmMain: TfmMain
       TabOrder = 1
     end
     object dtpTimeEnd: TDateTimePicker
-      Left = 216
+      Left = 176
       Top = 96
-      Width = 186
+      Width = 145
       Height = 21
       Date = 41193.346823657400000000
       Time = 41193.346823657400000000
@@ -229,6 +229,15 @@ object fmMain: TfmMain
       Height = 17
       Caption = #1053#1077#1087#1088#1077#1088#1099#1074#1085#1086#1077' '#1074#1088#1077#1084#1103
       TabOrder = 4
+    end
+    object cbLogScale: TCheckBox
+      Left = 176
+      Top = 136
+      Width = 217
+      Height = 17
+      Caption = #1051#1086#1075#1072#1088#1080#1092#1084#1080#1095#1077#1089#1082#1072#1103' '#1096#1082#1072#1083#1072' '#1085#1072' '#1075#1088#1072#1092#1080#1082#1077
+      TabOrder = 5
+      OnClick = cbLogScaleClick
     end
   end
   object btExtract: TButton
@@ -299,6 +308,7 @@ object fmMain: TfmMain
     Top = 264
     Width = 34
     Height = 25
+    Hint = #1044#1086#1073#1072#1074#1080#1090#1100' '#1087#1072#1088#1072#1084#1077#1090#1088' '#1074' '#1089#1087#1080#1089#1086#1082
     DoubleBuffered = True
     Enabled = False
     Glyph.Data = {
@@ -316,6 +326,8 @@ object fmMain: TfmMain
       33333777333333333333CC333333333333337733333333333333}
     NumGlyphs = 2
     ParentDoubleBuffered = False
+    ParentShowHint = False
+    ShowHint = True
     TabOrder = 9
     OnClick = btAddClick
   end
@@ -324,6 +336,7 @@ object fmMain: TfmMain
     Top = 295
     Width = 34
     Height = 25
+    Hint = #1059#1073#1088#1072#1090#1100' '#1087#1072#1088#1072#1084#1077#1090#1088' '#1080#1079' '#1089#1087#1080#1089#1082#1072
     DoubleBuffered = True
     Enabled = False
     Glyph.Data = {
@@ -341,6 +354,8 @@ object fmMain: TfmMain
       CCC333333333333777FF33333333333333CC3333333333333773}
     NumGlyphs = 2
     ParentDoubleBuffered = False
+    ParentShowHint = False
+    ShowHint = True
     TabOrder = 10
     OnClick = btRemoveClick
   end
@@ -349,6 +364,7 @@ object fmMain: TfmMain
     Top = 326
     Width = 34
     Height = 25
+    Hint = #1054#1095#1080#1089#1090#1080#1090#1100' '#1089#1087#1080#1089#1086#1082' '#1087#1072#1088#1072#1084#1077#1090#1088#1086#1074' '#1076#1083#1103' '#1074#1099#1073#1086#1088#1082#1080
     DoubleBuffered = True
     Enabled = False
     Glyph.Data = {
@@ -366,6 +382,8 @@ object fmMain: TfmMain
       3333333337777733333333333333333333333333333333333333}
     NumGlyphs = 2
     ParentDoubleBuffered = False
+    ParentShowHint = False
+    ShowHint = True
     TabOrder = 11
     OnClick = btClearClick
   end
@@ -382,17 +400,17 @@ object fmMain: TfmMain
   object qExtractor: TADOQuery
     Connection = IVK_DM.connIVK_DB
     Parameters = <>
-    Left = 408
+    Left = 496
     Top = 9
   end
   object dsTagGroup: TDataSource
     DataSet = IVK_DM.tbTWX_GLOBAL
-    Left = 152
+    Left = 240
     Top = 8
   end
   object dsTagList: TDataSource
     DataSet = IVK_DM.tbTags
-    Left = 216
+    Left = 304
     Top = 8
   end
   object qTempTable: TADOQuery
@@ -405,7 +423,7 @@ object fmMain: TfmMain
       #9#9'SMS int NULL,'
       #9#9'VAL float NOT NULL'
       #9')')
-    Left = 280
+    Left = 368
     Top = 8
   end
   object qClearTmp: TADOQuery
@@ -413,7 +431,7 @@ object fmMain: TfmMain
     Parameters = <>
     SQL.Strings = (
       'delete from #tmpselect')
-    Left = 344
+    Left = 432
     Top = 8
   end
   object qForExport: TADOQuery
@@ -422,7 +440,7 @@ object fmMain: TfmMain
     SQL.Strings = (
       'select SI, TD,SMS, VAL from #tmpselect'
       'order by SI, TD, SMS')
-    Left = 480
+    Left = 568
     Top = 8
   end
   object sdResult: TSaveDialog

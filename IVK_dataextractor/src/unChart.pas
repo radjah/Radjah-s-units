@@ -9,7 +9,6 @@ uses
 type
   TfmChart = class(TForm)
     chPreview: TChart;
-    Series1: TLineSeries;
   private
     { Private declarations }
   public

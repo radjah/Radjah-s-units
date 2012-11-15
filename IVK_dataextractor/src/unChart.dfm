@@ -27,28 +27,6 @@ object fmChart: TfmChart
     View3DOptions.Orthogonal = False
     Align = alClient
     TabOrder = 0
-    ExplicitLeft = 24
-    ExplicitTop = 32
-    ExplicitWidth = 400
-    ExplicitHeight = 250
     ColorPaletteIndex = 13
-    object Series1: TLineSeries
-      Marks.Arrow.Visible = True
-      Marks.Callout.Brush.Color = clBlack
-      Marks.Callout.Arrow.Visible = True
-      Marks.Visible = False
-      ValueFormat = '#.##0.###'
-      LinePen.Color = 10708548
-      Pointer.Brush.Gradient.EndColor = 10708548
-      Pointer.Gradient.EndColor = 10708548
-      Pointer.InflateMargins = True
-      Pointer.Style = psRectangle
-      Pointer.Visible = False
-      XValues.DateTime = True
-      XValues.Name = 'X'
-      XValues.Order = loAscending
-      YValues.Name = 'Y'
-      YValues.Order = loNone
-    end
   end
 end

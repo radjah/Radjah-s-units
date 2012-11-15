@@ -47,6 +47,7 @@ type
     Label8: TLabel;
     cbFillTime: TCheckBox;
     btPlot: TButton;
+    cbLogScale: TCheckBox;
     procedure btConnectClick(Sender: TObject);
     procedure btGetTagsClick(Sender: TObject);
     procedure btExtractClick(Sender: TObject);
@@ -59,6 +60,7 @@ type
     procedure btRemoveClick(Sender: TObject);
     procedure MakeDataArr(MethodFlag: boolean);
     procedure btPlotClick(Sender: TObject);
+    procedure cbLogScaleClick(Sender: TObject);
   private
     { Private declarations }
   public
@@ -619,6 +621,7 @@ procedure TfmMain.btPlotClick(Sender: TObject);
 var
   i, j: integer; // Счетчик
 begin
+  AddLog(mLog, 'Построение графиков началось.');
   // Удаляем все графики
   fmChart.chPreview.SeriesList.Clear;
   // Показываем легенду
@@ -644,10 +647,13 @@ begin
         ('Logging_Name').AsString;
       // Заполняем
       if qForExport.RecordCount > 0 then
-        // Если данные есть
+      // Если данные есть
+      begin
+        AddLog(mLog, 'Построение...');
         for j := 0 to Length(ExpDataArr) - 1 do
           // Переносим все значения на график
           fmChart.chPreview.Series[i].AddXY(ExpDataArr[j].DT, ExpDataArr[j].Val)
+      end
       else
         // Иначе ругаемся
         AddLog(mLog, 'Обнаружен параметр без данных! Пропускаем.');
@@ -681,6 +687,7 @@ begin
       // Иначе ругаемся
       AddLog(mLog, 'Обнаружен параметр без данных! Пропускаем.');
   end;
+  AddLog(mLog, 'Построение завершено!');
   // Отобразить форму с графиками
   fmChart.ShowModal;
 end;
@@ -709,6 +716,12 @@ begin
     TablesNameSingle, TableCountSingle);
   AddLog(mLog, 'Запуск просмотра...');
   fmView.ShowModal;
+end;
+
+{ === Настройка шкалы === }
+procedure TfmMain.cbLogScaleClick(Sender: TObject);
+begin
+  fmChart.chPreview.LeftAxis.Logarithmic := cbLogScale.Checked;
 end;
 
 { === Установка начальных значений === }
