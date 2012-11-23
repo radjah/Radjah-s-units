@@ -1,9 +1,10 @@
 object fmIVK_tarMain: TfmIVK_tarMain
   Left = 0
   Top = 0
+  BorderStyle = bsDialog
   Caption = #1058#1072#1088#1080#1088#1086#1074#1082#1072' '#1082#1072#1089#1089#1077#1090#1099
-  ClientHeight = 534
-  ClientWidth = 628
+  ClientHeight = 536
+  ClientWidth = 630
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -11,6 +12,7 @@ object fmIVK_tarMain: TfmIVK_tarMain
   Font.Name = 'Tahoma'
   Font.Style = []
   OldCreateOrder = False
+  Position = poScreenCenter
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
@@ -87,29 +89,8 @@ object fmIVK_tarMain: TfmIVK_tarMain
       ColCount = 2
       DefaultRowHeight = 18
       RowCount = 4
+      Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goEditing]
       TabOrder = 1
-    end
-    object cbAddit: TCheckBox
-      Left = 16
-      Top = 274
-      Width = 209
-      Height = 17
-      Caption = #1055#1086#1087#1088#1072#1074#1086#1095#1085#1099#1081' '#1082#1086#1101#1092#1092#1080#1094#1080#1077#1085#1090' '#1087#1088#1080' a*x'
-      TabOrder = 2
-      Visible = False
-      OnClick = cbAdditClick
-    end
-    object leAddit: TLabeledEdit
-      Left = 16
-      Top = 309
-      Width = 121
-      Height = 21
-      EditLabel.Width = 48
-      EditLabel.Height = 13
-      EditLabel.Caption = #1047#1085#1072#1095#1077#1085#1080#1077
-      Enabled = False
-      TabOrder = 3
-      Visible = False
     end
   end
 end

@@ -413,7 +413,7 @@ begin
           // ≈сли за выбранный промежуток нет данных.
           begin
             AddLog(mLog, '¬ыполн€етс€ запись данных...');
-            MakeDataArr(ExportMethodFlag);
+            MakeDataArr(cbFillTime.Checked);
             // ћассив данных дл€ вывода
             RowCount := Length(ExpDataArr);
             ColCount := 3;
@@ -468,7 +468,7 @@ begin
         if qForExport.RecordCount > 0 then
         // ≈сли за выбранный промежуток есть данные.
         begin
-          MakeDataArr(ExportMethodFlag);
+          MakeDataArr(cbFillTime.Checked);
           RowCount := Length(ExpDataArr);
           // “ут у нас есть массив записей всех замеров
           // ѕо выбранному типу определ€ем метод сохранени€

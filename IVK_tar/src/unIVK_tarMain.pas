@@ -16,12 +16,9 @@ type
     GroupBox2: TGroupBox;
     btCalc: TButton;
     sgResult: TStringGrid;
-    cbAddit: TCheckBox;
-    leAddit: TLabeledEdit;
     procedure btSetClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure btCalcClick(Sender: TObject);
-    procedure cbAdditClick(Sender: TObject);
   private
     { Private declarations }
   public
@@ -42,7 +39,7 @@ var
   yArr: array of real; // Массив вычесленных параметров
   n, x, y, x2, x3, x4, xy, x2y: real; // Вспомогательные переменные
   da, db, dc, d: real; // Определители
-  i, j: integer; // Счатчики
+  i: integer; // Счатчик
   aArr, bArr, cArr, dArr: Matrice; // Матрицы
 begin
   // Заполнение массивов
@@ -204,7 +201,7 @@ end;
   end;
   end;
   for i := m downto 0 do
-  // Цикл 2 из 3
+  // Цикл 3 из 3
   begin
   s := a[i][m1];
   for j := i + 1 to m do
@@ -225,12 +222,6 @@ begin
     sgData.Cells[0, i] := IntToStr(i);
 end;
 
-{ === Переключатель === }
-procedure TfmIVK_tarMain.cbAdditClick(Sender: TObject);
-begin
-  leAddit.Enabled := cbAddit.Checked;
-end;
-
 { === Инициализация формы === }
 procedure TfmIVK_tarMain.FormShow(Sender: TObject);
 var
@@ -245,8 +236,9 @@ begin
   // Нумерация
   for i := 1 to sgData.RowCount - 1 do
     sgData.Cells[0, i] := IntToStr(i);
-  for i := 1 to sgResult.RowCount - 1 do
-    sgResult.Cells[0, i] := IntToStr(i);
+  sgResult.Cells[0, 1] := 'a';
+  sgResult.Cells[0, 2] := 'b';
+  sgResult.Cells[0, 3] := 'c';
 end;
 
 end.
