@@ -24,6 +24,8 @@
 			<Base>true</Base>
 		</PropertyGroup>
 		<PropertyGroup Condition="'$(Base)'!=''">
+			<DCC_DcuOutput>.\$(Config)\$(Platform)\dcu</DCC_DcuOutput>
+			<DCC_ExeOutput>.\$(Config)\$(Platform)</DCC_ExeOutput>
 			<DCC_UsePackage>vclx;vcl;rtl;visualclx;vclactnband;dbrtl;adortl;vcldb;bdertl;vcldbx;visualdbclx;dsnapcon;dsnap;dss;teeui;teedb;tee;ibxpress;dclOfficeXP;TPngObject;TGIFImage</DCC_UsePackage>
 			<DCC_SymbolReferenceInfo>1</DCC_SymbolReferenceInfo>
 			<DCC_UnitAlias>WinTypes=Windows;WinProcs=Windows;DbiTypes=BDE;DbiProcs=BDE;DbiErrs=BDE;WinTypes=Windows;WinProcs=Windows;$(DCC_UnitAlias)</DCC_UnitAlias>

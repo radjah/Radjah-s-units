@@ -1,9 +1,9 @@
 ﻿	<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 		<PropertyGroup>
-			<ProjectGuid>{5E0B3BAD-626D-4209-B288-C35E3727DF58}</ProjectGuid>
-			<MainSource>tabgen.dpr</MainSource>
+			<ProjectGuid>{263F201C-F32C-4C34-A9EB-BE89EF39DC81}</ProjectGuid>
+			<MainSource>convtool.dpr</MainSource>
 			<Base>True</Base>
-			<Config Condition="'$(Config)'==''">Release</Config>
+			<Config Condition="'$(Config)'==''">Debug</Config>
 			<Platform>Win32</Platform>
 			<AppType>Application</AppType>
 			<FrameworkType>VCL</FrameworkType>
@@ -24,22 +24,17 @@
 			<Base>true</Base>
 		</PropertyGroup>
 		<PropertyGroup Condition="'$(Base)'!=''">
-			<DCC_DcuOutput>.\$(Config)\$(Platform)\dcu</DCC_DcuOutput>
-			<DCC_ExeOutput>.\$(Config)\$(Platform)</DCC_ExeOutput>
-			<DCC_UsePackage>vcl;rtl;vclx;dss;visualclx;visualdbclx;vclshlctrls;IntrawebDB_50_70;Intraweb_50_70;Rave50CLX;Rave50VCL;dclOfficeXP;vclimg;vclactnband;dbrtl;adortl;vcldb;bdertl;vcldbx;xmlrtl;dsnap;dsnapcon;dbexpress;DbxCommonDriver;dbxcds;DataSnapIndy10ServerTransport;DataSnapClient;DbxClientDriver;DataSnapProviderClient;vclie;inet;IndyProtocols;inetdbbde;inetdbxpress;inetdb;IndyCore;IndySystem;DataSnapServer;DBXInterBaseDriver;DBXMySQLDriver;DBXFirebirdDriver;DBXSybaseASEDriver;DBXSybaseASADriver;DBXOracleDriver;DBXMSSQLDriver;DBXInformixDriver;DBXDb2Driver;vclib;ibxpress;webdsnap;vclribbon;VclSmp;soaprtl;svnui;svn;vcltouch;websnap;AzureCloud;dclOffice2k;Rave90VCL;TeeUI;TeeDB;Tee;intrawebdb_110_150;Intraweb_110_150</DCC_UsePackage>
-			<DCC_SymbolReferenceInfo>1</DCC_SymbolReferenceInfo>
-			<DCC_UnitAlias>WinTypes=Windows;WinProcs=Windows;DbiTypes=BDE;DbiProcs=BDE;DbiErrs=BDE;WinTypes=Windows;WinProcs=Windows;$(DCC_UnitAlias)</DCC_UnitAlias>
-			<DCC_ImageBase>00400000</DCC_ImageBase>
 			<DCC_E>false</DCC_E>
-			<DCC_N>true</DCC_N>
-			<DCC_S>false</DCC_S>
+			<DCC_ImageBase>00400000</DCC_ImageBase>
+			<DCC_UnitAlias>WinTypes=Windows;WinProcs=Windows;DbiTypes=BDE;DbiProcs=BDE;DbiErrs=BDE;$(DCC_UnitAlias)</DCC_UnitAlias>
 			<DCC_F>false</DCC_F>
+			<DCC_S>false</DCC_S>
+			<DCC_N>false</DCC_N>
 			<DCC_K>false</DCC_K>
 		</PropertyGroup>
 		<PropertyGroup Condition="'$(Cfg_1)'!=''">
 			<DCC_LocalDebugSymbols>false</DCC_LocalDebugSymbols>
 			<DCC_Define>RELEASE;$(DCC_Define)</DCC_Define>
-			<DCC_DebugInfoInTds>true</DCC_DebugInfoInTds>
 			<DCC_SymbolReferenceInfo>0</DCC_SymbolReferenceInfo>
 			<DCC_DebugInformation>false</DCC_DebugInformation>
 		</PropertyGroup>
@@ -49,11 +44,18 @@
 			<DCC_GenerateStackFrames>true</DCC_GenerateStackFrames>
 		</PropertyGroup>
 		<ItemGroup>
-			<DelphiCompile Include="tabgen.dpr">
+			<DelphiCompile Include="convtool.dpr">
 				<MainSource>MainSource</MainSource>
 			</DelphiCompile>
-			<DCCReference Include="src\uMain.pas">
-				<Form>fmMain</Form>
+			<DCCReference Include="src\unMain.pas">
+				<Form>MainForm</Form>
+			</DCCReference>
+			<DCCReference Include="src\ExcelAddOns.pas"/>
+			<DCCReference Include="src\uSettings.pas">
+				<Form>fmSettings</Form>
+			</DCCReference>
+			<DCCReference Include="src\uAbout.pas">
+				<Form>fmAbout</Form>
 			</DCCReference>
 			<BuildConfiguration Include="Debug">
 				<Key>Cfg_2</Key>
@@ -75,7 +77,7 @@
 			<BorlandProject>
 				<Delphi.Personality>
 					<Source>
-						<Source Name="MainSource">tabgen.dpr</Source>
+						<Source Name="MainSource">convtool.dpr</Source>
 					</Source>
 					<VersionInfo>
 						<VersionInfo Name="IncludeVerInfo">False</VersionInfo>
@@ -104,10 +106,6 @@
 						<VersionInfoKeys Name="ProductVersion">1.0.0.0</VersionInfoKeys>
 						<VersionInfoKeys Name="Comments"/>
 					</VersionInfoKeys>
-					<Excluded_Packages>
-						<Excluded_Packages Name="$(BDSBIN)\dcloffice2k150.bpl">Microsoft Office 2000 Sample Automation Server Wrapper Components</Excluded_Packages>
-						<Excluded_Packages Name="$(BDSBIN)\dclofficexp150.bpl">Microsoft Office XP Sample Automation Server Wrapper Components</Excluded_Packages>
-					</Excluded_Packages>
 				</Delphi.Personality>
 				<Platforms>
 					<Platform value="Win32">True</Platform>

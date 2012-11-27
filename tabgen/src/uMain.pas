@@ -127,7 +127,7 @@ begin
       mYcoord.Enabled := True;
       pGenStatus.Visible := False;
       MessageBox(Self.Handle, pchar('Возникла ошибка при создании файла:' +
-        #10#13 + E.Message +#00), 'Ошибка!', MB_OK or MB_ICONSTOP);
+        #10#13 + E.Message + #00), 'Ошибка!', MB_OK or MB_ICONSTOP);
     End; // EIniFileException
     on E: EConvertError do
     begin

@@ -26,9 +26,9 @@
 		<PropertyGroup Condition="'$(Base)'!=''">
 			<DCC_UsePackage>vclx;vcl;rtl;vclimg;vcldb;dbrtl;vclactnband;xmlrtl;dsnap;IndyCore;IndySystem;vclie;webdsnap;inet;IndyProtocols;inetdbbde;inetdbxpress;dbexpress;DbxCommonDriver;dbxcds;adortl;bdertl;vcldbx;dsnapcon;DataSnapIndy10ServerTransport;DataSnapClient;DbxClientDriver;DataSnapProviderClient;inetdb;DataSnapServer;DBXInterBaseDriver;DBXMySQLDriver;DBXFirebirdDriver;DBXSybaseASEDriver;DBXSybaseASADriver;DBXOracleDriver;DBXMSSQLDriver;DBXInformixDriver;DBXDb2Driver;vclib;ibxpress;vclribbon;VclSmp;soaprtl;svnui;svn;vcltouch;websnap;AzureCloud;dclOffice2k;Rave90VCL;TeeUI;TeeDB;Tee;intrawebdb_110_150;Intraweb_110_150</DCC_UsePackage>
 			<DCC_ImageBase>00400000</DCC_ImageBase>
-			<DCC_DcuOutput>.\$(Config)\$(Platform)</DCC_DcuOutput>
+			<DCC_DcuOutput>.\$(Config)\$(Platform)\dcu</DCC_DcuOutput>
 			<DCC_UnitAlias>WinTypes=Windows;WinProcs=Windows;DbiTypes=BDE;DbiProcs=BDE;$(DCC_UnitAlias)</DCC_UnitAlias>
-			<DCC_ExeOutput>.\$(Config)\$(Platform)</DCC_ExeOutput>
+			<DCC_ExeOutput>..</DCC_ExeOutput>
 			<DCC_E>false</DCC_E>
 			<DCC_N>false</DCC_N>
 			<DCC_S>false</DCC_S>
