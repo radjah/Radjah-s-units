@@ -4,7 +4,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, ComCtrls, StdCtrls, ExtCtrls, Grids, MyFunctions, math;
+  Dialogs, ComCtrls, StdCtrls, ExtCtrls, Grids, MyFunctions, math, inifiles;
 
 type
   TfmIVK_tarMain = class(TForm)
@@ -19,6 +19,8 @@ type
     procedure btSetClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure btCalcClick(Sender: TObject);
+    procedure SaveData;
+    procedure LoadData;
   private
     { Private declarations }
   public
@@ -31,6 +33,61 @@ var
 implementation
 
 {$R *.dfm}
+
+{ === Запись данных с формы === }
+procedure TfmIVK_tarMain.SaveData;
+var
+  INIFile: TIniFile; // Файл данных
+  i: integer; // Счетчик
+begin
+  try
+    // Создаем/открываем ini-файл
+    INIFile := TIniFile.Create(ExtractFilePath(Application.ExeName) +
+      'IVK_tar.ini');
+    // Количество записей
+    INIFile.WriteInteger('DataInfo', 'Count', sgData.RowCount - 1);
+    for i := 1 to sgData.RowCount - 1 do
+    // Запись данных в файл
+    begin
+      INIFile.WriteString('Data', 'X' + IntToStr(i), sgData.Cells[1, i]);
+      INIFile.WriteString('Data', 'Y' + IntToStr(i), sgData.Cells[2, i]);
+    end;
+    INIFile.Free;
+  except
+    on E: EIniFileException do
+      MessageBox(Self.Handle, pchar('Возникла ошибка:' + #10#13 + E.Message),
+        'Ошибка сохранения данных', MB_OK or MB_ICONERROR);
+  end;
+end;
+
+{ === Загрузка данных === }
+procedure TfmIVK_tarMain.LoadData;
+var
+  INIFile: TIniFile; // Файл данных
+  i: integer; // Счетчик
+begin
+  try
+    if FileExists(ExtractFilePath(Application.ExeName) + 'IVK_tar.ini') then
+    begin
+      INIFile := TIniFile.Create(ExtractFilePath(Application.ExeName) +
+        'IVK_tar.ini');
+      // Изменяем таблицу
+      udCount.Position := INIFile.ReadInteger('DataInfo', 'Count', 3);
+      btSetClick(Self);
+      for i := 1 to udCount.Position do
+      begin
+        sgData.Cells[1, i] := INIFile.ReadString('Data',
+          'X' + IntToStr(i), '0');
+        sgData.Cells[2, i] := INIFile.ReadString('Data',
+          'Y' + IntToStr(i), '0');
+      end;
+    end;
+  except
+    on E: EIniFileException do
+      MessageBox(Self.Handle, pchar('Возникла ошибка:' + #10#13 + E.Message),
+        'Ошибка сохранения данных', MB_OK or MB_ICONERROR);
+  end;
+end;
 
 { === Расчет коэффициентов === }
 procedure TfmIVK_tarMain.btCalcClick(Sender: TObject);
@@ -134,6 +191,7 @@ begin
   sgResult.Cells[1, 1] := FloatToStr(da / d);
   sgResult.Cells[1, 2] := FloatToStr(db / d);
   sgResult.Cells[1, 3] := FloatToStr(dc / d);
+  SaveData;
 end;
 { // Это точно не заработает
   var
@@ -236,6 +294,7 @@ begin
   // Нумерация
   for i := 1 to sgData.RowCount - 1 do
     sgData.Cells[0, i] := IntToStr(i);
+  LoadData;
   sgResult.Cells[0, 1] := 'a';
   sgResult.Cells[0, 2] := 'b';
   sgResult.Cells[0, 3] := 'c';
