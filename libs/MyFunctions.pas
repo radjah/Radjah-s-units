@@ -9,13 +9,13 @@ const
   N1 = 10; // константа (используется везде (не изменяется))
 
 type
-  Matrice = array [1 .. N1, 1 .. N1] of real; // свой тип массива
+  Matrix = array [1 .. N1, 1 .. N1] of real; // свой тип массива
 
 function ReplaceStr(const S, Srch, Replace: string): string;
 function GetPath(const S: string): string;
 procedure AddLog(LogMemo: TMemo; LogStr: string);
 procedure ReopenDatasets(DS: array of TDataSet);
-function Det(A: Matrice; N: integer): real;
+function Det(A: Matrix; N: integer): real;
 
 implementation
 
@@ -67,13 +67,13 @@ begin
 end;
 
 { === Определитель матрицы n x n === }
-Function Det(A: Matrice; N: integer): real;
+Function Det(A: Matrix; N: integer): real;
 var
-  B: Matrice;
+  B: Matrix;
   i: integer;
   T, Mn, S: real;
 
-  Function Minor(var C: Matrice; A: Matrice; N, i, J: integer): real;
+  Function Minor(var C: Matrix; A: Matrix; N, i, J: integer): real;
   // нахождение дополнительного минора
   var
     Im, Jm, Ia, Ja, Nm: integer;
