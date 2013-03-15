@@ -6,7 +6,8 @@ uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, DB, ZAbstractRODataset, ZAbstractDataset, ZDataset, StdCtrls,
   unDataModule, ADODB, Grids, DBGrids, OleAuto, ComCtrls, MyFunctions,
-  ExcelAddOns, unView, unStruct, unChart, Buttons, TeeProcs, Chart, Series;
+  ExcelAddOns, unView, unStruct, unChart, Buttons, TeeProcs, Chart, Series,
+  DBCtrls;
 
 type
   TfmMain = class(TForm)
@@ -38,16 +39,17 @@ type
     btView: TButton;
     odConn: TOpenDialog;
     qSignalList: TADOQuery;
-    dbgSignalList: TDBGrid;
     dsSignalList: TDataSource;
     btAdd: TBitBtn;
     btRemove: TBitBtn;
     btClear: TBitBtn;
     qClearList: TADOQuery;
-    Label8: TLabel;
     cbFillTime: TCheckBox;
     btPlot: TButton;
     cbLogScale: TCheckBox;
+    GroupBox2: TGroupBox;
+    dbgSignalList: TDBGrid;
+    dbcbExportMethodFlag: TDBCheckBox;
     procedure btConnectClick(Sender: TObject);
     procedure btGetTagsClick(Sender: TObject);
     procedure btExtractClick(Sender: TObject);
@@ -61,6 +63,9 @@ type
     procedure MakeDataArr(MethodFlag: boolean);
     procedure btPlotClick(Sender: TObject);
     procedure cbLogScaleClick(Sender: TObject);
+    procedure dbcbExportMethodFlagKeyUp(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure CheckExportMethodFlag;
   private
     { Private declarations }
   public
@@ -248,9 +253,10 @@ begin
     IVK_DM.tbSignalList.AppendRecord
       ([nil, IVK_DM.tbTags.FieldByName('Tag_Index').AsInteger,
       Trim(IVK_DM.tbTags.FieldByName('Logging_Name').AsString),
-      TablesNameSingle, TableCountSingle]);
+      TablesNameSingle, TableCountSingle, cbFillTime.Checked]);
     if IVK_DM.tbSignalList.RecordCount > 0 then
       btRemove.Enabled := True;
+    CheckExportMethodFlag;
   except
     on E: EDatabaseError do
     begin
@@ -267,6 +273,7 @@ begin
   qClearList.Close;
   qClearList.ExecSQL;
   ReopenDatasets([IVK_DM.tbSignalList]);
+  CheckExportMethodFlag;
   AddLog(mLog, 'Список очищен.');
 end;
 
@@ -290,6 +297,7 @@ begin
       btClear.Enabled := False;
       btView.Enabled := False;
       btPlot.Enabled := False;
+      dbcbExportMethodFlag.Enabled := False;
       AddLog(mLog, 'Соединение с базой разорвано!');
     end
     else
@@ -307,6 +315,7 @@ begin
       // Включение кнопок
       btGetTags.Enabled := True;
       btClear.Enabled := True;
+      CheckExportMethodFlag;
     end;
   except
     // Если не смогли соединиться
@@ -413,7 +422,8 @@ begin
           // Если за выбранный промежуток нет данных.
           begin
             AddLog(mLog, 'Выполняется запись данных...');
-            MakeDataArr(cbFillTime.Checked);
+            MakeDataArr(IVK_DM.tbSignalList.FieldByName('ExportMethodFlag')
+              .AsBoolean);
             // Массив данных для вывода
             RowCount := Length(ExpDataArr);
             ColCount := 3;
@@ -699,6 +709,7 @@ begin
     IVK_DM.tbSignalList.Delete;
     if IVK_DM.tbSignalList.RecordCount = 0 then
       btRemove.Enabled := False;
+    CheckExportMethodFlag;
   except
     on E: EDatabaseError do
     begin
@@ -724,13 +735,26 @@ begin
   fmChart.chPreview.LeftAxis.Logarithmic := cbLogScale.Checked;
 end;
 
+{ === Запись измененного значения === }
+procedure TfmMain.dbcbExportMethodFlagKeyUp(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if IVK_DM.tbSignalList.Active then
+  begin
+    IVK_DM.tbSignalList.Post;
+    IVK_DM.tbSignalList.Edit;
+  end;
+end;
+
 { === Установка начальных значений === }
 procedure TfmMain.FormShow(Sender: TObject);
 begin
+  // Дата и время
   dtpDateBegin.DateTime := Now;
   dtpDateEnd.DateTime := Now;
   dtpTimeBegin.DateTime := Now;
   dtpTimeEnd.DateTime := Now;
+  // Поиск конфига соединения
   if FileExists(ExtractFilePath(Application.ExeName) + '\conn.udl') then
     IVK_DM.connIVK_DB.ConnectionString := 'FILE NAME=' +
       ExtractFilePath(Application.ExeName) + '\conn.udl'
@@ -741,7 +765,21 @@ begin
     else
       Close;
   end;
+end;
 
+{ === Костыль для обхода пустой таблицы списка сигналов === }
+procedure TfmMain.CheckExportMethodFlag;
+begin
+  // Отключаем
+  dbcbExportMethodFlag.Enabled := False;
+  // Подключены?
+  if IVK_DM.connIVK_DB.Connected = True then
+    // Временная таблица создана?
+    if IVK_DM.tbSignalList.Active = True then
+      // Записи есть?
+      if IVK_DM.tbSignalList.RecordCount > 0 then
+        // Можно менять
+        dbcbExportMethodFlag.Enabled := True;
 end;
 
 end.

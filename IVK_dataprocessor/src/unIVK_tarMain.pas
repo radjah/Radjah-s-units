@@ -97,7 +97,7 @@ var
   n, x, y, x2, x3, x4, xy, x2y: real; // Вспомогательные переменные
   da, db, dc, d: real; // Определители
   i: integer; // Счатчик
-  aArr, bArr, cArr, dArr: Matrice; // Матрицы
+  aArr, bArr, cArr, dArr: Matrix; // Матрицы
 begin
   // Заполнение массивов
   SetLength(xArr, sgData.RowCount - 1);

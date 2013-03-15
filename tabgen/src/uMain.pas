@@ -38,7 +38,6 @@ procedure TfmMain.FormShow(Sender: TObject);
 begin
   mXcoord.Lines.Clear;
   mYcoord.Lines.Clear;
-  // ShowMessage(inttostr(mXcoord.Lines.Count)+#10#13+inttostr(mXcoord.Lines.Count));
 end;
 
 // Генерация
@@ -53,45 +52,54 @@ begin
   try
     if sdTable.Execute then
     begin
+      // Отклчение всего ненужного
       btGen.Enabled := False;
       mXcoord.Enabled := False;
       mYcoord.Enabled := False;
+      // Отображение прогрессбара
       pGenStatus.Visible := True;
       Self.Repaint;
       if mXcoord.Lines.Count > mYcoord.Lines.Count then
+      // Какую координату будем добивать нулями?
       begin
+        // X, если X больше
         xycount := mXcoord.Lines.Count;
         minmemo := 'Y';
       end
       else
+      // Y, если Y больше
       begin
         xycount := mYcoord.Lines.Count;
         minmemo := 'X';
       end;
-      // ShowMessage('Minmemo='+minmemo);
+      // Настройка прогрессбара
       pbGenState.Max := xycount;
       pbGenState.Position := 0;
       pbGenState.Step := 1;
 
-      // Количество точек
+      // Файл для записи
       tabfile := TIniFile.Create(sdTable.FileName);
       if FileExists(sdTable.FileName) then
+        // Если файл уже есть, то сносим его, чтобы не наполнять мусором
         DeleteFile(sdTable.FileName);
+      // Запись настроек
       tabfile.WriteInteger('InitialData', 'RegCount', xycount + 1);
       for i := 0 to xycount - 1 do
+      // Запись точек
       begin
         // Проверка на выход за пределы массива строк меньшего memo
         // Случай с выходом за пределы по X
         if (minmemo = 'X') and (i >= mXcoord.Lines.Count) then
+        // Если добиваем нулями X
         begin
           Y := StrToFloat(mYcoord.Lines[i]);
           // Запис X
           tabfile.WriteFloat('TableData', 'X' + inttostr(i + 1), 0);
           tabfile.WriteFloat('TableData', 'F' + inttostr(i + 1), Y);
           pbGenState.StepIt;
-        end { перебор по X }
+        end
         else
-        // Случай с выходом за пределы по Y
+        // Если добиваем нулями Y
           if (minmemo = 'Y') and (i >= mYcoord.Lines.Count) then
         begin
           X := StrToFloat(mXcoord.Lines[i]);
@@ -99,9 +107,9 @@ begin
           tabfile.WriteFloat('TableData', 'X' + inttostr(i + 1), X);
           tabfile.WriteFloat('TableData', 'F' + inttostr(i + 1), 0);
           pbGenState.StepIt;
-        end { перебор по Y }
+        end
         else
-        // Выхода за пределы массива нет
+        // Если зачений поровну
         begin
           X := StrToFloat(mXcoord.Lines[i]);
           Y := StrToFloat(mYcoord.Lines[i]);
@@ -110,16 +118,19 @@ begin
           pbGenState.StepIt;
         end; // норма
       end; // for
+      // Закрытие файла и сообщение о результате
       tabfile.Free;
       pGenStatus.Visible := False;
       MessageBox(Self.Handle, 'Выполнено!', 'Информация',
         MB_OK or MB_ICONINFORMATION);
+      // Включение контролов
       btGen.Enabled := True;
       mXcoord.Enabled := True;
       mYcoord.Enabled := True;
     end;
   except
     on E: EIniFileException do
+    // Проблема с записью
     begin
       tabfile.Free;
       btGen.Enabled := True;
@@ -130,6 +141,7 @@ begin
         #10#13 + E.Message + #00), 'Ошибка!', MB_OK or MB_ICONSTOP);
     End; // EIniFileException
     on E: EConvertError do
+    // Проблема с данными
     begin
       tabfile.Free;
       btGen.Enabled := True;
@@ -142,5 +154,4 @@ begin
   end; // except
 end;
 
-// Заполнение поля с именем файла.
 end.

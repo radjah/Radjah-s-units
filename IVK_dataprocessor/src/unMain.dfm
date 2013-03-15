@@ -3,8 +3,8 @@ object fmMain: TfmMain
   Top = 0
   BorderStyle = bsDialog
   Caption = #1048#1079#1074#1083#1077#1095#1077#1085#1080#1077' '#1076#1072#1085#1085#1099#1093
-  ClientHeight = 635
-  ClientWidth = 755
+  ClientHeight = 678
+  ClientWidth = 844
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -32,17 +32,10 @@ object fmMain: TfmMain
   end
   object Label7: TLabel
     Left = 472
-    Top = 422
-    Width = 49
+    Top = 462
+    Width = 53
     Height = 13
-    Caption = #1055#1088#1086#1090#1086#1082#1086#1083
-  end
-  object Label8: TLabel
-    Left = 472
-    Top = 213
-    Width = 130
-    Height = 13
-    Caption = #1055#1072#1088#1072#1084#1077#1090#1088#1099' '#1076#1083#1103' '#1074#1099#1073#1086#1088#1082#1080':'
+    Caption = #1055#1088#1086#1090#1086#1082#1086#1083':'
   end
   object btConnect: TButton
     Left = 8
@@ -54,9 +47,9 @@ object fmMain: TfmMain
     OnClick = btConnectClick
   end
   object dbgTagGroup: TDBGrid
-    Left = 9
+    Left = 8
     Top = 72
-    Width = 736
+    Width = 828
     Height = 97
     DataSource = dsTagGroup
     TabOrder = 1
@@ -109,7 +102,7 @@ object fmMain: TfmMain
     Left = 8
     Top = 232
     Width = 418
-    Height = 177
+    Height = 217
     DataSource = dsTagList
     TabOrder = 3
     TitleFont.Charset = DEFAULT_CHARSET
@@ -122,7 +115,7 @@ object fmMain: TfmMain
         Expanded = False
         FieldName = 'Logging_Name'
         Title.Caption = #1048#1084#1103
-        Width = 50
+        Width = 69
         Visible = True
       end
       item
@@ -148,7 +141,7 @@ object fmMain: TfmMain
   end
   object GroupBox1: TGroupBox
     Left = 8
-    Top = 415
+    Top = 455
     Width = 417
     Height = 170
     Caption = #1055#1072#1088#1072#1084#1077#1090#1088#1099' '#1074#1099#1073#1086#1088#1082#1080
@@ -242,7 +235,7 @@ object fmMain: TfmMain
   end
   object btExtract: TButton
     Left = 256
-    Top = 602
+    Top = 642
     Width = 130
     Height = 25
     Caption = #1048#1079#1074#1083#1077#1095#1100' '#1076#1072#1085#1085#1099#1077
@@ -252,56 +245,21 @@ object fmMain: TfmMain
   end
   object mLog: TMemo
     Left = 472
-    Top = 441
-    Width = 273
+    Top = 481
+    Width = 364
     Height = 186
     ScrollBars = ssBoth
     TabOrder = 6
   end
   object btView: TButton
     Left = 8
-    Top = 602
+    Top = 642
     Width = 89
     Height = 25
     Caption = #1055#1088#1086#1089#1084#1086#1090#1088
     Enabled = False
     TabOrder = 7
     OnClick = btViewClick
-  end
-  object dbgSignalList: TDBGrid
-    Left = 472
-    Top = 232
-    Width = 273
-    Height = 177
-    DataSource = dsSignalList
-    TabOrder = 8
-    TitleFont.Charset = DEFAULT_CHARSET
-    TitleFont.Color = clWindowText
-    TitleFont.Height = -11
-    TitleFont.Name = 'Tahoma'
-    TitleFont.Style = []
-    Columns = <
-      item
-        Expanded = False
-        FieldName = 'Logging_Name'
-        Title.Caption = #1048#1084#1103
-        Width = 50
-        Visible = True
-      end
-      item
-        Expanded = False
-        FieldName = 'Table_Name'
-        Title.Caption = #1055#1088#1077#1092#1080#1082#1089' '#1090#1072#1073#1083#1080#1094
-        Width = 100
-        Visible = True
-      end
-      item
-        Expanded = False
-        FieldName = 'Tables_Number'
-        Title.Caption = #1050#1086#1083'-'#1074#1086' '#1090#1072#1073#1083#1080#1094
-        Width = 80
-        Visible = True
-      end>
   end
   object btAdd: TBitBtn
     Left = 432
@@ -328,7 +286,7 @@ object fmMain: TfmMain
     ParentDoubleBuffered = False
     ParentShowHint = False
     ShowHint = True
-    TabOrder = 9
+    TabOrder = 8
     OnClick = btAddClick
   end
   object btRemove: TBitBtn
@@ -356,7 +314,7 @@ object fmMain: TfmMain
     ParentDoubleBuffered = False
     ParentShowHint = False
     ShowHint = True
-    TabOrder = 10
+    TabOrder = 9
     OnClick = btRemoveClick
   end
   object btClear: TBitBtn
@@ -384,18 +342,84 @@ object fmMain: TfmMain
     ParentDoubleBuffered = False
     ParentShowHint = False
     ShowHint = True
-    TabOrder = 11
+    TabOrder = 10
     OnClick = btClearClick
   end
   object btPlot: TButton
     Left = 121
-    Top = 602
+    Top = 642
     Width = 89
     Height = 25
     Caption = #1043#1088#1072#1092#1080#1082#1080
     Enabled = False
-    TabOrder = 12
+    TabOrder = 11
     OnClick = btPlotClick
+  end
+  object GroupBox2: TGroupBox
+    Left = 472
+    Top = 213
+    Width = 364
+    Height = 243
+    Caption = #1055#1072#1088#1072#1084#1077#1090#1088#1099' '#1076#1083#1103' '#1074#1099#1073#1086#1088#1082#1080
+    TabOrder = 12
+    object dbgSignalList: TDBGrid
+      Left = 13
+      Top = 19
+      Width = 340
+      Height = 185
+      DataSource = dsSignalList
+      TabOrder = 0
+      TitleFont.Charset = DEFAULT_CHARSET
+      TitleFont.Color = clWindowText
+      TitleFont.Height = -11
+      TitleFont.Name = 'Tahoma'
+      TitleFont.Style = []
+      Columns = <
+        item
+          Expanded = False
+          FieldName = 'Logging_Name'
+          Title.Caption = #1048#1084#1103
+          Width = 50
+          Visible = True
+        end
+        item
+          Expanded = False
+          FieldName = 'Table_Name'
+          Title.Caption = #1055#1088#1077#1092#1080#1082#1089' '#1090#1072#1073#1083#1080#1094
+          Width = 100
+          Visible = True
+        end
+        item
+          Expanded = False
+          FieldName = 'Tables_Number'
+          Title.Caption = #1050#1086#1083'-'#1074#1086' '#1090#1072#1073#1083#1080#1094
+          Width = 80
+          Visible = True
+        end
+        item
+          Expanded = False
+          FieldName = 'ExportMethodFlag'
+          Title.Caption = #1053#1077#1087#1088'. '#1074#1088'.'
+          Visible = True
+        end>
+    end
+    object dbcbExportMethodFlag: TDBCheckBox
+      Left = 16
+      Top = 210
+      Width = 121
+      Height = 17
+      Hint = #1042#1086#1089#1089#1090#1072#1085#1072#1074#1083#1080#1074#1072#1090#1100' '#1087#1088#1086#1087#1091#1097#1077#1085#1085#1099#1077' '#1079#1072#1084#1077#1088#1099' '#1076#1083#1103' '#1074#1099#1073#1088#1072#1085#1085#1086#1075#1086' '#1087#1072#1088#1072#1084#1077#1090#1088#1072
+      Caption = #1053#1077#1087#1088#1077#1088#1099#1074#1085#1086#1077' '#1074#1088#1077#1084#1103
+      DataField = 'ExportMethodFlag'
+      DataSource = dsSignalList
+      Enabled = False
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 1
+      ValueChecked = 'True'
+      ValueUnchecked = 'False'
+      OnKeyUp = dbcbExportMethodFlagKeyUp
+    end
   end
   object qExtractor: TADOQuery
     Connection = IVK_DM.connIVK_DB
@@ -465,7 +489,8 @@ object fmMain: TfmMain
       #9'[Tag_Index] [int] NOT NULL,'
       #9'[Logging_Name] [nvarchar](255) NOT NULL,'
       #9'[Table_Name] [nvarchar](60) NOT NULL,'
-      #9'[Tables_Number] [int] NOT NULL'
+      #9'[Tables_Number] [int] NOT NULL,'
+      #9'[ExportMethodFlag] [bit] NOT NULL'
       ')')
     Left = 648
     Top = 176
