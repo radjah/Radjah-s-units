@@ -11,6 +11,7 @@ object fmMain: TfmMain
   Font.Name = 'Tahoma'
   Font.Style = []
   OldCreateOrder = False
+  Position = poScreenCenter
   PixelsPerInch = 96
   TextHeight = 13
   object gbBlock: TGroupBox
@@ -37,6 +38,7 @@ object fmMain: TfmMain
       Height = 25
       Caption = #1057#1086#1079#1076#1072#1090#1100
       TabOrder = 1
+      OnClick = btMakeBlockClick
     end
   end
   object gbSensor: TGroupBox
@@ -63,12 +65,7 @@ object fmMain: TfmMain
       Height = 25
       Caption = #1057#1086#1079#1076#1072#1090#1100
       TabOrder = 1
+      OnClick = btMakeSensorClick
     end
-  end
-  object sdDoc: TSaveDialog
-    DefaultExt = '*.doc'
-    Filter = #1044#1086#1082#1091#1084#1077#1085#1090#1099' Word|*.doc'
-    Left = 176
-    Top = 1
   end
 end

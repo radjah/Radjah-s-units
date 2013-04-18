@@ -3,31 +3,31 @@ unit wordaddons;
 interface
 
   {=== Стили линий таблицы ===}
-  const wdLineStyleDashDot=5; //A dash followed by a dot.
-  const wdLineStyleDashDotDot=6; //A dash followed by two dots.
-  const wdLineStyleDashDotStroked= 20; //A dash followed by a dot stroke, thus rendering a border similar to a barber pole.
-  const wdLineStyleDashLargeGap= 4; //A dash followed by a large gap.
-  const wdLineStyleDashSmallGap= 3; //A dash followed by a small gap.
-  const wdLineStyleDot= 2; //Dots.
-  const wdLineStyleDouble= 7; //Double solid lines.
-  const wdLineStyleDoubleWavy= 19; //Double wavy solid lines.
-  const wdLineStyleEmboss3D= 21; //The border appears to have a 3-D embossed look.
-  const wdLineStyleEngrave3D= 22; //The border appears to have a 3-D engraved look.
-  const wdLineStyleInset= 24; //The border appears to be inset.
-  const wdLineStyleNone= 0; //No border.
-  const wdLineStyleOutset= 23; //The border appears to be outset.
-  const wdLineStyleSingle= 1; //A single solid line.
-  const wdLineStyleSingleWavy= 18; //A single wavy solid line.
-  const wdLineStyleThickThinLargeGap= 16; //An internal single thick solid line surrounded by a single thin solid line with a large gap between them.
-  const wdLineStyleThickThinMedGap= 13; //An internal single thick solid line surrounded by a single thin solid line with a medium gap between them.
-  const wdLineStyleThickThinSmallGap= 10; //An internal single thick solid line surrounded by a single thin solid line with a small gap between them.
-  const wdLineStyleThinThickLargeGap= 15; //An internal single thin solid line surrounded by a single thick solid line with a large gap between them.
-  const wdLineStyleThinThickMedGap= 12; //An internal single thin solid line surrounded by a single thick solid line with a medium gap between them.
-  const wdLineStyleThinThickSmallGap= 9; //An internal single thin solid line surrounded by a single thick solid line with a small gap between them.
-  const wdLineStyleThinThickThinLargeGap= 17; //An internal single thin solid line surrounded by a single thick solid line surrounded by a single thin solid line with a large gap between all lines.
-  const wdLineStyleThinThickThinMedGap= 14; //An internal single thin solid line surrounded by a single thick solid line surrounded by a single thin solid line with a medium gap between all lines.
-  const wdLineStyleThinThickThinSmallGap= 11; //An internal single thin solid line surrounded by a single thick solid line surrounded by a single thin solid line with a small gap between all lines.
-  const wdLineStyleTriple= 8; //Three solid thin lines.
+  const wdLineStyleDashDot=5; // A dash followed by a dot.
+  const wdLineStyleDashDotDot=6; // A dash followed by two dots.
+  const wdLineStyleDashDotStroked= 20; // A dash followed by a dot stroke, thus rendering a border similar to a barber pole.
+  const wdLineStyleDashLargeGap= 4; // A dash followed by a large gap.
+  const wdLineStyleDashSmallGap= 3; // A dash followed by a small gap.
+  const wdLineStyleDot= 2; // Dots.
+  const wdLineStyleDouble= 7; // Double solid lines.
+  const wdLineStyleDoubleWavy= 19; // Double wavy solid lines.
+  const wdLineStyleEmboss3D= 21; // The border appears to have a 3-D embossed look.
+  const wdLineStyleEngrave3D= 22; // The border appears to have a 3-D engraved look.
+  const wdLineStyleInset= 24; // The border appears to be inset.
+  const wdLineStyleNone= 0; // No border.
+  const wdLineStyleOutset= 23; // The border appears to be outset.
+  const wdLineStyleSingle= 1; // A single solid line.
+  const wdLineStyleSingleWavy= 18; // A single wavy solid line.
+  const wdLineStyleThickThinLargeGap= 16; // An internal single thick solid line surrounded by a single thin solid line with a large gap between them.
+  const wdLineStyleThickThinMedGap= 13; // An internal single thick solid line surrounded by a single thin solid line with a medium gap between them.
+  const wdLineStyleThickThinSmallGap= 10; // An internal single thick solid line surrounded by a single thin solid line with a small gap between them.
+  const wdLineStyleThinThickLargeGap= 15; // An internal single thin solid line surrounded by a single thick solid line with a large gap between them.
+  const wdLineStyleThinThickMedGap= 12; // An internal single thin solid line surrounded by a single thick solid line with a medium gap between them.
+  const wdLineStyleThinThickSmallGap= 9; // An internal single thin solid line surrounded by a single thick solid line with a small gap between them.
+  const wdLineStyleThinThickThinLargeGap= 17; // An internal single thin solid line surrounded by a single thick solid line surrounded by a single thin solid line with a large gap between all lines.
+  const wdLineStyleThinThickThinMedGap= 14; // An internal single thin solid line surrounded by a single thick solid line surrounded by a single thin solid line with a medium gap between all lines.
+  const wdLineStyleThinThickThinSmallGap= 11; // An internal single thin solid line surrounded by a single thick solid line surrounded by a single thin solid line with a small gap between all lines.
+  const wdLineStyleTriple= 8; // Three solid thin lines.
 
   {=== Толщина линий ===}
   const wdLineWidth025pt=2; // 0.25 point.
@@ -176,13 +176,18 @@ interface
   const wdStyleTOC9= -28; // TOC 9.
 
   {=== Ширина символов ===}
-  const wdWidthFullWidth=7;// Characters are displayed in full character width.
-  const wdWidthHalfWidth=6;// Characters are displayed in half the character width.
+  const wdWidthFullWidth=7; // Characters are displayed in full character width.
+  const wdWidthHalfWidth=6; // Characters are displayed in half the character width.
 
   {=== Выравнивание ===}
-  const wdAlignRowCenter=1;// Centered.
-  const wdAlignRowLeft=0;// Left-aligned. Default.
-  const wdAlignRowRight=2;// Right-aligned.
+  const wdAlignRowCenter=1; // Centered.
+  const wdAlignRowLeft=0; // Left-aligned. Default.
+  const wdAlignRowRight=2; // Right-aligned.
+
+  {=== Замена ===}
+  const wdReplaceAll=2; // Replace all occurrences. 
+  const wdReplaceNone=0; // Replace no occurrences. 
+  const wdReplaceOne=1; // Replace the first occurrence encountered. 
 
 
 implementation

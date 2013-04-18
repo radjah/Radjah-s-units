@@ -2,7 +2,8 @@ program labelmaker;
 
 uses
   Forms,
-  unMain in 'src\unMain.pas' {fmMain};
+  unMain in 'src\unMain.pas' {fmMain},
+  wordaddons in '..\libs\wordaddons.pas';
 
 {$R *.res}
 
