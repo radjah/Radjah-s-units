@@ -47,7 +47,7 @@ object fmIVK_tarMain: TfmIVK_tarMain
       Left = 16
       Top = 69
       Width = 257
-      Height = 425
+      Height = 380
       ColCount = 3
       DefaultRowHeight = 18
       RowCount = 4
@@ -63,6 +63,24 @@ object fmIVK_tarMain: TfmIVK_tarMain
       Min = 3
       Position = 3
       TabOrder = 3
+    end
+    object btSave: TButton
+      Left = 16
+      Top = 455
+      Width = 75
+      Height = 25
+      Caption = #1057#1086#1093#1088#1072#1085#1080#1090#1100
+      TabOrder = 4
+      OnClick = btSaveClick
+    end
+    object btLoad: TButton
+      Left = 112
+      Top = 455
+      Width = 75
+      Height = 25
+      Caption = #1047#1072#1075#1088#1091#1079#1080#1090#1100
+      TabOrder = 5
+      OnClick = btLoadClick
     end
   end
   object GroupBox2: TGroupBox
@@ -92,5 +110,18 @@ object fmIVK_tarMain: TfmIVK_tarMain
       Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goEditing]
       TabOrder = 1
     end
+  end
+  object odTar: TOpenDialog
+    DefaultExt = 'ini'
+    Filter = #1058#1072#1073#1083#1080#1094#1072' '#1079#1085#1072#1095#1077#1085#1080#1081' (*.ini)|*.ini'
+    Options = [ofEnableSizing]
+    Left = 216
+    Top = 464
+  end
+  object sdTar: TSaveDialog
+    DefaultExt = 'ini'
+    Filter = #1058#1072#1073#1083#1080#1094#1072' '#1079#1085#1072#1095#1077#1085#1080#1081' (*.ini)|*.ini'
+    Left = 264
+    Top = 464
   end
 end

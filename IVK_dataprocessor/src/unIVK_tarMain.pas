@@ -16,11 +16,17 @@ type
     GroupBox2: TGroupBox;
     btCalc: TButton;
     sgResult: TStringGrid;
+    btSave: TButton;
+    btLoad: TButton;
+    odTar: TOpenDialog;
+    sdTar: TSaveDialog;
     procedure btSetClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure btCalcClick(Sender: TObject);
-    procedure SaveData;
-    procedure LoadData;
+    procedure SaveData(inidata: TfileName);
+    procedure LoadData(inidata: TfileName);
+    procedure btSaveClick(Sender: TObject);
+    procedure btLoadClick(Sender: TObject);
   private
     { Private declarations }
   public
@@ -35,15 +41,14 @@ implementation
 {$R *.dfm}
 
 { === Запись данных с формы === }
-procedure TfmIVK_tarMain.SaveData;
+procedure TfmIVK_tarMain.SaveData(inidata: TfileName);
 var
   INIFile: TIniFile; // Файл данных
   i: integer; // Счетчик
 begin
   try
     // Создаем/открываем ini-файл
-    INIFile := TIniFile.Create(ExtractFilePath(Application.ExeName) +
-      'IVK_tar.ini');
+    INIFile := TIniFile.Create(inidata);
     // Количество записей
     INIFile.WriteInteger('DataInfo', 'Count', sgData.RowCount - 1);
     for i := 1 to sgData.RowCount - 1 do
@@ -61,16 +66,15 @@ begin
 end;
 
 { === Загрузка данных === }
-procedure TfmIVK_tarMain.LoadData;
+procedure TfmIVK_tarMain.LoadData(inidata: TfileName);
 var
   INIFile: TIniFile; // Файл данных
   i: integer; // Счетчик
 begin
   try
-    if FileExists(ExtractFilePath(Application.ExeName) + 'IVK_tar.ini') then
+    if FileExists(inidata) then
     begin
-      INIFile := TIniFile.Create(ExtractFilePath(Application.ExeName) +
-        'IVK_tar.ini');
+      INIFile := TIniFile.Create(inidata);
       // Изменяем таблицу
       udCount.Position := INIFile.ReadInteger('DataInfo', 'Count', 3);
       btSetClick(Self);
@@ -191,7 +195,8 @@ begin
   sgResult.Cells[1, 1] := FloatToStr(da / d);
   sgResult.Cells[1, 2] := FloatToStr(db / d);
   sgResult.Cells[1, 3] := FloatToStr(dc / d);
-  SaveData;
+  // Сохранение
+  SaveData(ExtractFilePath(Application.ExeName) + 'IVK_tar.ini');
 end;
 { // Это точно не заработает
   var
@@ -269,6 +274,20 @@ end;
 
   end; }
 
+{ === Загрузка тарировочной таблицы === }
+procedure TfmIVK_tarMain.btLoadClick(Sender: TObject);
+begin
+    if odTar.Execute then LoadData(odTar.FileName);
+end;
+
+{ === Сохранение тарировочной таблицы === }
+procedure TfmIVK_tarMain.btSaveClick(Sender: TObject);
+var
+  iniTar: TIniFile; // Файл данных
+begin
+    if sdTar.Execute then SaveData(sdTar.FileName);
+end;
+
 { === Устанвока количества замеров === }
 procedure TfmIVK_tarMain.btSetClick(Sender: TObject);
 var
@@ -289,12 +308,13 @@ begin
   sgData.Cells[0, 0] := 'Номер';
   sgData.Cells[1, 0] := 'Ток';
   sgData.Cells[2, 0] := 'Параметр';
-  sgResult.Cells[0, 0] := 'Номер';
+  sgResult.Cells[0, 0] := 'Индекс';
   sgResult.Cells[1, 0] := 'Значение';
   // Нумерация
   for i := 1 to sgData.RowCount - 1 do
     sgData.Cells[0, i] := IntToStr(i);
-  LoadData;
+  // Загрузка последних данных
+  LoadData(ExtractFilePath(Application.ExeName) + 'IVK_tar.ini');
   sgResult.Cells[0, 1] := 'a';
   sgResult.Cells[0, 2] := 'b';
   sgResult.Cells[0, 3] := 'c';
