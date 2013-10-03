@@ -6,7 +6,7 @@ uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, DevNetDec, StdCtrls, mmsystem, ExtCtrls, XPMan, DB,
   ZAbstractRODataset, ZAbstractDataset, ZAbstractTable, ZDataset,
-  ZAbstractConnection, ZConnection;
+  ZAbstractConnection, ZConnection, Grids, DBGrids;
 
 type
   TfmDevNetLogger = class(TForm)
@@ -57,6 +57,15 @@ type
     btOpenPort: TButton;
     btClosePort: TButton;
     lVersion: TLabel;
+    gbArchive: TGroupBox;
+    dbgArchive: TDBGrid;
+    Label4: TLabel;
+    ztMeasArchive: TZTable;
+    dsArchive: TDataSource;
+    zqArchive: TZQuery;
+    lArcTime: TLabel;
+    lArcDiff: TLabel;
+    lArcUd: TLabel;
     procedure btConnectClick(Sender: TObject);
     procedure btPortDlgClick(Sender: TObject);
     procedure btParamDlgClick(Sender: TObject);
@@ -74,7 +83,10 @@ type
     procedure FormShow(Sender: TObject);
     procedure btStartClick(Sender: TObject);
     procedure btStopClick(Sender: TObject);
-
+    procedure dbgArchiveColEnter(Sender: TObject);
+    procedure dbgArchiveCellClick(Column: TColumn);
+    procedure dbgArchiveKeyUp(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
   private
     { Private declarations }
   public
@@ -305,9 +317,13 @@ begin
     leEndNetto.Text:=FloatToStr(MeasureArr[M06A_Netto]);
     leEndTara.Text:=FloatToStr(MeasureArr[M06A_Tare]);
     lTime.Caption:='Время: '+FloatToStr(CurTime)+' сек.';
-    Diff:=StrToFloat(leEndBrutto.Text)-StrToFloat(leBeginBrutto.Text);
+    Diff:=Abs(StrToFloat(leBeginBrutto.Text)-StrToFloat(leEndBrutto.Text));
     lDiff.Caption:='Разница: '+FloatToStr(Diff);
-    lUd.Caption:='За час: '+Format('%.3f',[(Diff/CurTime*3600)]);
+    lUd.Caption:='Часовой: '+Format('%.3f',[(Diff/CurTime*3600)]);
+    ztMeasArchive.Close;
+    ztMeasArchive.Open;
+    ztMeasArchive.Last;
+    dbgArchiveColEnter(Self);
   end;
 end;
 
@@ -375,6 +391,7 @@ begin
   DevNet.UndoTare(1);
 end;
 
+{ === Настройка формы при запуске === }
 procedure TfmDevNetLogger.FormShow(Sender: TObject);
 var
   dbfile: TFileName;
@@ -392,9 +409,11 @@ begin
     ZConnection.Connect;
     ztbWeight.Open;
     ztbMeasure.Open;
+    ztMeasArchive.Open;
   end;
 end;
 
+{ === Запуск === }
 procedure TfmDevNetLogger.btStartClick(Sender: TObject);
 begin
   // Выставляем нужные флаги для таймера
@@ -407,6 +426,7 @@ begin
   btStop.Enabled:=True;
 end;
 
+{ === Остановка === }
 procedure TfmDevNetLogger.btStopClick(Sender: TObject);
 begin
   // Выставляем нужные флаги для таймера
@@ -417,6 +437,43 @@ begin
   pMeasure.Caption:='НЕТ ЗАМЕРА';
   btStart.Enabled:=True;
   btStop.Enabled:=False;
+end;
+
+{ === Обработка архива === }
+procedure TfmDevNetLogger.dbgArchiveColEnter(Sender: TObject);
+var
+  WeightStart,WeightEnd:real; // Значение массы на начало и конец замера
+  ArcTime:real; // Продолжительность замера
+  WeightDiff:real; // Расход зазамер
+begin
+  if ztMeasArchive.RecordCount>0 then
+  begin
+    // Запускаем запрос
+    zqArchive.Close;
+    zqArchive.SQL.Strings[1]:='meas_id='+ztMeasArchive.FieldByName('id').AsString;
+    zqArchive.Open;
+    // Получение данных
+    ArcTime:=ztMeasArchive.FieldByName('mtime').AsFloat;
+    lArcTime.Caption:='Время: ' + FloatToStr(ArcTime) + ' сек.';
+    zqArchive.First;
+    WeightStart:=zqArchive.FieldByName('brutto').AsFloat;
+    zqArchive.Last;
+    WeightEnd:=zqArchive.FieldByName('brutto').AsFloat;
+    WeightDiff:=Abs(WeightStart-WeightEnd);
+    lArcDiff.Caption:='Разница: ' + Format('%.3f',[WeightDiff]);
+    lArcUd.Caption:='Часовой: ' +  Format('%.3f',[WeightDiff/ArcTime*3600]);
+  end;
+end;
+
+procedure TfmDevNetLogger.dbgArchiveCellClick(Column: TColumn);
+begin
+  dbgArchiveColEnter(Self);
+end;
+
+procedure TfmDevNetLogger.dbgArchiveKeyUp(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  dbgArchiveColEnter(Self);
 end;
 
 end.

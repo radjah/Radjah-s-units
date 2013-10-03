@@ -4,7 +4,7 @@ object fmDevNetLogger: TfmDevNetLogger
   BorderStyle = bsDialog
   Caption = #1050#1083#1080#1077#1085#1090' '#1076#1083#1103' DevNet'
   ClientHeight = 600
-  ClientWidth = 650
+  ClientWidth = 1159
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -505,6 +505,104 @@ object fmDevNetLogger: TfmDevNetLogger
       OnClick = btClosePortClick
     end
   end
+  object gbArchive: TGroupBox
+    Left = 656
+    Top = 8
+    Width = 489
+    Height = 585
+    Caption = #1040#1088#1093#1080#1074
+    TabOrder = 12
+    object Label4: TLabel
+      Left = 16
+      Top = 16
+      Width = 44
+      Height = 13
+      Caption = #1047#1072#1084#1077#1088#1099':'
+    end
+    object lArcTime: TLabel
+      Left = 16
+      Top = 352
+      Width = 69
+      Height = 24
+      Caption = #1042#1088#1077#1084#1103':'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -19
+      Font.Name = 'MS Sans Serif'
+      Font.Style = [fsBold]
+      ParentFont = False
+    end
+    object lArcDiff: TLabel
+      Left = 16
+      Top = 392
+      Width = 89
+      Height = 24
+      Caption = #1056#1072#1079#1085#1080#1094#1072':'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -19
+      Font.Name = 'MS Sans Serif'
+      Font.Style = [fsBold]
+      ParentFont = False
+    end
+    object lArcUd: TLabel
+      Left = 16
+      Top = 432
+      Width = 95
+      Height = 24
+      Caption = #1063#1072#1089#1086#1074#1086#1081': '
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -19
+      Font.Name = 'MS Sans Serif'
+      Font.Style = [fsBold]
+      ParentFont = False
+    end
+    object dbgArchive: TDBGrid
+      Left = 16
+      Top = 32
+      Width = 457
+      Height = 297
+      DataSource = dsArchive
+      TabOrder = 0
+      TitleFont.Charset = DEFAULT_CHARSET
+      TitleFont.Color = clWindowText
+      TitleFont.Height = -11
+      TitleFont.Name = 'MS Sans Serif'
+      TitleFont.Style = []
+      OnCellClick = dbgArchiveCellClick
+      OnColEnter = dbgArchiveColEnter
+      OnEnter = dbgArchiveColEnter
+      OnKeyUp = dbgArchiveKeyUp
+      Columns = <
+        item
+          Expanded = False
+          FieldName = 'id'
+          Title.Caption = #8470
+          Width = 30
+          Visible = True
+        end
+        item
+          Expanded = False
+          FieldName = 'start'
+          Title.Caption = #1044#1072#1090#1072
+          Visible = True
+        end
+        item
+          Expanded = False
+          FieldName = 'DESC'
+          Title.Caption = #1053#1072#1079#1074#1072#1085#1080#1077
+          Width = 200
+          Visible = True
+        end
+        item
+          Expanded = False
+          FieldName = 'mtime'
+          Title.Caption = #1055#1088#1086#1076#1086#1083#1078'.'
+          Visible = True
+        end>
+    end
+  end
   object TimerDevNet: TTimer
     Enabled = False
     Interval = 500
@@ -518,7 +616,6 @@ object fmDevNetLogger: TfmDevNetLogger
   end
   object ZConnection: TZConnection
     ControlsCodePage = cGET_ACP
-    AutoEncodeStrings = False
     Properties.Strings = (
       'AutoEncodeStrings=ON')
     DesignConnection = True
@@ -539,5 +636,26 @@ object fmDevNetLogger: TfmDevNetLogger
     TableName = 'measure'
     Left = 360
     Top = 152
+  end
+  object ztMeasArchive: TZTable
+    Connection = ZConnection
+    ReadOnly = True
+    TableName = 'measure'
+    Left = 1088
+    Top = 392
+  end
+  object dsArchive: TDataSource
+    DataSet = ztMeasArchive
+    Left = 1088
+    Top = 424
+  end
+  object zqArchive: TZQuery
+    Connection = ZConnection
+    SQL.Strings = (
+      'SELECT * from weight where'
+      'meas_id=1')
+    Params = <>
+    Left = 1088
+    Top = 456
   end
 end
