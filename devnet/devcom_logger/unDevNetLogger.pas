@@ -6,23 +6,10 @@ uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, DevNetDec, StdCtrls, mmsystem, ExtCtrls, XPMan, DB,
   ZAbstractRODataset, ZAbstractDataset, ZAbstractTable, ZDataset,
-  ZAbstractConnection, ZConnection, Grids, DBGrids;
+  ZAbstractConnection, ZConnection, Grids, DBGrids, Menus;
 
 type
   TfmDevNetLogger = class(TForm)
-    gbSettings: TGroupBox;
-    btPortDlg: TButton;
-    btParamDlg: TButton;
-    btSelectDevDlg: TButton;
-    btShowHide: TButton;
-    gbData: TGroupBox;
-    edGross: TEdit;
-    edNett: TEdit;
-    edTara: TEdit;
-    Label1: TLabel;
-    Label2: TLabel;
-    Label3: TLabel;
-    lbDiscret: TLabel;
     TimerDevNet: TTimer;
     gbButtons: TGroupBox;
     btZero: TButton;
@@ -38,34 +25,43 @@ type
     leMeasure: TLabeledEdit;
     btStart: TButton;
     btStop: TButton;
-    gbBegin: TGroupBox;
-    gbEnd: TGroupBox;
-    leBeginBrutto: TLabeledEdit;
-    leBeginNetto: TLabeledEdit;
-    leBeginTara: TLabeledEdit;
-    leEndBrutto: TLabeledEdit;
-    leEndNetto: TLabeledEdit;
-    leEndTara: TLabeledEdit;
     gbResult: TGroupBox;
     lTime: TLabel;
     lDiff: TLabel;
     lUd: TLabel;
-    gbServer: TGroupBox;
-    btConnect: TButton;
-    btDisconnect: TButton;
-    gbPort: TGroupBox;
-    btOpenPort: TButton;
-    btClosePort: TButton;
-    lVersion: TLabel;
-    gbArchive: TGroupBox;
-    dbgArchive: TDBGrid;
-    Label4: TLabel;
-    ztMeasArchive: TZTable;
-    dsArchive: TDataSource;
-    zqArchive: TZQuery;
-    lArcTime: TLabel;
-    lArcDiff: TLabel;
-    lArcUd: TLabel;
+    mmDevNet: TMainMenu;
+    mDevNetServer: TMenuItem;
+    mPortDlg: TMenuItem;
+    mParamDlg: TMenuItem;
+    mSelectDevDlg: TMenuItem;
+    mShowHide: TMenuItem;
+    N2: TMenuItem;
+    mExit: TMenuItem;
+    edGross: TEdit;
+    edNett: TEdit;
+    edTara: TEdit;
+    lbDiscret: TLabel;
+    Label1: TLabel;
+    Label2: TLabel;
+    Label3: TLabel;
+    Label5: TLabel;
+    eBeginBrutto: TEdit;
+    eBeginNetto: TEdit;
+    eBeginTara: TEdit;
+    eEndBrutto: TEdit;
+    eEndNetto: TEdit;
+    eEndTara: TEdit;
+    Label6: TLabel;
+    Label7: TLabel;
+    N3: TMenuItem;
+    mMeas: TMenuItem;
+    N4: TMenuItem;
+    mConnect: TMenuItem;
+    mScales: TMenuItem;
+    mOpenPort: TMenuItem;
+    mClosePort: TMenuItem;
+    mDisconnect: TMenuItem;
+    mScaleButtons: TMenuItem;
     procedure btConnectClick(Sender: TObject);
     procedure btPortDlgClick(Sender: TObject);
     procedure btParamDlgClick(Sender: TObject);
@@ -83,10 +79,9 @@ type
     procedure FormShow(Sender: TObject);
     procedure btStartClick(Sender: TObject);
     procedure btStopClick(Sender: TObject);
-    procedure dbgArchiveColEnter(Sender: TObject);
-    procedure dbgArchiveCellClick(Column: TColumn);
-    procedure dbgArchiveKeyUp(Sender: TObject; var Key: Word;
-      Shift: TShiftState);
+    procedure mExitClick(Sender: TObject);
+    procedure mMeasClick(Sender: TObject);
+    procedure mScaleButtonsClick(Sender: TObject);
   private
     { Private declarations }
   public
@@ -105,11 +100,11 @@ var
 implementation
 
 uses
-  ComObj;
+  ComObj, unArchive, MyFunctions;
 
 var
   DevNet: OleVariant; // Объект OLE
-  MeasureArr:array[0..2] of real; // Массив измерений
+  MeasureArr, BeginArr, EndArr:array[0..2] of real; // Массив измерений
   bBegin, bEnd, bMes:boolean; // Флаги
   TickCount:Integer; // Время
   MeasID:Integer; // ID замера
@@ -131,15 +126,14 @@ begin
 //      ShowMessage('Вроде как подключились.');
       // Версия сервера
       fmDevNetLogger.Caption:='Клиент для Devnet '+DevNet.GetVersion;
-      lVersion.Caption:=DevNet.GetVersion;
       // Включаем кнопки
-      btPortDlg.Enabled:=True;
-      btParamDlg.Enabled:=True;
-      btSelectDevDlg.Enabled:=True;
-      btShowHide.Enabled:=True;
-      btOpenPort.Enabled:=True;
-      btConnect.Enabled:=False;
-      btDisconnect.Enabled:=True;
+      mPortDlg.Enabled:=True;
+      mParamDlg.Enabled:=True;
+      mSelectDevDlg.Enabled:=True;
+      mShowHide.Enabled:=True;
+      mOpenPort.Enabled:=True;
+      mConnect.Enabled:=False;
+      mDisconnect.Enabled:=True;
   except
   // Совсем всё плохо
       ShowMessage
@@ -184,8 +178,8 @@ begin
     //MMTimer1 := timeSetEvent(500, 10, @TimerCallBackProg, 100, TIME_PERIODIC);
     TimerDevNet.Enabled:=True;
     // Переключаем кнопки
-    btOpenPort.Enabled:=False;
-    btClosePort.Enabled:=True;
+    mOpenPort.Enabled:=False;
+    mClosePort.Enabled:=True;
     btStart.Enabled:=True;
     btZero.Enabled:=True;
     btTara.Enabled:=True;
@@ -232,10 +226,7 @@ begin
   if IsOK and (ErrState = 0) then
   begin
     Edit.Color := clGreen;
-    if (Flags0 and fStable) <> 0 then
-      Edit.Font.Color := clMoneyGreen
-    else
-      Edit.Font.Color := clBlue;
+    Edit.Font.Color := clYellow;
     // Установка точности
     D := Discret;
     if WeightVal > 2000 * D then
@@ -246,7 +237,7 @@ begin
     Edit.Text := Format('%7.*f', [PntPos, WeightVal]);
     MeasureArr[TypeWeight]:=WeightVal;
     // Вывод точности
-    fmDevNetLogger.lbDiscret.Caption := '+/- ' + Format('%5.*f', [PntPos, D]); // По ГОСТу
+    fmDevNetLogger.lbDiscret.Caption := '+/- ' + Format('%5.*f', [PntPos, D]) + ' кг'; // По ГОСТу
   end
   else
   // Вывод ошибки
@@ -288,20 +279,28 @@ begin
     ztbMeasure.AppendRecord([NULL, Now, 0.0, leMeasure.Text,NULL]);
     ztbMeasure.Last;
     MeasID:=ztbMeasure.FieldByName('id').AsInteger;
-    leBeginBrutto.Text:=FloatToStr(MeasureArr[M06A_Brutto]);
-    leBeginNetto.Text:=FloatToStr(MeasureArr[M06A_Netto]);
-    leBeginTara.Text:=FloatToStr(MeasureArr[M06A_Tare]);
-    leEndBrutto.Text:='';
-    leEndNetto.Text:='';
-    leEndTara.Text:='';
+    eBeginBrutto.Text:=Format('%7.2f', [MeasureArr[M06A_Brutto]]);
+    BeginArr[M06A_Brutto]:=MeasureArr[M06A_Brutto];
+    eBeginNetto.Text:=Format('%7.2f', [MeasureArr[M06A_Netto]]);
+    BeginArr[M06A_Netto]:=MeasureArr[M06A_Netto];
+    eBeginTara.Text:=Format('%7.2f', [MeasureArr[M06A_Tare]]);
+    BeginArr[M06A_Tare]:=MeasureArr[M06A_Tare];
+    eEndBrutto.Text:='';
+    eEndNetto.Text:='';
+    eEndTara.Text:='';
     lDiff.Caption:='';
     lUd.Caption:='';
   end;
   // Если замер идет
   if bMes=True then
   begin
+    CurTime:=(GetTickCount-TickCount)/1000;
     ztbWeight.AppendRecord([NULL,Now,MeasureArr[M06A_Brutto],MeasureArr[M06A_Netto],MeasureArr[M06A_Tare],MeasID]);
-    lTime.Caption:='Время: '+FloatToStr((GetTickCount-TickCount)/1000)+' сек.'
+    lTime.Caption:='Время: '+FloatToStr((GetTickCount-TickCount)/1000)+' сек.';
+    Diff:=Abs(BeginArr[M06A_Brutto]-MeasureArr[M06A_Brutto]);
+    lDiff.Caption:='Разница: '+FloatToStr(Diff);
+    if CurTime<>0 then
+    lUd.Caption:='Часовой: '+Format('%.3f',[(Diff/CurTime*3600)]);
   end;
   // Если замер закончился
   if bEnd=True then
@@ -313,17 +312,14 @@ begin
     ztbMeasure.FieldByName('stop').AsDateTime:=Now;
     ztbMeasure.FieldByName('mtime').AsFloat:=CurTime;
     ztbMeasure.Post;
-    leEndBrutto.Text:=FloatToStr(MeasureArr[M06A_Brutto]);
-    leEndNetto.Text:=FloatToStr(MeasureArr[M06A_Netto]);
-    leEndTara.Text:=FloatToStr(MeasureArr[M06A_Tare]);
+    eEndBrutto.Text:=Format('%7.2f', [MeasureArr[M06A_Brutto]]);
+    eEndNetto.Text:=Format('%7.2f', [MeasureArr[M06A_Netto]]);
+    eEndTara.Text:=Format('%7.2f', [MeasureArr[M06A_Tare]]);
     lTime.Caption:='Время: '+FloatToStr(CurTime)+' сек.';
-    Diff:=Abs(StrToFloat(leBeginBrutto.Text)-StrToFloat(leEndBrutto.Text));
+    Diff:=Abs(BeginArr[M06A_Brutto]-MeasureArr[M06A_Brutto]);
     lDiff.Caption:='Разница: '+FloatToStr(Diff);
     lUd.Caption:='Часовой: '+Format('%.3f',[(Diff/CurTime*3600)]);
-    ztMeasArchive.Close;
-    ztMeasArchive.Open;
-    ztMeasArchive.Last;
-    dbgArchiveColEnter(Self);
+    ReopenDatasets([fmArchive.ztMeasArchive]);
   end;
 end;
 
@@ -332,17 +328,16 @@ procedure TfmDevNetLogger.btDisconnectClick(Sender: TObject);
 begin
   TimerDevNet.Enabled:=False;
   btClosePortClick(Self);
-  lVersion.Caption:='';
   fmDevNetLogger.Caption:='Клиент для DevNet';
   DevNet:=Unassigned;
-  btPortDlg.Enabled:=False;
-  btParamDlg.Enabled:=False;
-  btSelectDevDlg.Enabled:=False;
-  btShowHide.Enabled:=False;
-  btOpenPort.Enabled:=False;
-  btClosePort.Enabled:=False;
-  btConnect.Enabled:=True;
-  btDisconnect.Enabled:=False;
+  mPortDlg.Enabled:=False;
+  mParamDlg.Enabled:=False;
+  mSelectDevDlg.Enabled:=False;
+  mShowHide.Enabled:=False;
+  mOpenPort.Enabled:=False;
+  mClosePort.Enabled:=False;
+  mConnect.Enabled:=True;
+  mDisconnect.Enabled:=False;
 end;
 
 { === Закрытие порта === }
@@ -350,8 +345,8 @@ procedure TfmDevNetLogger.btClosePortClick(Sender: TObject);
 begin
   TimerDevNet.Enabled:=False;
   DevNet.ClosePort;
-  btOpenPort.Enabled:=True;
-  btClosePort.Enabled:=False;
+  mOpenPort.Enabled:=True;
+  mClosePort.Enabled:=False;
   btStart.Enabled:=False;
   btStop.Enabled:=False;
   btZero.Enabled:=False;
@@ -409,7 +404,6 @@ begin
     ZConnection.Connect;
     ztbWeight.Open;
     ztbMeasure.Open;
-    ztMeasArchive.Open;
   end;
 end;
 
@@ -420,7 +414,8 @@ begin
   bBegin:=True;
   bMes:=True;
   // Индикация
-  pMeasure.Color:=clYellow;
+  pMeasure.Font.Color:=clRed;
+  fmDevNetLogger.Repaint;
   pMeasure.Caption:='ЗАМЕР';
   btStart.Enabled:=False;
   btStop.Enabled:=True;
@@ -433,47 +428,27 @@ begin
   bEnd:=True;
   bMes:=False;
   // Индикация
-  pMeasure.Color:=clBtnFace;
-  pMeasure.Caption:='НЕТ ЗАМЕРА';
+  pMeasure.Font.Color:=clWindowText;
+  pMeasure.Caption:='Нет замера';
   btStart.Enabled:=True;
   btStop.Enabled:=False;
 end;
 
-{ === Обработка архива === }
-procedure TfmDevNetLogger.dbgArchiveColEnter(Sender: TObject);
-var
-  WeightStart,WeightEnd:real; // Значение массы на начало и конец замера
-  ArcTime:real; // Продолжительность замера
-  WeightDiff:real; // Расход зазамер
+{ === Выход === }
+procedure TfmDevNetLogger.mExitClick(Sender: TObject);
 begin
-  if ztMeasArchive.RecordCount>0 then
-  begin
-    // Запускаем запрос
-    zqArchive.Close;
-    zqArchive.SQL.Strings[1]:='meas_id='+ztMeasArchive.FieldByName('id').AsString;
-    zqArchive.Open;
-    // Получение данных
-    ArcTime:=ztMeasArchive.FieldByName('mtime').AsFloat;
-    lArcTime.Caption:='Время: ' + FloatToStr(ArcTime) + ' сек.';
-    zqArchive.First;
-    WeightStart:=zqArchive.FieldByName('brutto').AsFloat;
-    zqArchive.Last;
-    WeightEnd:=zqArchive.FieldByName('brutto').AsFloat;
-    WeightDiff:=Abs(WeightStart-WeightEnd);
-    lArcDiff.Caption:='Разница: ' + Format('%.3f',[WeightDiff]);
-    lArcUd.Caption:='Часовой: ' +  Format('%.3f',[WeightDiff/ArcTime*3600]);
-  end;
+  Close;
 end;
 
-procedure TfmDevNetLogger.dbgArchiveCellClick(Column: TColumn);
+procedure TfmDevNetLogger.mMeasClick(Sender: TObject);
 begin
-  dbgArchiveColEnter(Self);
+  fmArchive.Show;
 end;
 
-procedure TfmDevNetLogger.dbgArchiveKeyUp(Sender: TObject; var Key: Word;
-  Shift: TShiftState);
+procedure TfmDevNetLogger.mScaleButtonsClick(Sender: TObject);
 begin
-  dbgArchiveColEnter(Self);
+  gbButtons.Visible:= not mScaleButtons.Checked;
+  mScaleButtons.Checked:= not mScaleButtons.Checked;
 end;
 
 end.
