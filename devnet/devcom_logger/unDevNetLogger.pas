@@ -14,21 +14,12 @@ type
     gbButtons: TGroupBox;
     btZero: TButton;
     btTara: TButton;
-    btBN: TButton;
     btUnZero: TButton;
     btUnTara: TButton;
     XPManifest1: TXPManifest;
     ZConnection: TZConnection;
     ztbWeight: TZTable;
     ztbMeasure: TZTable;
-    pMeasure: TPanel;
-    leMeasure: TLabeledEdit;
-    btStart: TButton;
-    btStop: TButton;
-    gbResult: TGroupBox;
-    lTime: TLabel;
-    lDiff: TLabel;
-    lUd: TLabel;
     mmDevNet: TMainMenu;
     mDevNetServer: TMenuItem;
     mPortDlg: TMenuItem;
@@ -37,22 +28,8 @@ type
     mShowHide: TMenuItem;
     N2: TMenuItem;
     mExit: TMenuItem;
-    edGross: TEdit;
     edNett: TEdit;
-    edTara: TEdit;
     lbDiscret: TLabel;
-    Label1: TLabel;
-    Label2: TLabel;
-    Label3: TLabel;
-    Label5: TLabel;
-    eBeginBrutto: TEdit;
-    eBeginNetto: TEdit;
-    eBeginTara: TEdit;
-    eEndBrutto: TEdit;
-    eEndNetto: TEdit;
-    eEndTara: TEdit;
-    Label6: TLabel;
-    Label7: TLabel;
     N3: TMenuItem;
     mMeas: TMenuItem;
     N4: TMenuItem;
@@ -61,7 +38,16 @@ type
     mOpenPort: TMenuItem;
     mClosePort: TMenuItem;
     mDisconnect: TMenuItem;
-    mScaleButtons: TMenuItem;
+    eTemp: TEdit;
+    gmMeasure: TGroupBox;
+    gbResult: TGroupBox;
+    lTime: TLabel;
+    lDiff: TLabel;
+    lUd: TLabel;
+    btStop: TButton;
+    btStart: TButton;
+    leMeasure: TLabeledEdit;
+    pMeasure: TPanel;
     procedure btConnectClick(Sender: TObject);
     procedure btPortDlgClick(Sender: TObject);
     procedure btParamDlgClick(Sender: TObject);
@@ -81,7 +67,6 @@ type
     procedure btStopClick(Sender: TObject);
     procedure mExitClick(Sender: TObject);
     procedure mMeasClick(Sender: TObject);
-    procedure mScaleButtonsClick(Sender: TObject);
   private
     { Private declarations }
   public
@@ -183,7 +168,6 @@ begin
     btStart.Enabled:=True;
     btZero.Enabled:=True;
     btTara.Enabled:=True;
-    btBN.Enabled:=True;
     btUnZero.Enabled:=True;
     btUnTara.Enabled:=True;
   end
@@ -256,7 +240,7 @@ end;
 procedure TimerCallBackProg(uTimerID, uMessage: UINT;
   dwUser, dw1, dw2: DWORD); stdcall;
 begin
-  GetWeightFromDevNet(M06A_Brutto, fmDevNetLogger.edGross);
+//  GetWeightFromDevNet(M06A_Brutto, fmDevNetLogger.edGross);
 end;
 
 { === Таймер === }
@@ -266,9 +250,9 @@ var
   Diff:real; // Разница показаний
 begin
   // Получаем данные
-  GetWeightFromDevNet(M06A_Brutto, fmDevNetLogger.edGross);
+  GetWeightFromDevNet(M06A_Brutto, fmDevNetLogger.eTemp);
   GetWeightFromDevNet(M06A_Netto, fmDevNetLogger.edNett);
-  GetWeightFromDevNet(M06A_Tare, fmDevNetLogger.edTara);
+  GetWeightFromDevNet(M06A_Tare, fmDevNetLogger.eTemp);
   // Обработка флагов
   // Если только начали замер
   if bBegin=True then
@@ -279,15 +263,9 @@ begin
     ztbMeasure.AppendRecord([NULL, Now, 0.0, leMeasure.Text,NULL]);
     ztbMeasure.Last;
     MeasID:=ztbMeasure.FieldByName('id').AsInteger;
-    eBeginBrutto.Text:=Format('%7.2f', [MeasureArr[M06A_Brutto]]);
     BeginArr[M06A_Brutto]:=MeasureArr[M06A_Brutto];
-    eBeginNetto.Text:=Format('%7.2f', [MeasureArr[M06A_Netto]]);
     BeginArr[M06A_Netto]:=MeasureArr[M06A_Netto];
-    eBeginTara.Text:=Format('%7.2f', [MeasureArr[M06A_Tare]]);
     BeginArr[M06A_Tare]:=MeasureArr[M06A_Tare];
-    eEndBrutto.Text:='';
-    eEndNetto.Text:='';
-    eEndTara.Text:='';
     lDiff.Caption:='';
     lUd.Caption:='';
   end;
@@ -312,9 +290,6 @@ begin
     ztbMeasure.FieldByName('stop').AsDateTime:=Now;
     ztbMeasure.FieldByName('mtime').AsFloat:=CurTime;
     ztbMeasure.Post;
-    eEndBrutto.Text:=Format('%7.2f', [MeasureArr[M06A_Brutto]]);
-    eEndNetto.Text:=Format('%7.2f', [MeasureArr[M06A_Netto]]);
-    eEndTara.Text:=Format('%7.2f', [MeasureArr[M06A_Tare]]);
     lTime.Caption:='Время: '+FloatToStr(CurTime)+' сек.';
     Diff:=Abs(BeginArr[M06A_Brutto]-MeasureArr[M06A_Brutto]);
     lDiff.Caption:='Разница: '+FloatToStr(Diff);
@@ -351,7 +326,7 @@ begin
   btStop.Enabled:=False;
   btZero.Enabled:=False;
   btTara.Enabled:=False;
-  btBN.Enabled:=False;
+//  btBN.Enabled:=False;
   btUnZero.Enabled:=False;
   btUnTara.Enabled:=False;
 end;
@@ -443,12 +418,6 @@ end;
 procedure TfmDevNetLogger.mMeasClick(Sender: TObject);
 begin
   fmArchive.Show;
-end;
-
-procedure TfmDevNetLogger.mScaleButtonsClick(Sender: TObject);
-begin
-  gbButtons.Visible:= not mScaleButtons.Checked;
-  mScaleButtons.Checked:= not mScaleButtons.Checked;
 end;
 
 end.

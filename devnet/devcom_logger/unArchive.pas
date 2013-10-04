@@ -66,7 +66,9 @@ begin
     WeightDiff:=Abs(WeightStart-WeightEnd);
     lArcDiff.Caption:='Разница: ' + Format('%.3f',[WeightDiff]);
     if ArcTime<>0 then
-    lArcUd.Caption:='Часовой: ' +  Format('%.3f',[WeightDiff/ArcTime*3600]);
+    lArcUd.Caption:='Часовой: ' +  Format('%.3f',[WeightDiff/ArcTime*3600])
+    else
+    lArcUd.Caption:='Часовой:'
   end;
 end;
 
