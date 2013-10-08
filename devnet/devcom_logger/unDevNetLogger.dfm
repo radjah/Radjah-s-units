@@ -1,9 +1,11 @@
 object fmDevNetLogger: TfmDevNetLogger
   Left = 555
   Top = 151
-  Width = 350
-  Height = 641
+  BorderIcons = [biSystemMenu, biMinimize]
+  BorderStyle = bsSingle
   Caption = #1050#1083#1080#1077#1085#1090' '#1076#1083#1103' DevNet'
+  ClientHeight = 549
+  ClientWidth = 334
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -17,8 +19,8 @@ object fmDevNetLogger: TfmDevNetLogger
   PixelsPerInch = 96
   TextHeight = 13
   object lbDiscret: TLabel
-    Left = 250
-    Top = 101
+    Left = 258
+    Top = 77
     Width = 79
     Height = 20
     Alignment = taRightJustify
@@ -29,10 +31,11 @@ object fmDevNetLogger: TfmDevNetLogger
     Font.Name = 'MS Sans Serif'
     Font.Style = [fsBold]
     ParentFont = False
+    Visible = False
   end
   object gbButtons: TGroupBox
     Left = 8
-    Top = 128
+    Top = 96
     Width = 321
     Height = 121
     Caption = #1059#1087#1088#1072#1074#1083#1077#1085#1080#1077
@@ -106,7 +109,7 @@ object fmDevNetLogger: TfmDevNetLogger
     Left = 8
     Top = 8
     Width = 321
-    Height = 89
+    Height = 86
     TabStop = False
     Color = clBlack
     Font.Charset = RUSSIAN_CHARSET
@@ -119,8 +122,8 @@ object fmDevNetLogger: TfmDevNetLogger
     TabOrder = 1
   end
   object eTemp: TEdit
-    Left = 16
-    Top = 96
+    Left = 8
+    Top = 80
     Width = 41
     Height = 21
     TabOrder = 2
@@ -129,7 +132,7 @@ object fmDevNetLogger: TfmDevNetLogger
   end
   object gmMeasure: TGroupBox
     Left = 8
-    Top = 256
+    Top = 224
     Width = 321
     Height = 321
     Caption = #1047#1072#1084#1077#1088
@@ -243,40 +246,33 @@ object fmDevNetLogger: TfmDevNetLogger
     Enabled = False
     Interval = 500
     OnTimer = TimerDevNetTimer
-    Left = 192
-    Top = 96
+    Left = 128
   end
   object XPManifest1: TXPManifest
-    Left = 128
-    Top = 96
+    Left = 64
   end
   object ZConnection: TZConnection
     ControlsCodePage = cGET_ACP
-    AutoEncodeStrings = False
     Properties.Strings = (
       'AutoEncodeStrings=ON')
+    Connected = True
     DesignConnection = True
     Port = 0
     Database = 'devnet_log.sqlite'
     Protocol = 'sqlite-3'
-    Left = 160
-    Top = 96
+    Left = 96
   end
   object ztbWeight: TZTable
     Connection = ZConnection
     TableName = 'weight'
-    Left = 96
-    Top = 96
+    Left = 32
   end
   object ztbMeasure: TZTable
     Connection = ZConnection
     TableName = 'measure'
-    Left = 64
-    Top = 96
   end
   object mmDevNet: TMainMenu
-    Left = 224
-    Top = 96
+    Left = 160
     object mDevNetServer: TMenuItem
       Caption = 'DevNet'
       object mConnect: TMenuItem

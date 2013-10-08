@@ -89,7 +89,7 @@ uses
 
 var
   DevNet: OleVariant; // Объект OLE
-  MeasureArr, BeginArr, EndArr:array[0..2] of real; // Массив измерений
+  MeasureArr, BeginArr:array[0..2] of real; // Массив измерений
   bBegin, bEnd, bMes:boolean; // Флаги
   TickCount:Integer; // Время
   MeasID:Integer; // ID замера
@@ -322,6 +322,8 @@ begin
   DevNet.ClosePort;
   mOpenPort.Enabled:=True;
   mClosePort.Enabled:=False;
+  edNett.Text:='';
+  edNett.Color:=clBlack;
   btStart.Enabled:=False;
   btStop.Enabled:=False;
   btZero.Enabled:=False;
