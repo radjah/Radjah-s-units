@@ -295,6 +295,7 @@ begin
     lDiff.Caption:='Разница: '+FloatToStr(Diff);
     lUd.Caption:='Часовой: '+Format('%.3f',[(Diff/CurTime*3600)]);
     ReopenDatasets([fmArchive.ztMeasArchive]);
+    fmArchive.dbgArchiveColEnter(Self);
   end;
 end;
 
