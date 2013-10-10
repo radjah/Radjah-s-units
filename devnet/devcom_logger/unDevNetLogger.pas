@@ -248,6 +248,7 @@ procedure TfmDevNetLogger.TimerDevNetTimer(Sender: TObject);
 var
   CurTime:real; // Время
   Diff:real; // Разница показаний
+  st:TSystemTime;
 begin
   // Получаем данные
   GetWeightFromDevNet(M06A_Brutto, fmDevNetLogger.eTemp);
@@ -261,6 +262,8 @@ begin
     TickCount:=GetTickCount;
     // Запись названия в таблицу
     ztbMeasure.AppendRecord([NULL, Now, 0.0, leMeasure.Text,NULL]);
+    // GetSystemTime(st);
+    // ztbMeasure.AppendRecord([NULL, st, 0.0, leMeasure.Text,NULL]);
     ztbMeasure.Last;
     MeasID:=ztbMeasure.FieldByName('id').AsInteger;
     BeginArr[M06A_Brutto]:=MeasureArr[M06A_Brutto];
