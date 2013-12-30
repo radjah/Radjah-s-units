@@ -248,7 +248,6 @@ procedure TfmDevNetLogger.TimerDevNetTimer(Sender: TObject);
 var
   CurTime:real; // Время
   Diff:real; // Разница показаний
-  st:TSystemTime;
 begin
   // Получаем данные
   GetWeightFromDevNet(M06A_Brutto, fmDevNetLogger.eTemp);
@@ -269,15 +268,15 @@ begin
     BeginArr[M06A_Brutto]:=MeasureArr[M06A_Brutto];
     BeginArr[M06A_Netto]:=MeasureArr[M06A_Netto];
     BeginArr[M06A_Tare]:=MeasureArr[M06A_Tare];
-    lDiff.Caption:='';
-    lUd.Caption:='';
+    lDiff.Caption:='0';
+    lUd.Caption:='0';
   end;
   // Если замер идет
   if bMes=True then
   begin
     CurTime:=(GetTickCount-TickCount)/1000;
-    ztbWeight.AppendRecord([NULL,Now,MeasureArr[M06A_Brutto],MeasureArr[M06A_Netto],MeasureArr[M06A_Tare],MeasID]);
-    lTime.Caption:='Время: '+FloatToStr((GetTickCount-TickCount)/1000)+' сек.';
+    ztbWeight.AppendRecord([NULL,CurTime,MeasureArr[M06A_Brutto],MeasureArr[M06A_Netto],MeasureArr[M06A_Tare],MeasID]);
+    lTime.Caption:='Время: '+FloatToStr(CurTime)+' сек.';
     Diff:=Abs(BeginArr[M06A_Brutto]-MeasureArr[M06A_Brutto]);
     lDiff.Caption:='Разница: '+FloatToStr(Diff);
     if CurTime<>0 then
@@ -288,7 +287,7 @@ begin
   begin
     bEnd:=False;
     CurTime:=(GetTickCount-TickCount)/1000;
-    ztbWeight.AppendRecord([NULL,Now,MeasureArr[M06A_Brutto],MeasureArr[M06A_Netto],MeasureArr[M06A_Tare],MeasID]);
+    ztbWeight.AppendRecord([NULL,CurTime,MeasureArr[M06A_Brutto],MeasureArr[M06A_Netto],MeasureArr[M06A_Tare],MeasID]);
     ztbMeasure.Edit;
     ztbMeasure.FieldByName('stop').AsDateTime:=Now;
     ztbMeasure.FieldByName('mtime').AsFloat:=CurTime;

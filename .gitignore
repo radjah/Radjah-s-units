@@ -7,6 +7,7 @@
 *.*res
 *.exe*
 *.dll*
+*.bak
 !sqlite3.dll
 *.tds
 *.ini

@@ -67,6 +67,17 @@ uses unDevNetLogger, MyFunctions, ComObj, ExcelAddOns;
 procedure TfmArchive.FormShow(Sender: TObject);
 begin
   ReopenDatasets([ztMeasArchive,ztWeight]);
+  // Отключение кнопок
+  if ztMeasArchive.RecordCount=0 then
+    begin
+      btExport.Enabled:=False;
+      btDelete.Enabled:=False;
+    end
+    else
+    begin
+      btExport.Enabled:=True;
+      btDelete.Enabled:=True;
+    end;
   dbgArchiveColEnter(Self);
 end;
 
@@ -162,7 +173,7 @@ begin
       // Заполняем массив
        begin
          // Время
-         ArrayData[i, 1] := ztWeight.FieldByName('date').AsDateTime;
+         ArrayData[i, 1] := ztWeight.FieldByName('time').AsFloat;
          // Брутто
          ArrayData[i, 2] := ztWeight.FieldByName('brutto').AsFloat;
          // Нетто
@@ -228,6 +239,16 @@ begin
   ztMeasArchive.Filter:='start > '''+ DateToStr(dtData.Date) + ''' AND start < ''' + DateToStr(dtData.Date+1) + '''';
   ztMeasArchive.Filtered:=True;
   ztMeasArchive.Refresh;
+  if ztMeasArchive.RecordCount=0 then
+    begin
+      btExport.Enabled:=False;
+      btDelete.Enabled:=False;
+    end
+    else
+    begin
+      btExport.Enabled:=True;
+      btDelete.Enabled:=True;
+    end;
   dbgArchiveColEnter(Self);
 end;
 
