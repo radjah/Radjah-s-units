@@ -36,7 +36,7 @@ type
     Label4: TLabel;
     lDate: TLabel;
     lStart: TLabel;
-    Button1: TButton;
+    btSumExport: TButton;
     procedure FormShow(Sender: TObject);
     procedure dbgArchiveColEnter(Sender: TObject);
     procedure dbgArchiveCellClick(Column: TColumn);
@@ -47,7 +47,7 @@ type
     procedure ztMeasArchiveBeforeScroll(DataSet: TDataSet);
     procedure dtDataChange(Sender: TObject);
     procedure btResetFilterClick(Sender: TObject);
-    procedure Button1Click(Sender: TObject);
+    procedure btSumExportClick(Sender: TObject);
   private
     { Private declarations }
   public
@@ -67,6 +67,8 @@ uses unDevNetLogger, MyFunctions, ComObj, ExcelAddOns;
 procedure TfmArchive.FormShow(Sender: TObject);
 begin
   ReopenDatasets([ztMeasArchive,ztWeight]);
+  dtData.DateTime:=Now;
+  ztMeasArchive.Filtered:=False;
   // Отключение кнопок
   if ztMeasArchive.RecordCount=0 then
     begin
@@ -108,7 +110,7 @@ begin
     if ArcTime<>0 then
     lArcUd.Caption:=Format('%.3f',[WeightDiff/ArcTime*3600])
     else
-    lArcUd.Caption:='';
+    lArcUd.Caption:='0';
   end
   else
   begin
@@ -257,7 +259,7 @@ begin
   ztMeasArchive.Filtered:=False;
 end;
 
-procedure TfmArchive.Button1Click(Sender: TObject);
+procedure TfmArchive.btSumExportClick(Sender: TObject);
 var
   Excel, Book, Sheet, ArrayData, Cell1, Cell2, Range: variant; // для Excel
   i : integer; // Счатчик

@@ -257,14 +257,14 @@ object fmArchive: TfmArchive
       TabOrder = 1
       OnClick = btDeleteClick
     end
-    object Button1: TButton
+    object btSumExport: TButton
       Left = 8
       Top = 56
       Width = 225
       Height = 25
       Caption = #1057#1074#1086#1076#1085#1072#1103' '#1087#1086' '#1092#1080#1083#1100#1090#1088#1091
       TabOrder = 2
-      OnClick = Button1Click
+      OnClick = btSumExportClick
     end
   end
   object ztMeasArchive: TZTable
