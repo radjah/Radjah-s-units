@@ -37,6 +37,7 @@ type
     lDate: TLabel;
     lStart: TLabel;
     btSumExport: TButton;
+    btChart: TButton;
     procedure FormShow(Sender: TObject);
     procedure dbgArchiveColEnter(Sender: TObject);
     procedure dbgArchiveCellClick(Column: TColumn);
@@ -48,6 +49,8 @@ type
     procedure dtDataChange(Sender: TObject);
     procedure btResetFilterClick(Sender: TObject);
     procedure btSumExportClick(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
+    procedure btChartClick(Sender: TObject);
   private
     { Private declarations }
   public
@@ -59,7 +62,7 @@ var
 
 implementation
 
-uses unDevNetLogger, MyFunctions, ComObj, ExcelAddOns;
+uses unDevNetLogger, MyFunctions, ComObj, ExcelAddOns, unChart;
 
 {$R *.dfm}
 
@@ -67,8 +70,6 @@ uses unDevNetLogger, MyFunctions, ComObj, ExcelAddOns;
 procedure TfmArchive.FormShow(Sender: TObject);
 begin
   ReopenDatasets([ztMeasArchive,ztWeight]);
-  dtData.DateTime:=Now;
-  ztMeasArchive.Filtered:=False;
   // Отключение кнопок
   if ztMeasArchive.RecordCount=0 then
     begin
@@ -235,30 +236,37 @@ begin
   dbgArchiveColEnter(Self);
 end;
 
+{ === Обработка фиильтра === }
 procedure TfmArchive.dtDataChange(Sender: TObject);
 begin
 //  ztMeasArchive.Locate('start',dtData.Date,[loPartialKey]);
+// Задание фильтра
   ztMeasArchive.Filter:='start > '''+ DateToStr(dtData.Date) + ''' AND start < ''' + DateToStr(dtData.Date+1) + '''';
   ztMeasArchive.Filtered:=True;
   ztMeasArchive.Refresh;
+// Проверка данных и настройка кнопок
   if ztMeasArchive.RecordCount=0 then
     begin
       btExport.Enabled:=False;
       btDelete.Enabled:=False;
+      btChart.Enabled:=False;
     end
     else
     begin
       btExport.Enabled:=True;
       btDelete.Enabled:=True;
+      btChart.Enabled:=True;
     end;
   dbgArchiveColEnter(Self);
 end;
 
+{ === Сброс фильтра === }
 procedure TfmArchive.btResetFilterClick(Sender: TObject);
 begin
   ztMeasArchive.Filtered:=False;
 end;
 
+{ === Сводная таблица === }
 procedure TfmArchive.btSumExportClick(Sender: TObject);
 var
   Excel, Book, Sheet, ArrayData, Cell1, Cell2, Range: variant; // для Excel
@@ -337,6 +345,35 @@ begin
     end;
   end;
 
+end;
+
+{ === Настройка фильтра === }
+procedure TfmArchive.FormCreate(Sender: TObject);
+begin
+  dtData.DateTime:=Now;
+  ztMeasArchive.Filtered:=False;
+end;
+
+{ === Построить график по выбранному замеру === }
+procedure TfmArchive.btChartClick(Sender: TObject);
+var
+  xTime, yMass: real;
+begin
+  // Очистка ряда
+  fmChart.sMess.Clear;
+  // Подготовка набора данных
+  ztWeight.First;
+  // Обходим весь набор и строим
+  while NOT ztWeight.Eof do
+  begin
+    // Переменные для удобства
+    xTime:=ztWeight.FieldByName('time').AsFloat;
+    yMass:=ztWeight.FieldByName('netto').AsFloat;
+    fmChart.sMess.AddXY(xTime,yMass);
+    ztWeight.Next;
+  end;
+  // Показываем график
+  fmChart.Show;
 end;
 
 end.

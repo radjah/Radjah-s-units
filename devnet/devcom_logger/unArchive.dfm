@@ -3,7 +3,7 @@ object fmArchive: TfmArchive
   Top = 213
   BorderStyle = bsDialog
   Caption = #1040#1088#1093#1080#1074' '#1080#1079#1084#1077#1088#1077#1085#1080#1081
-  ClientHeight = 336
+  ClientHeight = 360
   ClientWidth = 720
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -13,6 +13,7 @@ object fmArchive: TfmArchive
   Font.Style = []
   OldCreateOrder = False
   Position = poScreenCenter
+  OnCreate = FormCreate
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
@@ -153,14 +154,14 @@ object fmArchive: TfmArchive
     Left = 8
     Top = 8
     Width = 457
-    Height = 321
+    Height = 345
     Caption = #1048#1079#1084#1077#1088#1077#1085#1080#1103
     TabOrder = 1
     object dbgArchive: TDBGrid
       Left = 8
       Top = 16
       Width = 441
-      Height = 297
+      Height = 321
       DataSource = dsArchive
       Options = [dgTitles, dgIndicator, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgRowSelect, dgConfirmDelete, dgCancelOnExit]
       TabOrder = 0
@@ -171,6 +172,7 @@ object fmArchive: TfmArchive
       TitleFont.Style = []
       OnCellClick = dbgArchiveCellClick
       OnColEnter = dbgArchiveColEnter
+      OnDblClick = btChartClick
       OnKeyUp = dbgArchiveKeyUp
       Columns = <
         item
@@ -236,7 +238,7 @@ object fmArchive: TfmArchive
     Left = 472
     Top = 232
     Width = 241
-    Height = 97
+    Height = 121
     Caption = #1048#1085#1089#1090#1088#1091#1084#1077#1085#1090#1099
     TabOrder = 3
     object btExport: TButton
@@ -259,12 +261,21 @@ object fmArchive: TfmArchive
     end
     object btSumExport: TButton
       Left = 8
-      Top = 56
+      Top = 88
       Width = 225
       Height = 25
       Caption = #1057#1074#1086#1076#1085#1072#1103' '#1087#1086' '#1092#1080#1083#1100#1090#1088#1091
       TabOrder = 2
       OnClick = btSumExportClick
+    end
+    object btChart: TButton
+      Left = 8
+      Top = 56
+      Width = 225
+      Height = 25
+      Caption = #1055#1086#1089#1090#1088#1086#1080#1090#1100' '#1075#1088#1072#1092#1080#1082
+      TabOrder = 3
+      OnClick = btChartClick
     end
   end
   object ztMeasArchive: TZTable
