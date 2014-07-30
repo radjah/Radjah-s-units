@@ -1,11 +1,11 @@
 object fmDevNetLogger: TfmDevNetLogger
-  Left = 555
+  Left = 553
   Top = 151
   BorderIcons = [biSystemMenu, biMinimize]
   BorderStyle = bsSingle
   Caption = #1050#1083#1080#1077#1085#1090' '#1076#1083#1103' DevNet'
-  ClientHeight = 549
-  ClientWidth = 334
+  ClientHeight = 566
+  ClientWidth = 336
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -132,14 +132,14 @@ object fmDevNetLogger: TfmDevNetLogger
   end
   object gmMeasure: TGroupBox
     Left = 8
-    Top = 224
+    Top = 304
     Width = 321
-    Height = 321
+    Height = 257
     Caption = #1047#1072#1084#1077#1088
     TabOrder = 3
     object gbResult: TGroupBox
       Left = 8
-      Top = 176
+      Top = 112
       Width = 305
       Height = 137
       Caption = #1056#1077#1079#1091#1083#1100#1090#1072#1090#1099
@@ -186,7 +186,7 @@ object fmDevNetLogger: TfmDevNetLogger
     end
     object btStop: TButton
       Left = 184
-      Top = 128
+      Top = 64
       Width = 129
       Height = 41
       Caption = #1054#1089#1090#1072#1085#1086#1074#1080#1090#1100
@@ -202,7 +202,7 @@ object fmDevNetLogger: TfmDevNetLogger
     end
     object btStart: TButton
       Left = 8
-      Top = 128
+      Top = 64
       Width = 129
       Height = 41
       Caption = #1053#1072#1095#1072#1090#1100
@@ -218,19 +218,27 @@ object fmDevNetLogger: TfmDevNetLogger
     end
     object leMeasure: TLabeledEdit
       Left = 8
-      Top = 100
+      Top = 36
       Width = 305
       Height = 21
-      EditLabel.Width = 91
+      EditLabel.Width = 53
       EditLabel.Height = 13
-      EditLabel.Caption = #1053#1072#1079#1074#1072#1085#1080#1077' '#1079#1072#1084#1077#1088#1072
+      EditLabel.Caption = #1053#1072#1079#1074#1072#1085#1080#1077':'
       TabOrder = 3
     end
+  end
+  object GroupBox1: TGroupBox
+    Left = 8
+    Top = 224
+    Width = 321
+    Height = 73
+    Caption = #1057#1086#1089#1090#1086#1103#1085#1080#1077
+    TabOrder = 4
     object pMeasure: TPanel
       Left = 8
       Top = 16
       Width = 297
-      Height = 57
+      Height = 41
       BevelOuter = bvNone
       Caption = #1053#1077#1090' '#1079#1072#1084#1077#1088#1072
       Font.Charset = RUSSIAN_CHARSET
@@ -239,7 +247,7 @@ object fmDevNetLogger: TfmDevNetLogger
       Font.Name = 'Verdana'
       Font.Style = []
       ParentFont = False
-      TabOrder = 4
+      TabOrder = 0
     end
   end
   object TimerDevNet: TTimer

@@ -47,6 +47,7 @@ type
     btStop: TButton;
     btStart: TButton;
     leMeasure: TLabeledEdit;
+    GroupBox1: TGroupBox;
     pMeasure: TPanel;
     procedure btConnectClick(Sender: TObject);
     procedure btPortDlgClick(Sender: TObject);

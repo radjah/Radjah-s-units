@@ -264,6 +264,21 @@ end;
 procedure TfmArchive.btResetFilterClick(Sender: TObject);
 begin
   ztMeasArchive.Filtered:=False;
+  ztMeasArchive.Refresh;
+// Проверка данных и настройка кнопок
+  if ztMeasArchive.RecordCount=0 then
+    begin
+      btExport.Enabled:=False;
+      btDelete.Enabled:=False;
+      btChart.Enabled:=False;
+    end
+    else
+    begin
+      btExport.Enabled:=True;
+      btDelete.Enabled:=True;
+      btChart.Enabled:=True;
+    end;
+  dbgArchiveColEnter(Self);
 end;
 
 { === Сводная таблица === }
