@@ -305,7 +305,7 @@ begin
     DT:=SystemTimeToDateTime(ST);
     msec:=ST.wMilliseconds;
     ztbMeasure.FieldByName('stop').AsDateTime:=DT;
-    ztbMeasure.FieldByName('stopmsec').AsDateTime:=msec;
+    ztbMeasure.FieldByName('stopmsec').AsInteger:=msec;
     ztbMeasure.FieldByName('mtime').AsFloat:=CurTime;
     ztbMeasure.Post;
     lTime.Caption:='Время: '+FloatToStr(CurTime)+' сек.';
