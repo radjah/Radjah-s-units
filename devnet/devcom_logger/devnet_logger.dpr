@@ -2,12 +2,12 @@ program devnet_logger;
 
 uses
   Forms,
-  unDevNetLogger in 'unDevNetLogger.pas' {fmDevNetLogger},
-  unArchive in 'unArchive.pas' {fmArchive},
+  unDevNetLogger in 'src\unDevNetLogger.pas' {fmDevNetLogger},
+  unArchive in 'src\unArchive.pas' {fmArchive},
   DevNetDec in '..\..\libs\DevNetDec.pas',
   MyFunctions in '..\..\libs\MyFunctions.pas',
   ExcelAddOns in '..\..\libs\ExcelAddOns.pas',
-  unChart in 'unChart.pas' {fmChart};
+  unChart in 'src\unChart.pas' {fmChart};
 
 {$R *.res}
 
