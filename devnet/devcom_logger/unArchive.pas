@@ -38,6 +38,8 @@ type
     lStart: TLabel;
     btSumExport: TButton;
     btChart: TButton;
+    lEndTime: TLabel;
+    Label7: TLabel;
     procedure FormShow(Sender: TObject);
     procedure dbgArchiveColEnter(Sender: TObject);
     procedure dbgArchiveCellClick(Column: TColumn);
@@ -94,10 +96,14 @@ begin
   if ztMeasArchive.RecordCount>0 then
   begin
     lDate.Caption:=DateToStr(ztMeasArchive.FieldByName('start').AsDateTime);
-    lStart.Caption:=TimeToStr(ztMeasArchive.FieldByName('start').AsDateTime);
+    lStart.Caption:=TimeToStr(ztMeasArchive.FieldByName('start').AsDateTime)+
+      ','+IntToStr(ztMeasArchive.FieldByName('startmsec').AsInteger);
+    lEndTime.Caption:=TimeToStr(ztMeasArchive.FieldByName('stop').AsDateTime)
+      +','+ztMeasArchive.FieldByName('stopmsec').AsString;
     // Запускаем запрос
     zqArchive.Close;
-    zqArchive.SQL.Strings[1]:='meas_id='+ztMeasArchive.FieldByName('id').AsString;
+    zqArchive.SQL.Strings[1]:='meas_id='+
+      ztMeasArchive.FieldByName('id').AsString;
     zqArchive.Open;
     // Получение данных
     ArcTime:=ztMeasArchive.FieldByName('mtime').AsFloat;
@@ -141,14 +147,15 @@ procedure TfmArchive.btExportClick(Sender: TObject);
 var
   Excel, Book, Sheet, ArrayData, Cell1, Cell2, Range: variant; // для Excel
   i : integer; // Счатчик
-  BeginCol, BeginRow, RowCount, ColCount: integer; // Количество строк и столбцов
+  BeginCol, BeginRow, RowCount, ColCount: integer; //Количество строк и столбцов
 begin
   try
   if sdExport.Execute then
   begin
     // Запрос
     zqArchive.Close;
-    zqArchive.SQL.Strings[1]:='meas_id='+ztMeasArchive.FieldByName('id').AsString;
+    zqArchive.SQL.Strings[1]:='meas_id='+
+      ztMeasArchive.FieldByName('id').AsString;
     zqArchive.Open;
     // Создаём новый объект
     Excel := CreateOleObject('Excel.Application');
@@ -215,11 +222,13 @@ end;
 { === Удаление замера === }
 procedure TfmArchive.btDeleteClick(Sender: TObject);
 begin
-  if MessageBox(Self.Handle, 'Удалить замер?', 'Вопрос', MB_YESNO or MB_ICONQUESTION)=IDYES
+  if MessageBox(Self.Handle, 'Удалить замер?', 'Вопрос',
+                MB_YESNO or MB_ICONQUESTION)=IDYES
   then
   begin
     zqDelete.Close;
-    zqDelete.SQL.Strings[1]:='meas_id='+ztMeasArchive.FieldByName('id').AsString;
+    zqDelete.SQL.Strings[1]:='meas_id='+
+      ztMeasArchive.FieldByName('id').AsString;
     zqDelete.ExecSQL;
     zqDelete.Close;
     zqDelMeas.SQL.Strings[1]:='id='+ztMeasArchive.FieldByName('id').AsString;
@@ -241,7 +250,8 @@ procedure TfmArchive.dtDataChange(Sender: TObject);
 begin
 //  ztMeasArchive.Locate('start',dtData.Date,[loPartialKey]);
 // Задание фильтра
-  ztMeasArchive.Filter:='start > '''+ DateToStr(dtData.Date) + ''' AND start < ''' + DateToStr(dtData.Date+1) + '''';
+  ztMeasArchive.Filter:='start > '''+ DateToStr(dtData.Date) +
+    ''' AND start < ''' + DateToStr(dtData.Date+1) + '''';
   ztMeasArchive.Filtered:=True;
   ztMeasArchive.Refresh;
 // Проверка данных и настройка кнопок
@@ -286,7 +296,7 @@ procedure TfmArchive.btSumExportClick(Sender: TObject);
 var
   Excel, Book, Sheet, ArrayData, Cell1, Cell2, Range: variant; // для Excel
   i : integer; // Счатчик
-  BeginCol, BeginRow, RowCount, ColCount: integer; // Количество строк и столбцов
+  BeginCol, BeginRow, RowCount, ColCount: integer; //Количество строк и столбцов
 begin
   try
   if sdExport.Execute then

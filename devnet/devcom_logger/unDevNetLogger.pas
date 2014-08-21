@@ -222,7 +222,8 @@ begin
     Edit.Text := Format('%7.*f', [PntPos, WeightVal]);
     MeasureArr[TypeWeight]:=WeightVal;
     // Вывод точности
-    fmDevNetLogger.lbDiscret.Caption := '+/- ' + Format('%5.*f', [PntPos, D]) + ' кг'; // По ГОСТу
+    fmDevNetLogger.lbDiscret.Caption := '+/- ' +
+      Format('%5.*f', [PntPos, D]) + ' кг'; // По ГОСТу
   end
   else
   // Вывод ошибки
@@ -249,6 +250,9 @@ procedure TfmDevNetLogger.TimerDevNetTimer(Sender: TObject);
 var
   CurTime:real; // Время
   Diff:real; // Разница показаний
+  DT: TDateTime; // Формат для базы
+  ST: TSystemTime; // Формат для msec
+  msec:integer;
 begin
   // Получаем данные
   GetWeightFromDevNet(M06A_Brutto, fmDevNetLogger.eTemp);
@@ -260,10 +264,12 @@ begin
   begin
     bBegin:=False;
     TickCount:=GetTickCount;
+    GetLocalTime(ST);
+    DT:=SystemTimeToDateTime(ST);
+    msec:=ST.wMilliseconds;
     // Запись названия в таблицу
-    ztbMeasure.AppendRecord([NULL, Now, 0.0, leMeasure.Text,NULL]);
-    // GetSystemTime(st);
-    // ztbMeasure.AppendRecord([NULL, st, 0.0, leMeasure.Text,NULL]);
+    //(ID, start, startmsec, stop, stopmsec, desc);
+    ztbMeasure.AppendRecord([NULL, DT, msec, 0.0, NULL, leMeasure.Text,NULL]);
     ztbMeasure.Last;
     MeasID:=ztbMeasure.FieldByName('id').AsInteger;
     BeginArr[M06A_Brutto]:=MeasureArr[M06A_Brutto];
@@ -276,7 +282,9 @@ begin
   if bMes=True then
   begin
     CurTime:=(GetTickCount-TickCount)/1000;
-    ztbWeight.AppendRecord([NULL,CurTime,MeasureArr[M06A_Brutto],MeasureArr[M06A_Netto],MeasureArr[M06A_Tare],MeasID]);
+    ztbWeight.AppendRecord([NULL,CurTime,MeasureArr[M06A_Brutto],
+                            MeasureArr[M06A_Netto],
+                            MeasureArr[M06A_Tare],MeasID]);
     lTime.Caption:='Время: '+FloatToStr(CurTime)+' сек.';
     Diff:=Abs(BeginArr[M06A_Brutto]-MeasureArr[M06A_Brutto]);
     lDiff.Caption:='Разница: '+FloatToStr(Diff);
@@ -288,9 +296,16 @@ begin
   begin
     bEnd:=False;
     CurTime:=(GetTickCount-TickCount)/1000;
-    ztbWeight.AppendRecord([NULL,CurTime,MeasureArr[M06A_Brutto],MeasureArr[M06A_Netto],MeasureArr[M06A_Tare],MeasID]);
+    ztbWeight.AppendRecord([NULL,CurTime,MeasureArr[M06A_Brutto],
+                            MeasureArr[M06A_Netto],
+                            MeasureArr[M06A_Tare],MeasID]);
     ztbMeasure.Edit;
-    ztbMeasure.FieldByName('stop').AsDateTime:=Now;
+    // Вычисление конца замера
+    GetLocalTime(ST);
+    DT:=SystemTimeToDateTime(ST);
+    msec:=ST.wMilliseconds;
+    ztbMeasure.FieldByName('stop').AsDateTime:=DT;
+    ztbMeasure.FieldByName('stopmsec').AsDateTime:=msec;
     ztbMeasure.FieldByName('mtime').AsFloat:=CurTime;
     ztbMeasure.Post;
     lTime.Caption:='Время: '+FloatToStr(CurTime)+' сек.';

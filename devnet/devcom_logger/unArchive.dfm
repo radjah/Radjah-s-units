@@ -3,7 +3,7 @@ object fmArchive: TfmArchive
   Top = 213
   BorderStyle = bsDialog
   Caption = #1040#1088#1093#1080#1074' '#1080#1079#1084#1077#1088#1077#1085#1080#1081
-  ClientHeight = 360
+  ClientHeight = 392
   ClientWidth = 720
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -21,22 +21,10 @@ object fmArchive: TfmArchive
     Left = 472
     Top = 72
     Width = 241
-    Height = 153
+    Height = 185
     Caption = #1048#1085#1092#1086#1088#1084#1072#1094#1080#1103
     TabOrder = 0
     object lArcTime: TLabel
-      Left = 93
-      Top = 69
-      Width = 4
-      Height = 20
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -16
-      Font.Name = 'MS Sans Serif'
-      Font.Style = []
-      ParentFont = False
-    end
-    object lArcDiff: TLabel
       Left = 93
       Top = 93
       Width = 4
@@ -48,7 +36,7 @@ object fmArchive: TfmArchive
       Font.Style = []
       ParentFont = False
     end
-    object lArcUd: TLabel
+    object lArcDiff: TLabel
       Left = 93
       Top = 117
       Width = 4
@@ -60,9 +48,21 @@ object fmArchive: TfmArchive
       Font.Style = []
       ParentFont = False
     end
+    object lArcUd: TLabel
+      Left = 93
+      Top = 141
+      Width = 4
+      Height = 20
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -16
+      Font.Name = 'MS Sans Serif'
+      Font.Style = []
+      ParentFont = False
+    end
     object Label2: TLabel
       Left = 10
-      Top = 69
+      Top = 93
       Width = 53
       Height = 20
       Caption = #1042#1088#1077#1084#1103':'
@@ -75,7 +75,7 @@ object fmArchive: TfmArchive
     end
     object Label3: TLabel
       Left = 10
-      Top = 93
+      Top = 117
       Width = 67
       Height = 20
       Caption = #1056#1072#1079#1085#1080#1094#1072':'
@@ -88,7 +88,7 @@ object fmArchive: TfmArchive
     end
     object Label5: TLabel
       Left = 10
-      Top = 117
+      Top = 141
       Width = 73
       Height = 20
       Caption = #1063#1072#1089#1086#1074#1086#1081': '
@@ -149,19 +149,44 @@ object fmArchive: TfmArchive
       Font.Style = []
       ParentFont = False
     end
+    object lEndTime: TLabel
+      Left = 93
+      Top = 69
+      Width = 4
+      Height = 20
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -16
+      Font.Name = 'MS Sans Serif'
+      Font.Style = []
+      ParentFont = False
+    end
+    object Label7: TLabel
+      Left = 10
+      Top = 69
+      Width = 50
+      Height = 20
+      Caption = #1050#1086#1085#1077#1094':'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -16
+      Font.Name = 'MS Sans Serif'
+      Font.Style = []
+      ParentFont = False
+    end
   end
   object gbArch: TGroupBox
     Left = 8
     Top = 8
     Width = 457
-    Height = 345
+    Height = 377
     Caption = #1048#1079#1084#1077#1088#1077#1085#1080#1103
     TabOrder = 1
     object dbgArchive: TDBGrid
       Left = 8
       Top = 16
       Width = 441
-      Height = 321
+      Height = 353
       DataSource = dsArchive
       Options = [dgTitles, dgIndicator, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgRowSelect, dgConfirmDelete, dgCancelOnExit]
       TabOrder = 0
@@ -236,7 +261,7 @@ object fmArchive: TfmArchive
   end
   object gbActions: TGroupBox
     Left = 472
-    Top = 232
+    Top = 264
     Width = 241
     Height = 121
     Caption = #1048#1085#1089#1090#1088#1091#1084#1077#1085#1090#1099
