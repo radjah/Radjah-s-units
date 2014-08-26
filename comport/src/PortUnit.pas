@@ -93,24 +93,43 @@ begin
   end
   else
   begin
-    MessageBox(fmMain.Handle,StrCat('Не удалось открыть порт ',Comport), 'Ошибка!', MB_OK or MB_ICONEXCLAMATION);
+    MessageBox(fmMain.Handle,StrCat('Не удалось открыть порт ',Comport),
+    'Ошибка!', MB_OK or MB_ICONEXCLAMATION);
     Result:=False;
   end;
 end;
 
 procedure ProcData(str:string);
 var
-  epsilon:real;
-  temp:integer;
+  data, t, p, h:string;
+  i:integer;
 begin
-  if Length(Trim(str))=13
-  then
+  data:=StringReplace(str,'.',',',[rfReplaceAll]);
+  t:='';
+  p:='';
+  h:='';
+  i:=2;
+  while data[i]<>'P' do
   begin
-//    fmMain.mMeasure.Lines.Add(trim(str));
-    epsilon:=(StrToFloat(copy(trim(str),7,2))+1)/100;
-    temp:=StrToInt(Trim(copy(trim(str),9,4)));
-    fmMain.mMeasure.Lines.Add('t='+IntToStr(temp)+' e='+FloatToStr(epsilon));
+    t:=t+data[i];
+    i:=i+1;
   end;
+  i:=i+1;
+  while data[i]<>'H' do
+  begin
+    p:=p+data[i];
+    i:=i+1;
+  end;
+  i:=i+1;
+  while data[i]<>chr(13) do
+  begin
+    h:=h+data[i];
+    i:=i+1;
+  end;
+  fmMain.mMeasure.Lines.Add(t);
+  fmMain.mMeasure.Lines.Add(p);
+  fmMain.mMeasure.Lines.Add(h);
+  fmMain.ztMeteo.AppendRecord([Now, strtofloat(t), strtofloat(p), strtofloat(h)]);
 end;
 
 end.

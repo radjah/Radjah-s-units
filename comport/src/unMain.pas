@@ -4,7 +4,8 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, synaser;
+  Dialogs, StdCtrls, synaser, DB, ZAbstractRODataset, ZAbstractDataset,
+  ZAbstractTable, ZDataset, ZAbstractConnection, ZConnection;
 
 type
   TfmMain = class(TForm)
@@ -14,6 +15,8 @@ type
     btOpen: TButton;
     btClose: TButton;
     mMeasure: TMemo;
+    zcMeteo: TZConnection;
+    ztMeteo: TZTable;
     procedure btGetPortsClick(Sender: TObject);
     procedure btOpenClick(Sender: TObject);
     procedure btCloseClick(Sender: TObject);
@@ -40,12 +43,10 @@ var
   comstr:String;
 begin
   comprts:=TStringList.Create;
-//  comstr:=GetSerialPortNames;
   comprts.CommaText:=GetSerialPortNames;
   comprts.Sort;
   cbPortSelect.Items:=comprts;
   cbPortSelect.ItemIndex:=0;
-//  Memo1.Lines.Add(GetSerialPortNames);
   mPorts.Lines:=comprts;
   if comprts.Count>0
   then

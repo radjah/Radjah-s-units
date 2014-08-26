@@ -65,4 +65,21 @@ object fmMain: TfmMain
     ScrollBars = ssVertical
     TabOrder = 5
   end
+  object zcMeteo: TZConnection
+    ControlsCodePage = cGET_ACP
+    AutoEncodeStrings = False
+    Connected = True
+    Port = 0
+    Database = 'meteo.sqlite'
+    Protocol = 'sqlite-3'
+    Left = 96
+    Top = 296
+  end
+  object ztMeteo: TZTable
+    Connection = zcMeteo
+    Active = True
+    TableName = 'meteo'
+    Left = 128
+    Top = 296
+  end
 end
